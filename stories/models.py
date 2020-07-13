@@ -76,3 +76,8 @@ class Story_comment(models.Model):
     def __str__(self):
         return 'Comment by {} on {}'.format(self.name, self.post)
 
+class titleview(models.Model):
+    view = models.ForeignKey(Stories,related_name="titleview",to_field='title',on_delete=models.CASCADE)
+    ip_addr = models.CharField(max_length=300,blank=True,null=True)
+    def __str__(self):
+        return str(self.view)+ " " + str(self.ip_addr)

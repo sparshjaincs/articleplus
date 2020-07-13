@@ -1,0 +1,128 @@
+{% extends 'article/base1.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load to_and %}
+{% block title %}
+Profile | Article+
+{% endblock %}
+{% block navbar %}
+{% include 'article/navbar1.html' %}
+<header style="margin-top:70px;" class="jumb d-none d-sm-block">
+
+   <div class="row">
+       <div class="col-md-12 col-lg-12 d-none d-sm-block" style="">
+          <div style="display: flex; justify-content: flex-end;" class="mt-3 mr-3">
+            <a class="ml-2 d-md-none d-lg-block"> {{profile.date_of_birth}} | </a>
+            <a class="ml-2">{{profile.email}} | </a>
+            <a class="ml-2"> {{profile.phone_number}} | </a>
+            <a class="ml-2"> {{profile.address}}, {{profile.city}}, {{profile.state}}, {{profile.country}} | </a>
+            <a><i class="fa fa-instagram ml-2" style="font-size: 22px;"></i></a>
+            <a><i class="fa fa-facebook ml-2" style="font-size: 22px;"></i></a>
+            <a><i class="fa fa-twitter ml-2" style="font-size: 22px;"></i></a>
+            <a><i class="fa fa-medium ml-2" style="font-size: 22px;"></i></a>
+            <a><i class="fa fa-quora ml-2" style="font-size: 22px;"></i></a>
+            <a><i class="fa fa-globe ml-2" style="font-size: 22px;"></i></a>
+            
+          </div>
+       
+          
+       </div>
+   </div>
+   <div>
+    
+   <img src="/media/{{profile.avatar}}" style="height:120px; width:120px; border-radius: 50%; margin-top:12px; margin-left: 65px;">
+   
+   {% if not watch %}
+   <a><button class="btn btn-secondary mt-4" style="font-size: 12px;" data-toggle="modal" data-target="#modalLoginForm"><i class="fa fa-edit "></i> Edit </button> </a> 
+   {%endif%}
+  </div>
+
+</header>
+{% endblock %}
+{% block style %}
+.jumb{
+    background-color:#BCE1EF;
+  height:120px;
+}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 col-sm-12 col-md-4 col-lg-2 " >
+        
+    <div>
+
+            <div style="display: flex; justify-content: center;">
+            
+              <center><p style="font-size: 25px; margin-top: -20px;" class="">{{profile.first_name|capfirst}} {{profile.last_name|capfirst}}</p></center>  
+        
+            </div>
+            <div class="d-md-block d-lg-none">
+                <center><p style="font-size: 15px; margin-top: -17px;">{{profile.date_of_birth}}</p></center>
+            </div>
+            <div style="display: flex; justify-content: center;">
+            
+                <center><p style="font-size: 15px; margin-top: -10px;" class="">{{profile.following.count}} Followers | {{profile.follow.count}} Following</p></center>  
+          
+              </div>
+            <div>
+               <center> <p>{{profile.bio}}</p></center>
+            </div>
+    </div>
+         
+    </div>
+    <div class="col-lg-10">
+
+       
+    </div>
+</div>
+    <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header text-center" style="background-color: #BCE1EF;">
+              <h4 class="modal-title w-100 font-weight-bold">Edit Profile</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+              <div class="modal-body mx-3">
+               <form action="/profile/save/me/" method="POST" enctype="multipart/form-data">
+    
+                {% csrf_token %}
+                <div class="form-verticle">
+                    <div class="form-row">
+                  <div class="form-group col-sm-6">{{p_form.avatar|as_crispy_field}}</div>
+                  <div class="form-group col-sm-6">{{p_form.first_name|as_crispy_field}}</div>
+                  <div class="form-group col-sm-6">{{p_form.last_name|as_crispy_field}}</div>
+                  <div class="form-group col-sm-6">{{p_form.phone_number|as_crispy_field}}</div>
+                  
+                  <div class="form-group col-sm-12">{{p_form.email|as_crispy_field}}</div>
+                  <div class="form-group col-sm-12">{{p_form.address|as_crispy_field}}</div>
+                  <div class="form-group col-sm-6">{{p_form.city|as_crispy_field}}</div>
+                  <div class="form-group col-sm-6">{{p_form.state|as_crispy_field}}</div>
+                  <div class="form-group col-sm-6">{{p_form.country|as_crispy_field}}</div>
+                  <div class="form-group col-sm-6">{{p_form.date_of_birth|as_crispy_field}}</div>
+                  <div class="form-group col-sm-6">{{p_form.quora|as_crispy_field}}</div>
+                  <div class="form-group col-sm-6">{{p_form.medium|as_crispy_field}}</div>
+                  <div class="form-group col-sm-12">{{p_form.other|as_crispy_field}}</div>
+                  <div class="form-group col-sm-12">{{p_form.bio|as_crispy_field}}</div>
+                 
+                </div>
+               </div>
+         
+             
+             <div class="modal-footer d-flex justify-content-center" style="">
+               <button type="submit" class="btn btn-outline-info" style="font-size: 20px;">Save</button>
+             </div>
+            </form>
+           </div>
+   
+            </div>
+            
+            
+         
+        </div>
+      </div>
+   
+
+{% endblock %} 

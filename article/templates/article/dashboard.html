@@ -159,7 +159,7 @@
               <div class="card-body">
                 <h5 class="card-title">Card title</h5>
                 <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <a href="" class="btn btn-primary">Go somewhere</a>
+                <a href="{% url 'stories_text' %}" class="btn btn-primary">Go somewhere</a>
               </div>
             </div>
 
@@ -286,11 +286,17 @@
                 
                 <td style="cursor:pointer;" >{{i.date_Publish}}</td>
                 <td style="cursor:pointer;">{{i.time}}</td>
-                <td style="cursor:pointer;" >{{i.status}}</td>
+                
                 <td>Story</td>
+                <td style="cursor:pointer;" >{{i.status}}</td>
                 {% if not watch %}
-                <td style="cursor: pointer;"><a title="Edit" href='/stories/edit/{{i.title|replace}}' style="margin-right: 5px;" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-edit"></i></a></td>
-                <td style="cursor: pointer;"><a title="Delete" href='/stories/delete_story/{{i.title|replace}}' style="margin-right: 5px;" data-toggle="tooltip" data-placement="top" title="Delete" onclick="return confirm('Are you sure you want to delete this item?');"> <i class="fa fa-trash"></i></a></td>
+                
+                <td style="cursor: pointer;">
+                  {% if i.status == 'published' %}
+                  <a title="Read" href='{{i.link}}' style="margin-right: 5px;" data-toggle="tooltip" data-placement="top" title="Read"> <i class="fa fa-eye"></i></a>
+                  {% endif %}
+                  <a title="Edit" href='/stories/edit/{{i.title|replace}}' style="margin-right: 5px;" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-edit"></i></a>
+                  <a title="Delete" href='/stories/delete_story/{{i.title|replace}}' style="margin-right: 5px;" data-toggle="tooltip" data-placement="top" title="Delete" onclick="return confirm('Are you sure you want to delete this item?');"> <i class="fa fa-trash"></i></a></td>
                 {% endif %}
                 
               </tr>

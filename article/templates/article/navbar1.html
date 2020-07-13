@@ -36,12 +36,12 @@
             </a>
         </li>
         <li class="nav-item dropdown no-arrow mx-1 d-none d-lg-block">
-            <a class="nav-link" style="color:rgb(0,0,0,0.5); font-weight: 600;" href="">
+            <a class="nav-link" style="color:rgb(0,0,0,0.5); font-weight: 600;" href="{% url 'quotes' %}">
               <span class="fa fa-minus bar"></span> Quotes
             </a>
         </li>
         <li class="nav-item dropdown no-arrow mx-1 d-none d-lg-block">
-            <a class="nav-link" style="color:rgb(0,0,0,0.5); font-weight: 600;" href="">
+            <a class="nav-link" style="color:rgb(0,0,0,0.5); font-weight: 600;" href="{% url 'poetries' %}">
               <span class="fa fa-minus bar"></span> Poetries
             </a>
         </li>
@@ -205,12 +205,12 @@
             
             Stories
           </a>
-          <a class="dropdown-item" href="">
+          <a class="dropdown-item" href="{% url 'poetries' %}">
            
             Poetries
           </a>
          
-          <a class="dropdown-item" href="" >
+          <a class="dropdown-item" href="{% url 'quotes' %}" >
             
             Quotes
           </a>

@@ -24,6 +24,8 @@ urlpatterns = [
     path("",include('article.urls')),
     path("stories/",include('stories.urls')),
     path("trending/",include('trends.urls')),
+    path("quotes/",include('quotes.urls')),
+    path("poetries/",include('poetries.urls')),
     path('login/', auth_views.LoginView.as_view(template_name='article/login.html'), name="login"),
     path('logout/', auth_views.LogoutView.as_view(), name="logout"),
     path('social-auth/', include('social_django.urls', namespace="social")),

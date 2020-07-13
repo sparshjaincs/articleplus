@@ -216,7 +216,7 @@ Read | Article+
                     </center>
                     {% else %}
                     {% if read.0.image %}
-                    <img src="/media/{{read.0.image}}" style="width:100%;padding:40px;">
+                    <img src="/media/{{read.0.image}}" style="width:100%;padding:20px;max-height: 500px;">
                     {% endif %}
                
  
@@ -275,7 +275,7 @@ Read | Article+
              
                 </div>
                 <div class="row">
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 pl-5 pr-5">
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 pl-4 pr-4">
                         <p>
                             {{read.0.content|safe}}
                         </p>

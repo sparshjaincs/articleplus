@@ -37,7 +37,7 @@ def homepage(request):
         context['article_count'] = [Articles.objects.filter(user_name2 = request.user,status="Draft").all().count(),Articles.objects.filter(user_name2 = request.user,status="published").count()]
         context['story_count'] = [Stories.objects.filter(user_stories = request.user,status="Draft").count(),Stories.objects.filter(user_stories = request.user,status="published").count()]
 
-        context['stories'] = Stories.objects.filter(user_stories = request.user,status="Draft").order_by('-date_Publish',"-time")
+        context['stories'] = Stories.objects.filter(user_stories = request.user).order_by('-date_Publish',"-time")
         if activity.objects.filter(user_name3 = request.user,user_activity = f'User successfully logged-in !!',activity_icon='fas fa-door-open').exists():
             pass
         else:
@@ -563,7 +563,7 @@ def get_client_ip(request):
         ip = request.META.get('REMOTE_ADDR')
     return ip
 
-
+ 
 def article_read(request,username,title):
     context={}
     post = get_object_or_404(Articles, title = title.replace("_"," "))

@@ -1,0 +1,164 @@
+{% extends 'article/base1.html' %}
+{% load static %}
+{% load to_and %}
+{% load crispy_forms_tags%}
+{% block title %}
+Text Editor | Article+
+{% endblock %}
+{% block navbar %}
+{% include 'article/navbar1.html '%}
+{% endblock %}
+{% block style %}
+  
+{% endblock %}
+{% block content%}
+
+
+    <div class="card shadow" >
+        <div class="card-body">
+        <form action="" method="POST" enctype="multipart/form-data">
+        <div class="row">
+            
+            <div class="col-sm-9 col-12 " style="display: flex; justify-content: center;">
+                
+                <div class="form-row pt-2">
+                    <div class="form-group mr-2">
+                        <button class="btn btn-outline-primary" onclick="myFunction()" type="submit" style="font-size:20px;" id="uploadButton">Preview</button>
+                    </div>
+                    {% if not edit %}
+                      <div class="form-group  mr-2">
+                        <button class="btn btn-outline-secondary" onclick="myFunc()" style="font-size:20px; width:200px;" id="draftButton">Save as Draft</button>
+                      </div>
+                    {% else %}
+                    <div class="form-group  mr-2">
+                        <button class="btn btn-outline-secondary" onclick="myFunc1()" style="font-size:20px; width:200px;" id="draftButton">Save as Draft</button>
+                      </div>
+                    {%endif%}
+                      <div class="form-group mr-2">
+                        <button class="btn btn-outline-primary" onclick="myFunctionPreview()" style="font-size:20px;" id="button" type="submit">Publish</button>
+                      </div>
+                    
+                </div>
+            </div>
+        </div>
+
+       
+        <div class="row" style="">
+            
+            <div class="col-12 col-sm-9  align-self-center " style="">
+               
+               
+                    {% csrf_token%}
+                 
+                    <div class="form-vertical">
+                        <div class="form-row text-center text-secondary py-1">
+                            <div class="form-group col-12" style="font-size: 20px; letter-spacing: 2px; padding-bottom: 20px;">
+                            -------WRITE CONTENT-------
+                            </div>
+                        </div>
+                        
+                        
+                   
+                    {{story_form|crispy}}
+                
+                     {{story_form.media}}
+                
+                   
+                    </div>
+                    
+      
+        </div>
+        <div class="col-12 col-sm-12 col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <center><p style="color:rgb(0,0,0,0.5);font-size: 20px;">Dictionary</p></center>
+                    <hr>
+                    <div style="">
+                        <input type="text" placeholder="Search Keywords..." id="myInput" class="form-group" style="font-size: 13px;padding: 5px;">
+                        <button type="button" onclick="getInputValue();" class="btn btn-outline-info"><i class="fa fa-search"></i></button>
+                        
+                    </div>
+                    <div >
+                        <p id="wait"></p>
+                        <p id="meaning"></p>
+                        <p id="noun"></p>
+                        <p id="syn"></p>
+                        <p id="ant"></p>
+                        <p id="ant"></p>
+                        <p id="error"></p>
+
+                    </div>
+                  
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</form>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    document.body.style.backgroundColor = "#fff";
+</script>
+<script  type="text/javascript">
+    function myFunc(){
+        
+        document.getElementById('draftButton').formAction = '/stories/draft/'
+    }
+</script>
+<script  type="text/javascript">
+    function myFunc1(){
+        
+        document.getElementById('draftButton').formAction = '/stories/draft/title/{{title|replace|safe}}/'
+    }
+</script>
+<script  type="text/javascript">
+    function myFunction(){
+        
+        document.getElementById('uploadButton').formAction = '{% if edit %}/stories/preview/edit/{{title|replace|safe}}/{%else%}/stories/preview/{%endif%}'
+    }
+</script>
+<script  type="text/javascript">
+    function myFunctionPreview(){
+        document.getElementById('button').formAction = ""
+    }
+</script>
+
+<script>
+    function getInputValue(){
+        document.getElementById('wait').innerHTML = "Searching ...";
+        // Selecting the input element and get its value 
+        var inputVal = document.getElementById("myInput").value;
+        var url = '/dictionary/'+inputVal+'/';
+
+          var req = new XMLHttpRequest();
+          req.onreadystatechange = function(){
+              if(this.readyState == 4 && this.status == 200){
+                var details = JSON.parse(req.responseText);
+                console.log(details);
+                try{
+                    document.getElementById('meaning').innerHTML = details[0].Verb;
+                }
+                catch(err){
+                    document.getElementById('meaning').innerHTML = "No Noun Found!!"
+                }
+                try{
+                    document.getElementById('noun').innerHTML = details[0].Noun;
+                }
+                catch(err){
+                    document.getElementById('noun').innerHTML = "No Verb Found!!";
+                }
+                
+                document.getElementById('wait').innerHTML = "";
+               
+              }
+            };
+            req.open("GET",url,true);
+            req.send();
+
+    }
+</script>
+{% endblock %}s

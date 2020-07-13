@@ -13,6 +13,7 @@ def stories(request):
     return render(request,'stories/stories.html',context)
 def category(request,category):
     context = {}
+    context['name'] = category
     context['category'] = Categories.objects.all()
     context['stories'] = Stories.objects.filter(status = 'published',category = Categories.objects.get(category_name = category)).order_by('-date_Publish','-time')
     context['users'] = User.objects.all()
@@ -145,6 +146,7 @@ def preview(request):
                 title = form.cleaned_data['title'].replace(" ","_")
                 ins.link = f'/stories/{request.user}/{title}'
                 ins.status = 'Draft'
+                ins.content = form.cleaned_data['content'].split(".")[0].strip("<p>")
                 ins.save()
                 context['title'] = title
                 context['message'] =ins.link
@@ -164,11 +166,21 @@ def preview(request):
 
     context['edit'] = True
     return render(request,'stories/preview.html',context) 
-
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
 def stories_read(request,username,title):
     context={}
     post = get_object_or_404(Stories, title = title.replace("_"," "))
     comments = post.Story_comments.filter(post = post,active=True,parent=None)
+    ip_addr = get_client_ip(request)
+    if not titleview.objects.filter(view=post,ip_addr=ip_addr).exists():
+        ins = titleview(view = post,ip_addr = ip_addr)
+        ins.save()
 
     if request.method == 'POST':
        
@@ -268,6 +280,7 @@ def save_fav(request):
 def preview_publish(request,title):
     ins = Stories.objects.get(title = title.replace("_"," "))
     ins.status = 'published'
+
     ins.save()
     return HttpResponseRedirect('/')
     

@@ -290,7 +290,7 @@
                     <h3>Nothing to show!!</h3>
                 </div>
                 {% endif %}
-                {% for i in stories %}
+                {% for i in request.user.profile.fav_stories.all %}
                 <div class="col-12 col-sm-6 col-md-6 col-lg-4 mytag">
                 
                     <div class="card promoting-card shadow card_data" style="">
@@ -299,17 +299,17 @@
                         <div class="card-body d-flex flex-row">
               
                           <!-- Avatar -->
-                          <div style="width:100px;">
-                          <a href="/profile/{{i.user_name2}}"> <img src="/media/{{i.user_name2.profile.avatar}}"  style="height:50px;width:50px;border-radius: 100%;border: 2px solid #4474E0;"></a>
+                          <div >
+                          <a href="/profile/{{i.user_stories}}"> <img src="/media/{{i.user_stories.profile.avatar}}"  style="height:50px;width:50px;border-radius: 100%;border: 2px solid #4474E0;"></a>
                         </div>    
               
                           <!-- Content -->
                           <div>
               
                             <!-- Title -->
-                            <h6 class="card-title font-weight-bold mb-2 ml-2 myclass"><a href="{{i.link}}" style="color:black;text-decoration: none;">{{i.title}}</a></h6>
+                            <h6 class="card-title font-weight-bold mb-2 ml-3 myclass"><a href="{{i.link}}" style="color:black;text-decoration: none;">{{i.title}}</a></h6>
                             <!-- Subtitle -->
-                            <p class="card-text" style="font-size: 13px;"><i class="fa fa-clock-o pr-2" ></i>{{i.time}} {{i.date_Publish}},<a href="/profile/{{i.user_name2}}"  data-toggle="tooltip" data-placement="top" title="See Profile"> {{i.user_name2.profile.first_name|capfirst}} {{i.user_name2.profile.last_name|capfirst}}</a></p>
+                            <p class="card-text ml-3" style="font-size: 13px;"><i class="fa fa-clock-o pr-2" ></i>{{i.time}} {{i.date_Publish}},<a href="/profile/{{i.user_stories}}"  data-toggle="tooltip" data-placement="top" title="See Profile"> {{i.user_stories.profile.first_name|capfirst}} {{i.user_stoires.profile.last_name|capfirst}}</a></p>
               
                           </div>
               
@@ -371,11 +371,11 @@
                                 </div>
                               </div>
                             </div>
-                            <form action="/my_article/save/" method="POST" >
+                            <form action="/stories/saving/" method="POST" >
                               {% csrf_token %}
                               <input type="hidden" value="{{request.build_absolute_uri}}"  name="title">
                               <input type="hidden" value="{{i.title}}" name="user_name">
-                              {% if i in request.user.profile.favourities.all %}
+                              {% if i in request.user.profile.fav_stories.all %}
                               <button data-toggle="tooltip" data-placement="top" title="Unsave it!" class="btn"style="padding:0px"  type="submit">
                                 <i class="fa fa-bookmark float-right p-1 my-1 mr-3  myhover" style="color:red; padding:0px; font-size: 13px;"></i></button>
                              
@@ -387,8 +387,8 @@
                   
                         </form>
                         <i class="fa fa-eye text-muted float-right p-1 my-1 mr-3  myhover" style="font-size: 13px;" data-toggle="tooltip" data-placement="top" title="{{i.titleview.all.count}} {% if i.titleview.all.count <= 1 %}View{%else%}Views{%endif%}"> {{i.titleview.all.count}}</i>
-                          <a href="{{i.link}}#comment">  <i class="fa fa-comment text-muted float-right p-1 my-1 mr-3  myhover" style="font-size: 12px;" data-toggle="tooltip" data-placement="top" title="{{i.my_comments.count}} {% if i.my_comments.count <= 1 %}Comment{%else%}Comments{%endif%}"> {{i.my_comments.count}}</i></a>
-                            <form action="/article/dislike/" method="POST">
+                          <a href="{{i.link}}#comment">  <i class="fa fa-comment text-muted float-right p-1 my-1 mr-3  myhover" style="font-size: 12px;" data-toggle="tooltip" data-placement="top" title="{{i.Story_comments.count}} {% if i.Story_comments.count <= 1 %}Comment{%else%}Comments{%endif%}"> {{i.Story_comments.count}}</i></a>
+                            <form action="/stories/dislike/" method="POST">
                                 {% csrf_token %}
                                 <input type="hidden" value="{{i.title}}" name="like">
                                 <input type="hidden" value="{{request.build_absolute_uri}}" name="url">
@@ -400,7 +400,7 @@
                               
             
                               </form>
-                              <form action="/article/like/" method="POST">
+                              <form action="/stories/like/" method="POST">
                                 {% csrf_token %}
                                 <input type="hidden" value="{{i.title}}" name="like">
                                 <input type="hidden" value="{{request.build_absolute_uri}}" name="url">

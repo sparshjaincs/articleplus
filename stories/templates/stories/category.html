@@ -66,36 +66,7 @@ div.scrollmenu {
   }
 </script>
 
-<script>
-  
-    function myFunction(){
-      var search_val = document.getElementById('myinput').value.toLowerCase();
-      var data = document.getElementById('myTable');
-      var data_part = data.getElementsByClassName('myclass');
-      var tag_part = data.getElementsByClassName('mytag');
-      
-      for(i=0;i<tag_part.length;i++){
-        txtvalue = data_part[i].textContent || data_part[i].innerText;
-        
-        if(txtvalue.toLowerCase().indexOf(search_val) > -1){
-          tag_part[i].style.display="inline";
-          tag_part[i].style.justify="left";
-          
-        }
-        else{
-          tag_part[i].style.display="none";
-        }
-      }
-      
-    }
-  
-  fun2("all")
-  function fun2(c) {
-   console.log(document.getElementsByClassName(c));
-  }
-  
-    </script>
-{% for i in articles%}
+{% for i in stories%}
 <script>
   $("#share{{forloop.counter}}").jsSocials({
     showLabel: false,
@@ -123,7 +94,7 @@ div.scrollmenu {
                    
                             
                        
-                                <a href="/article/{{i.category_name}}" style="text-decoration: none; color: black;"><p><span class="led">{{i.category_name}}</span><span style="opacity:.4;"> |</span></p></a>
+                                <a href="/stories/category/{{i.category_name}}" style="text-decoration: none; color: black;"><p><span class="led">{{i.category_name}}</span><span style="opacity:.4;"> |</span></p></a>
                
                            {%endfor%}
                     </div>
@@ -186,7 +157,7 @@ div.scrollmenu {
                 <div class="col-12 col-sm-6 offset-sm-3 d-flex justify-content-center">
                     <form class="d-none d-sm-inline-block form-inline navbar-search" style="width:100%;">
                         <div class="input-group">
-                          <input type="text" class="form-control bg-light border-0 small" style="width:100%;" onkeyup="myFunction()" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" id="myinput">
+                          <input type="text" class="form-control bg-light border-0 small" style="width:100%;" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
                           
                         </div>
                       </form>
@@ -201,32 +172,35 @@ div.scrollmenu {
 
   </div>
 
-  <div class="row" style="margin-top:20px; margin-bottom: 50px;" id="myTable">
-    {% if articles.count == 0 %}
+  <div class="row" style="margin-top:20px; margin-bottom: 50px;">
+    <div class="col-12 col-sm-12 d-flex justify-content-center">
+        <h2>{{name}}</h2>
+    </div>
+    {% if stories.count == 0 %}
     <div class="col-12 col-sm-12 d-flex justify-content-center">
         <h3>Comming Soon!!</h3>
     </div>
     {% endif %}
-    {% for i in articles %}
-    <div class="col-12 col-sm-6 col-md-6 col-lg-4 mytag">
+    {% for i in stories %}
+    <div class="col-12 col-sm-6 col-md-6 col-lg-4">
     
-        <div class="card promoting-card shadow card_data" style="">
+        <div class="card promoting-card shadow" style="">
 
             <!-- Card content -->
             <div class="card-body d-flex flex-row">
   
               <!-- Avatar -->
-              <div >
-              <a href="/profile/{{i.user_name2}}"> <img src="/media/{{i.user_name2.profile.avatar}}"  style="height:50px;width:50px;border-radius: 100%;border: 2px solid #4474E0;"></a>
+              <div style="width:70px;">
+              <a href="/profile/{{i.user_stories}}"> <img src="/media/{{i.user_stories.profile.avatar}}"  style="height:50px;width:50px;border-radius: 100%;border: 2px solid #4474E0;"></a>
             </div>    
   
               <!-- Content -->
               <div>
   
                 <!-- Title -->
-                <h6 class="card-title font-weight-bold mb-2 ml-3 myclass"><a href="{{i.link}}" style="color:black;text-decoration: none;">{{i.title}}</a></h6>
+                <h6 class="card-title font-weight-bold mb-2"><a href="{{i.link}}" style="color:black;text-decoration: none;">{{i.title}}</a></h6>
                 <!-- Subtitle -->
-                <p class="card-text ml-3" style="font-size: 13px;"><i class="fa fa-clock-o pr-2" ></i>{{i.time}} {{i.date_Publish}},<a href="/profile/{{i.user_name2}}"  data-toggle="tooltip" data-placement="top" title="See Profile"> {{i.user_name2.profile.first_name|capfirst}} {{i.user_name2.profile.last_name|capfirst}}</a></p>
+                <p class="card-text" style="font-size: 13px;"><i class="fa fa-clock-o pr-2" ></i>{{i.time}} {{i.date_Publish}},<a href="/profile/{{i.user_stories}}"  data-toggle="tooltip" data-placement="top" title="See Profile"> {{i.user_stories.profile.first_name|capfirst}} {{i.user_stories.profile.last_name|capfirst}}</a></p>
   
               </div>
   
@@ -254,13 +228,14 @@ div.scrollmenu {
             </div>
   
             <!-- Card content -->
-            <div class="card-body" style="font-size: 13px;">
+            <div class="card-body">
   
             
   
-                <p style="font-size: 10px;" class="myclass">{{i.description|safe}} <a href="{{i.link}}" style="text-decoration: none;"><strong>Read More ...</strong></a></p>
+                <!-- Text -->
+                <p  style="font-size: 12px;">{{i.description|safe}} <a href="{{i.link}}" style="text-decoration: none;"><strong>Read More ...</strong></a></p>
                 
-             
+                <!-- Button -->
               <div style="display:flex; justify-content:space-between; flex-direction: row-reverse;">
                 <button style="border: none; background: none;padding:0px;font-size: 13px;" class="btn"  data-toggle="modal" data-target="#exampleModalLong{{forloop.counter}}"><i class="fa fa-share-alt text-muted float-right p-1 my-1 myhover" data-toggle="tooltip" title="Share"></i></button>
                 <div class="modal fade" id="exampleModalLong{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
@@ -288,11 +263,11 @@ div.scrollmenu {
                     </div>
                   </div>
                 </div>
-                <form action="/my_article/save/" method="POST" >
+                <form action="/stories/saving/" method="POST" >
                   {% csrf_token %}
                   <input type="hidden" value="{{request.build_absolute_uri}}"  name="title">
                   <input type="hidden" value="{{i.title}}" name="user_name">
-                  {% if i in request.user.profile.favourities.all %}
+                  {% if i in request.user.profile.fav_stories.all %}
                   <button data-toggle="tooltip" data-placement="top" title="Unsave it!" class="btn"style="padding:0px"  type="submit">
                     <i class="fa fa-bookmark float-right p-1 my-1 mr-3  myhover" style="color:red; padding:0px; font-size: 13px;"></i></button>
                  
@@ -304,8 +279,8 @@ div.scrollmenu {
       
             </form>
             <i class="fa fa-eye text-muted float-right p-1 my-1 mr-3  myhover" style="font-size: 13px;" data-toggle="tooltip" data-placement="top" title="{{i.titleview.all.count}} {% if i.titleview.all.count <= 1 %}View{%else%}Views{%endif%}"> {{i.titleview.all.count}}</i>
-              <a href="{{i.link}}#comment">  <i class="fa fa-comment text-muted float-right p-1 my-1 mr-3  myhover" style="font-size: 12px;" data-toggle="tooltip" data-placement="top" title="{{i.my_comments.count}} {% if i.my_comments.count <= 1 %}Comment{%else%}Comments{%endif%}"> {{i.my_comments.count}}</i></a>
-                <form action="/article/dislike/" method="POST">
+              <a href="{{i.link}}#comment">  <i class="fa fa-comment text-muted float-right p-1 my-1 mr-3  myhover" style="font-size: 12px;" data-toggle="tooltip" data-placement="top" title="{{i.Story_comments.count}} {% if i.Story_comments.count <= 1 %}Comment{%else%}Comments{%endif%}"> {{i.Story_comments.count}}</i></a>
+                <form action="/stories/dislike/" method="POST">
                     {% csrf_token %}
                     <input type="hidden" value="{{i.title}}" name="like">
                     <input type="hidden" value="{{request.build_absolute_uri}}" name="url">
@@ -317,7 +292,7 @@ div.scrollmenu {
                   
 
                   </form>
-                  <form action="/article/like/" method="POST">
+                  <form action="/stories/like/" method="POST">
                     {% csrf_token %}
                     <input type="hidden" value="{{i.title}}" name="like">
                     <input type="hidden" value="{{request.build_absolute_uri}}" name="url">

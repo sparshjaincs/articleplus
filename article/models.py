@@ -77,6 +77,10 @@ class Profile(models.Model):
     follow = models.ManyToManyField(User,default=None,blank=True,related_name="follow_title")
     following = models.ManyToManyField(User,default=None,blank=True,related_name="following_title")
     signup_confirmation = models.BooleanField(default=False)
+    instagram = models.CharField(max_length=1000,blank=True,null=True)
+    facebook = models.CharField(max_length=1000,blank=True,null=True)
+    twitter = models.CharField(max_length=1000,blank=True,null=True)
+ 
     medium = models.CharField(max_length=1000,blank=True,null=True)
     quora = models.CharField(max_length=1000,blank=True,null=True)
     other = models.CharField(max_length=1000,blank=True,null=True)

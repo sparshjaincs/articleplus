@@ -1,0 +1,47 @@
+{% extends 'article/base1.html' %}
+{% load to_and %}
+{% block navbar %}
+{% include 'article/navbar1.html' %}
+{% endblock %}
+{% block title %}
+Preview | Article+
+{% endblock %}
+{% block content %}
+<div class="card shadow" style="margin-top: 100px; padding:40px;">
+ 
+    <h1 class="text-center">-------- Preview --------</h1>
+    <div class="row justify-content-end pb-4">
+        <div class="col-9">
+            <form action="#" id="hidden-form" method="POST">
+                {% csrf_token %}
+                
+                <input type="hidden" value="{{title}}" name="title">
+                
+            </form>
+        </div>
+  
+        <div class="col-3 pl-0">
+            <button  class="btn btn-outline-primary " id="publish" onclick="window.location.href='/stories/preview/publish/{{title|replace}}'"  style="font-size: 20px;width:100px;">Publish</button>
+            <button type="submit" class="btn btn-outline-secondary " id="back" onclick="window.location.href='/stories/edit/{{title|replace}}'"  style="font-size: 20px;width:100px;">Edit</button>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col">
+            <embed src="{{message}}" width="100%" height="800px">
+        </div>
+    </div>
+    {% if error %}
+
+{{errors}}
+
+{% endif %}
+    
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+ document.body.style.backgroundColor = "#fff";
+</script>
+{% endblock %}
