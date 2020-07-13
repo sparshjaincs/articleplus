@@ -23,6 +23,20 @@ Read | Article+
     margin:10px;
     border-radius:50%;
 }
+.floating{
+  position:fixed;
+  z-index:10;
+  margin-top:150px;
+  margin-left:-26px;
+}
+@media only screen and (max-width: 600px) {
+  .jssocials-shares{
+    display:flex;
+    justify-content:center;
+    flex-direction:column;
+    align-items:center;
+  }
+}
 {% endblock %}
 {% block js %}
 <script>
@@ -33,9 +47,21 @@ Read | Article+
       text:"{{read.0.title}}",
       shares: ["twitter", "facebook", "linkedin", "pinterest","whatsapp","email"]
   });
+  $("#share1").jsSocials({
+      showLabel:false,
+      showCount:false,
+      url:"{{request.get_host}}{{read.0.link}}",
+      text:"{{read.0.title}}",
+      shares: ["twitter", "facebook", "linkedin", "pinterest","whatsapp","email"]
+  });
   </script>
 {% endblock %}
 {% block content %}
+<div class="floating">
+  <div class="d-block d-sm-none" id="share1">
+
+  </div>
+</div>
 <div class="row">
 
     
@@ -69,7 +95,7 @@ Read | Article+
                     {% endif %}
              
                 </div>
-                <div id="share" style="display: flex; justify-content: center; flex-direction: row;">
+                <div class="d-none d-sm-block" id="share" style="display: flex; justify-content: center; flex-direction: row;">
 
                 </div>
             </div>
