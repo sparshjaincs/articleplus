@@ -1,0 +1,48 @@
+{% extends 'article/base1.html' %}
+{% load static %}
+{% load to_and %}
+{% block title %}
+Preview | Article+
+{% endblock %}
+{% block navbar %}
+{% include 'article/navbar1.html' %}
+{% endblock %}
+
+{% block content %}
+ <div class="card shadow">
+
+    <h1 class="text-center mt-5">-------- Preview --------</h1>
+    <div class="row justify-content-end pb-4">
+        <div class="col-9">
+            <form action="#" id="hidden-form" method="POST">
+                {% csrf_token %}
+                
+                <input type="hidden" value="{{title}}" name="title">
+                
+            </form>
+        </div>
+  
+        <div class="col-3 pl-0">
+            <button  class="btn btn-outline-primary " id="publish" onclick="window.location.href='/article/preview/publish/{{title|replace}}'"  style="font-size: 20px;width:100px;">Publish</button>
+            <button type="submit" class="btn btn-outline-secondary " id="back" onclick="window.location.href='/edit/{{title|replace}}'"  style="font-size: 20px;width:100px;">Edit</button>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col">
+            <embed src="{{message}}" width="100%" height="800px">
+        </div>
+    </div>
+    {% if error %}
+
+{{errors}}
+
+{% endif %}
+    
+</div>
+{% if error %}
+
+{{errors}}
+
+{% endif %}
+{% endblock %}

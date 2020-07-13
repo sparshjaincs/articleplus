@@ -1,0 +1,223 @@
+{% extends 'article/base1.html' %}
+{% load static %}
+{% load to_and %}
+{% block title %}
+Trends | Article+
+{% endblock %}
+{% block navbar %}
+{% include 'article/navbar1.html' %}
+{% endblock %}
+{% block style %}
+.carousel-indicators .bar1{
+    background-color: #000;
+}
+.carousel-control-prev-icon{
+   color:#000;
+}
+.carousel-control-next{
+    background-color: #000;
+}
+
+.card:hover{
+    background-color:floralwhite;
+}
+{% endblock %}
+{% block js %}
+<script>
+    document.body.style.backgroundColor = "#fff";
+</script>
+{% for i in featured %}
+<script>
+    var df1 = []
+    var df2 = []
+    {% for j in i.2 %}
+        df1.push('{{j.0}}');
+        df2.push({{j.1}});
+    {% endfor %}
+    var ctx = document.getElementById('myChart{{forloop.counter|add:13}}').getContext('2d');
+   
+var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'line',
+    responsive: true,
+    maintainAspectRatio: false,
+
+    // The data for our dataset
+    data: {
+
+        labels: df1,
+        datasets: [{
+            label: '{{i.0.0}}',
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(0,0,0,0.1)',
+            data: df2
+        }]
+
+    },
+    
+
+    // Configuration options go here
+    options: {
+        legend: {
+            display: true,
+            labels: {
+                fontColor: 'rgb(0,0,0)',
+                
+            }
+            
+        }
+    }
+});
+</script>
+{% endfor %}
+{% for j in df %}
+<script>
+    var df1 = []
+    var df2 = []
+    {% for i in j.1 %}
+        df1.push('{{i.0}}');
+        df2.push({{i.1}});
+    {% endfor %}
+    var ctx = document.getElementById('myChart{{forloop.counter}}').getContext('2d');
+var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'line',
+    // The data for our dataset
+    data: {
+
+        labels: df1,
+        datasets: [{
+            label: '{{j.0.0}}',
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(0,0,0,0.1)',
+            data: df2
+        }]
+
+    },
+    
+
+    // Configuration options go here
+    options: {
+        legend: {
+            display: true,
+            labels: {
+                fontColor: 'rgb(0,0,0)',
+                
+            }
+            
+        }
+      
+    }
+});
+</script>
+
+{% endfor %}
+{% endblock %}
+{% block content %}
+<div class="col-12 col-sm-12">
+    <div class="" style="padding:10px; ">
+        <h3>Featured</h3>
+        <p style="margin-top:-15px; color:rgb(0,0,0,0.5);" >Top searched keywords...</p>
+    </div>            
+</div>
+<div class="row">
+{% for i in featured %}
+<div class="col-12 col-sm-6 col-md-6 col-lg-6 mb-2">
+   
+    <div class="card shadow" style="">
+        <div class="card-body" style="margin-top:-15px;">
+            <a href="/trending/{{i.0.0|replace}}/">
+                <h5>{{i.0.0}}</h5>
+                <p style="color:rgb(0,0,0,0.5); margin-top:-15px;">{{i.1}}K+ Searches</p>
+            </a>
+                <canvas id="myChart{{forloop.counter|add:13}}" style="height:100%;"></canvas>
+          
+            
+        </div>
+
+    </div>
+
+</div>
+
+{% endfor %}
+</div>
+<div class="row">
+    <div class="col-12 col-sm-12 mt-4 mb-2">
+        <div class="" style="padding:10px; ">
+            <h3>Recently Trending</h3>
+            <p style="margin-top:-15px; color:rgb(0,0,0,0.5);" >See latest trends all over the world</p>
+        </div>
+        <div class="card pt-3 shadow">
+       
+        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+            <ol class="carousel-indicators">
+              <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active bar1" style="color:black;"></li>
+              <li data-target="#carouselExampleIndicators" data-slide-to="1" class="bar1"></li>
+              <li data-target="#carouselExampleIndicators" data-slide-to="2" class="bar1"></li>
+              <li data-target="#carouselExampleIndicators" data-slide-to="3" class="bar1"></li>
+             
+            
+            
+            </ol>
+            <div class="carousel-inner">
+               
+                {% for i in df %}
+                {% if forloop.counter == 1 %}
+               
+                <div class="carousel-item active">
+
+                    <div class="ml-3">
+                        <a href="/trending/{{i.0.0|replace}}">
+                            <h5>{{i.0.0}}</h5>
+                            <p style="color:rgb(0,0,0,0.5); margin-top:-15px;">{{i.2}}K+ Searches</p>
+                        </a>
+                    </div>
+                    <canvas id="myChart1"></canvas>
+                </div>
+                {% else %}
+               
+                <div class="carousel-item">
+                    <div class="ml-3">
+                        <a href="/trending/{{i.0.0|replace}}">
+                        <h5>{{i.0.0}}</h5>
+                        <p style="color:rgb(0,0,0,0.5);  margin-top:-15px;">{{i.2}}K+ Searches</p>
+                        </a>
+                    </div>
+                    <canvas id="myChart{{forloop.counter}}"></canvas>
+                </div>
+                {% endif %}
+                {% endfor %}
+             
+            </div>
+          
+          </div>
+        </div>
+       
+    </div>
+</div>
+<div class="row mt-4">
+    <div class="col-12 col-sm-12">
+        <div class="" style="padding:10px; ">
+            <h3>Latest Stories and Insights</h3>
+           
+        </div>
+    </div>
+        {% for i in rel %}
+        <div class="col-12 col-sm-4 card shadow" >
+            <div class="card-body">
+           <h5>{{i.0.0}}</h5>
+           <div style="display: flex; justify-content: space-between;">
+           <p style="color:rgb(0,0,0,0.5); margin-top: -15px;">{{i.1}}K+ Searches</p>
+           <a href="/trending/{{i.0.0|replace}}"><p style="font-size: 12px;">Read about it..</p></a>
+        </div>
+        </div>
+        </div>
+        {% endfor %}
+       
+       
+   
+
+</div>
+</div>
+
+{% endblock %}

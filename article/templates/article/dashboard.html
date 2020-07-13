@@ -1,0 +1,355 @@
+{% extends 'article/base1.html' %}
+{% load static %}
+{% load to_and %}
+
+{% block navbar %}
+{% include 'article/navbar1.html' %}
+{% endblock %}
+
+{% block content %}<!-- Page Heading -->
+
+
+<!-- Content Row -->
+<div class="row">
+
+  <!-- Earnings (Monthly) Card Example -->
+  <div class="col-xl-3 col-md-6 mb-4">
+    <div class="card border-left-primary shadow h-100 py-2">
+      <div class="card-body">
+        <div class="row no-gutters align-items-center">
+          <div class="col mr-2">
+            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Articles</div>
+            <div class="h6 mb-0 font-weight-bold text-gray-800">{{article_count.1}} Published | {{article_count.0}} Draft</div>
+          </div>
+          <div class="col-auto">
+            <i class="fas fa-newspaper-o fa-2x text-gray-300"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-md-6 mb-4">
+    <div class="card border-left-primary shadow h-100 py-2">
+      <div class="card-body">
+        <div class="row no-gutters align-items-center">
+          <div class="col mr-2">
+            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Stories</div>
+            <div class="h6 mb-0 font-weight-bold text-gray-800">{{story_count.1}} Published | {{story_count.0}} Draft</div>
+          </div>
+          <div class="col-auto">
+            <i class="fas fa-fw fa-pencil-square-o fa-2x text-gray-300"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-md-6 mb-4">
+    <div class="card border-left-primary shadow h-100 py-2">
+      <div class="card-body">
+        <div class="row no-gutters align-items-center">
+          <div class="col mr-2">
+            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Poetries</div>
+            <div class="h6 mb-0 font-weight-bold text-gray-800">0 Published | 0 Draft</div>
+          </div>
+          <div class="col-auto">
+            <i class="fas fa-newspaper-o fa-2x text-gray-300"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-md-6 mb-4">
+    <div class="card border-left-primary shadow h-100 py-2">
+      <div class="card-body">
+        <div class="row no-gutters align-items-center">
+          <div class="col mr-2">
+            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Quotes</div>
+            <div class="h6 mb-0 font-weight-bold text-gray-800">0 Published | 0 Draft</div>
+          </div>
+          <div class="col-auto">
+            <i class="fas fa-quote-right fa-2x text-gray-300"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<div class="container mb-5 mt-5">
+  {% if show %}
+    <div class="row mb-5">
+
+        <div class="col-12 col-sm-12 col-md-12">
+            <div class="alert alert-danger">
+              <center>User must need to complete their profile first !!! </center>  
+            </div>
+        </div>
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+          {% if messages %}
+          {% for message in messages %}
+           <center>  <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div></center> 
+          {% endfor %}
+      {% endif %}
+        </div>
+    </div>
+    {% endif %}
+  <div class="row ">
+    <div class="col-12 d-flex justify-content-center mb-4">
+      <h2>Select Your Interest</h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6 col-sm-3 col-md-3 col-lg-2 offset-lg-2 d-flex justify-content-center mb-3">
+        <button  class="btn btn-primary btn-icon-split mr-3" id="article_button">
+          <span class="icon text-white-50">
+            <i class="fas fa-newspaper-o"></i>
+          </span>
+          <span class="text">Article</span>
+        </button>
+    </div>
+    <div class="col-6 col-sm-3 col-md-3 col-lg-2 d-flex justify-content-center mb-3">
+    <button href="#" class="btn btn-primary btn-icon-split mr-3" id="stories_button">
+      <span class="icon text-white-50">
+        <i class="fas fa-pencil-square-o"></i>
+      </span>
+      <span class="text">Stories</span>
+    </button>
+    </div>
+    <div class="col-6 col-sm-3 col-md-3 col-lg-2 d-flex justify-content-center mb-3">
+  <button href="#" class="btn btn-primary btn-icon-split mr-3" id="poetries_button">
+    <span class="icon text-white-50">
+      <i class="fas fa-newspaper-o"></i>
+    </span>
+    <span class="text">Poetries</span>
+  </button>
+  </div>
+  <div class="col-6 col-sm-3 col-md-3 col-lg-2 d-flex justify-content-center mb-3">
+  <button href="#" class="btn btn-primary btn-icon-split mr-3" id="quotes_button">
+    <span class="icon text-white-50">
+      <i class="fas fa-quote-left"></i>
+    </span>
+    <span class="text">Quotes</span>
+  </button>
+</div>
+</div>
+<div class="col-12 col-sm-12 col-md-12" style="margin-top:30px;">
+  <div class="row" id="article_" style="display: flex; justify-content: center;">
+
+      <div class="col-12 col-sm-4  " style="display: flex; justify-content: center;">
+          <div class="card" style="width: 18rem;">
+             
+              <div class="card-body">
+                <h5 class="card-title">Text Editor</h5>
+                <p class="card-text">Start writing articles without wasting time.</p>
+                <a href="/article/?method=text_editor" class="btn btn-primary">Get started</a>
+              </div>
+            </div>
+
+      </div>
+    
+  </div>
+
+  <div class="row" id="stories_" style="display: flex; justify-content: center;">
+      <div class="col-12 col-sm-4  " style="display: flex; justify-content: center;">
+          <div class="card" style="width: 18rem;">
+             
+              <div class="card-body">
+                <h5 class="card-title">Card title</h5>
+                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                <a href="" class="btn btn-primary">Go somewhere</a>
+              </div>
+            </div>
+
+      </div>
+     
+  </div>
+
+  <div class="row" id="poetries_" style="display: flex; justify-content: center;">
+     
+      <div class="col-12 col-sm-4" style="display: flex; justify-content: center;">
+          <div class="card" style="width: 18rem;">
+            
+              <div class="card-body">
+                <h5 class="card-title">Card title</h5>
+                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+              </div>
+            </div>
+
+      </div>
+  </div>
+
+
+  <div class="row" id="quotes_" style="display: flex; justify-content: center;">
+     
+      <div class="col-12 col-sm-4" style="display: flex; justify-content: center;">
+          <div class="card" style="width: 18rem;" >
+            
+              <div class="card-body">
+                <h5 class="card-title">Card title</h5>
+                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+              </div>
+            </div>
+
+      </div>
+  </div>
+</div>
+</div>
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">WORKPLACE</h6>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
+           
+          <div class="row">
+            <div class="col-sm-12">
+                <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
+          <thead>
+            <tr role="row">
+                <th class="sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 50px;">#</th>
+                <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 50px; "></th>
+                <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 360px;">Title</th>
+                <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Age: activate to sort column ascending" style="width: 68px;">Date</th>
+                <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 135px;">Time</th>
+                <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 124px;">Genere</th>
+                <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 124px;">Status</th>
+                <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 124px;"></th>
+              
+            </tr>
+          </thead>
+          
+          <tbody>
+           
+            {% for i in article %}
+            <tr>
+                <td style="cursor:pointer;" >{{forloop.counter}}</td>
+
+                <td style="cursor:pointer;" >
+                  {% if i.video %}
+                  <video autoplay muted loop width="70" height="70">
+                    <source src="/media/{{i.video}}" type="video/mp4">
+                  
+                    Your browser does not support the video tag.
+                  </video>
+
+                  {%else%}
+                    {% if image2 %}
+                    <img src="{{i.image2}}" alt="sorry" style="width:60px;height:40px;">
+                    {% else %}
+                    <img src="/media/{{i.image}}" alt="sorry" style="width:60px;height:40px;">
+                    {% endif %}
+                  {%endif%}</td>
+                <td style="cursor:pointer;" >{{i.title}}</td>
+                
+                <td style="cursor:pointer;" >{{i.date_Publish}}</td>
+                <td style="cursor:pointer;">{{i.time}}</td>
+                <td style="cursor:pointer;" >Article</td>
+                <td>{{i.status}}</td>
+                {% if not watch %}
+              
+                <td style="cursor: pointer;">
+                  {% if i.status == 'published' %}
+                  <a title="Read" href='{{i.link}}' style="margin-right: 5px;" data-toggle="tooltip" data-placement="top" title="Read"> <i class="fa fa-eye"></i></a>
+                  {% endif %}
+                  <a title="Edit" href='/edit/{{i.title|replace}}' style="margin-right: 5px;" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-edit"></i></a>
+                  <a title="Delete" href='/delete/{{i.title|replace}}' style="margin-right: 5px;" data-toggle="tooltip" data-placement="top" title="Delete" onclick="return confirm('Are you sure you want to delete this item?');"> <i class="fa fa-trash"></i></a></td>
+                {% endif %}
+                
+              </tr>
+          {% endfor %}
+          {% for i in stories %}
+            <tr>
+                <td style="cursor:pointer;" >{{forloop.counter}}</td>
+
+                <td style="cursor:pointer;" >
+                  {% if i.video %}
+                  <video autoplay muted loop width="70" height="70">
+                    <source src="/media/{{i.video}}" type="video/mp4">
+                  
+                    Your browser does not support the video tag.
+                  </video>
+
+                  {%else%}
+                    {% if image2 %}
+                    <img src="{{i.image2}}" alt="sorry" style="width:60px;height:40px;">
+                    {% else %}
+                    <img src="/media/{{i.image}}" alt="sorry" style="width:60px;height:40px;">
+                    {% endif %}
+                  {%endif%}</td>
+                <td style="cursor:pointer;" >{{i.title}}</td>
+                
+                <td style="cursor:pointer;" >{{i.date_Publish}}</td>
+                <td style="cursor:pointer;">{{i.time}}</td>
+                <td style="cursor:pointer;" >{{i.status}}</td>
+                <td>Story</td>
+                {% if not watch %}
+                <td style="cursor: pointer;"><a title="Edit" href='/stories/edit/{{i.title|replace}}' style="margin-right: 5px;" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-edit"></i></a></td>
+                <td style="cursor: pointer;"><a title="Delete" href='/stories/delete_story/{{i.title|replace}}' style="margin-right: 5px;" data-toggle="tooltip" data-placement="top" title="Delete" onclick="return confirm('Are you sure you want to delete this item?');"> <i class="fa fa-trash"></i></a></td>
+                {% endif %}
+                
+              </tr>
+          {% endfor %}
+        </tbody>
+        </table></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+{% endblock %}
+{% block js %}
+<script>
+  window.onload = fun();
+  function fun(){
+      document.getElementById('article_').style.display = 'none';
+      document.getElementById('poetries_').style.display = 'none';
+      
+      document.getElementById('stories_').style.display = 'none';
+      document.getElementById('quotes_').style.display = 'none';
+      
+  }
+</script>
+<script>
+  $(document).ready(function(){
+    $("#article_button").click(function(){
+      
+      $('#stories_').hide();
+      $('#poetries_').hide();
+      $('#quotes_').hide();
+      $("#article_").slideToggle("slow");
+      
+    });
+    $("#stories_button").click(function(){
+      
+      $('#article_').hide();
+      $('#poetries_').hide();
+      $('#quotes_').hide();
+      $("#stories_").slideToggle();
+    });
+    $("#poetries_button").click(function(){
+      $('#article_').hide();
+      $('#stories_').hide();
+      
+      $('#quotes_').hide();
+      $("#poetries_").slideToggle();
+    });
+    $("#quotes_button").click(function(){
+      $('#stories_').hide();
+      $('#article_').hide();
+      $('#poetries_').hide();
+      $("#quotes_").slideToggle();
+    });
+    
+
+    
+
+  });
+  </script>
+{% endblock %}

@@ -1,0 +1,905 @@
+{% extends 'article/base1.html'%}
+{% load static %}
+{% load to_and %}
+{% load crispy_forms_tags %}
+{% block title %}
+{{profile.first_name}}{{profile.last_name}}|Article+
+{% endblock %}
+{% block navbar%}
+{% include 'article/navbar1.html' %}
+{% endblock %}
+{% block sidebar %}
+{% include 'article/sidebar.html' %}
+{% endblock %}
+{% block js %}
+<script>
+  
+    function myFunction(){
+      var search_val = document.getElementById('myinput').value.toLowerCase();
+      var data = document.getElementById('myTable');
+      var data_part = data.getElementsByClassName('myclass');
+      var tag_part = data.getElementsByClassName('mytag');
+      
+      for(i=0;i<tag_part.length;i++){
+        txtvalue = data_part[i].textContent || data_part[i].innerText;
+        
+        if(txtvalue.toLowerCase().indexOf(search_val) > -1){
+          tag_part[i].style.display="inline";
+          tag_part[i].style.justify="left";
+          
+        }
+        else{
+          tag_part[i].style.display="none";
+        }
+      }
+      
+    }
+  
+  fun2("all")
+  function fun2(c) {
+   console.log(document.getElementsByClassName(c));
+  }
+  
+    </script>
+{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-12">
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+           
+            <div class="card shadow mb-4">
+                <div class="row">
+                    <div class="col-2 col-sm-3">
+                        <div class="card-header py-3" style="background-color: #fff; display: flex; justify-content: space-between;">
+                        <h6 class="m-0 font-weight-bold text-primary">Articles</h6>
+                        </div>
+                    </div>
+                    <div class="col-8 col-sm-6 d-flex justify-content-center">
+                        <form class="d-none d-sm-inline-block form-inline navbar-search mt-2" style="width:100%;">
+                            <div class="input-group">
+                              <input type="text" class="form-control bg-light border-0 small" style="width:100%;" onkeyup="myFunction()" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" id="myinput">
+                              
+                            </div>
+                          </form>
+                    </div>
+                    <div class="col-2 col-sm-3" style="display: flex; justify-content: flex-end;">
+                   
+                        <div>
+                            <button type="button" class="btn btn-primary mt-2 mr-2" data-toggle="modal" data-target="#exampleModalCenter" style="font-size: 15px;"><i class="fa fa-th" aria-hidden="true"></i></button>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" >
+                        <div class="modal-dialog modal-dialog-centered" role="document" >
+                          <div class="modal-content">
+                            <div class="modal-header">
+                            <center> <h5 class="modal-title" id="exampleModalLongTitle"><strong>Writers</strong></h5></center> 
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                                    <div class="container">
+                                        <div class="row">
+                                            {% for i in users %}
+                                                <div class="col-12 col-sm-4 align-self-center" style="margin-bottom: 20px;padding:10px;">
+                                                    <a href="/read/author/{{i.username}}"><img src="/media/{{i.profile.avatar}}" style="width:100%;height:150px;border-radius:5px;"></a>
+                                                    <div style="display: flex; justify-content: center;font-weight: 600;"><a href="/profile/{{i.username}}">{{i.profile.first_name|capfirst}} {{i.profile.last_name|capfirst}}</a></div>
+                                                    <div style="display: flex; justify-content: center;">{{i.profile.following.all.count}} Follower</div>
+                                                    <div style="justify-content: center;display: flex;">
+                                                        {% if request.user == i.profile.user %}
+                                                    {%else%}
+                                                   
+                                                    <form action="/author/follow/" method="POST">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" value="{{request.build_absolute_uri}}"  name="title">
+                                                        <input type="hidden" value="{{i.username}}" name="user_name">
+                                                        {% if request.user in i.profile.following.all %}
+                                                        <button class="btn btn-outline-info"style=" font-size: 12px;padding:2px;" title="Unollow" type="submit">Unfollow</button>
+                               
+                                                        {% else %}
+                                                        <button class="btn btn-outline-info" style="font-size: 12px;padding:2px;" title="Follow" type="submit">Follow</button>
+                                                    
+                                                        {% endif %}
+            
+                                                </form>
+                                           
+                                                {%endif%}
+                                            </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                            </div>
+                            
+                          </div>
+                        </div>
+                      </div>
+                </div>
+               
+            </div>
+          
+            <div class="row" id="myTable">
+                {% if title.count == 0 %}
+                <div class="col-12 col-sm-12 d-flex justify-content-center">
+                    <h3>Nothing to show!!</h3>
+                </div>
+                {% endif %}
+                {% for i in title %}
+                <div class="col-12 col-sm-6 col-md-6 col-lg-4 mytag">
+                
+                    <div class="card promoting-card shadow card_data" style="">
+            
+                        <!-- Card content -->
+                        <div class="card-body d-flex flex-row">
+              
+                          <!-- Avatar -->
+                          <div style="width:100px;">
+                          <a href="/profile/{{i.user_name2}}"> <img src="/media/{{i.user_name2.profile.avatar}}"  style="height:50px;width:50px;border-radius: 100%;border: 2px solid #4474E0;"></a>
+                        </div>    
+              
+                          <!-- Content -->
+                          <div>
+              
+                            <!-- Title -->
+                            <h6 class="card-title font-weight-bold mb-2 ml-2 myclass"><a href="{{i.link}}" style="color:black;text-decoration: none;">{{i.title}}</a></h6>
+                            <!-- Subtitle -->
+                            <p class="card-text" style="font-size: 13px;"><i class="fa fa-clock-o pr-2" ></i>{{i.time}} {{i.date_Publish}},<a href="/profile/{{i.user_name2}}"  data-toggle="tooltip" data-placement="top" title="See Profile"> {{i.user_name2.profile.first_name|capfirst}} {{i.user_name2.profile.last_name|capfirst}}</a></p>
+              
+                          </div>
+              
+                        </div>
+              
+                        <!-- Card image -->
+                        <div class="view overlay">
+                          {% if i.video %}
+                          <video autoplay muted loop width="100%" height="150px">
+                            <source src="/media/{{i.video}}" type="video/mp4">
+                          
+                            Your browser does not support the video tag.
+                          </video>
+            
+                          {%else%}
+                            {% if i.image2 %}
+                            <img class="card-img-top rounded-0" src="{{i.image2}}" alt="Card image cap" style="height: 150px;">
+                            {% else %}
+                          <img class="card-img-top rounded-0" src="/media/{{i.image}}" alt="Card image cap" style="height: 150px;">
+                          {% endif %}
+                          {%endif%}
+                          <a href="#!">
+                            <div class="mask rgba-white-slight"></div>
+                          </a>
+                        </div>
+              
+                        <!-- Card content -->
+                        <div class="card-body" style="font-size: 13px;">
+              
+                        
+              
+                            <p style="font-size: 10px;" class="myclass">{{i.description|safe}} <a href="{{i.link}}" style="text-decoration: none;"><strong>Read More ...</strong></a></p>
+                            
+                         
+                          <div style="display:flex; justify-content:space-between; flex-direction: row-reverse;">
+                            <button style="border: none; background: none;padding:0px;font-size: 13px;" class="btn"  data-toggle="modal" data-target="#exampleModalLong{{forloop.counter}}"><i class="fa fa-share-alt text-muted float-right p-1 my-1 myhover" data-toggle="tooltip" title="Share"></i></button>
+                            <div class="modal fade" id="exampleModalLong{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                              <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                          
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  </div>
+                                  <div class="modal-title"><input id="myinput" value="{{request.get_host}}{{i.link}}" type="text" style="width:100%; border: none;outline:none; " disabled></div>
+                                  <div class="alert alert-info" id="alertvalue" style="display: none;"></div>
+                                  <div class=" display:flex; justify-content:center; padding-top:30px;">
+                                   <center> <button class="btn btn-outline-secondary" onclick="copy();" style="margin-top:10px;" data-toggle="tooltip"> Copy Link</button></center>
+                                  </div>
+                                  <div class="modal-body" style="display: flex; justify-content: center; flex-direction: row; align-items: center;">
+                                    
+                                    <div id="share{{forloop.counter}}" style="display: flex; justify-content: center; flex-direction: row; align-items: center;">
+                                   
+                                    </div>
+                                    
+                                  </div>
+                               
+                                </div>
+                              </div>
+                            </div>
+                            <form action="/my_article/save/" method="POST" >
+                              {% csrf_token %}
+                              <input type="hidden" value="{{request.build_absolute_uri}}"  name="title">
+                              <input type="hidden" value="{{i.title}}" name="user_name">
+                              {% if i in request.user.profile.favourities.all %}
+                              <button data-toggle="tooltip" data-placement="top" title="Unsave it!" class="btn"style="padding:0px"  type="submit">
+                                <i class="fa fa-bookmark float-right p-1 my-1 mr-3  myhover" style="color:red; padding:0px; font-size: 13px;"></i></button>
+                             
+                              {% else %}
+                              <button class="btn " data-toggle="tooltip" data-placement="top" title="Save it!" style="padding:0px;" title="Follow" type="submit">
+                                <i class="fa fa-bookmark text-muted  float-right p-1 my-1 mr-3  myhover" style="font-size: 13px;"></i></button>
+                             
+                              {% endif %}
+                  
+                        </form>
+                        <i class="fa fa-eye text-muted float-right p-1 my-1 mr-3  myhover" style="font-size: 13px;" data-toggle="tooltip" data-placement="top" title="{{i.titleview.all.count}} {% if i.titleview.all.count <= 1 %}View{%else%}Views{%endif%}"> {{i.titleview.all.count}}</i>
+                          <a href="{{i.link}}#comment">  <i class="fa fa-comment text-muted float-right p-1 my-1 mr-3  myhover" style="font-size: 12px;" data-toggle="tooltip" data-placement="top" title="{{i.my_comments.count}} {% if i.my_comments.count <= 1 %}Comment{%else%}Comments{%endif%}"> {{i.my_comments.count}}</i></a>
+                            <form action="/article/dislike/" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{i.title}}" name="like">
+                                <input type="hidden" value="{{request.build_absolute_uri}}" name="url">
+                                {% if request.user.is_authenticated %}
+                                <button  style="background: none; border:none; outline:none;font-size:13px;" type="submit"> <i class="fa fa-thumbs-down myhover text-muted float-right p-1 my-1 mr-3 icon-pack" data-toggle="tooltip" data-placement="top" title="I dislike it"> {{i.disliked.count}} </i></button>
+                                {% else %}
+                                <a href="/login" ><i class="fa fa-thumbs-down text-muted float-right p-1 my-1 mr-3 icon-pack  myhover " style="font-size: 13px;"data-toggle="tooltip" data-placement="top" title="I dislike it"> {{i.disliked.count}} </i></a>
+                                {% endif %}
+                              
+            
+                              </form>
+                              <form action="/article/like/" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{i.title}}" name="like">
+                                <input type="hidden" value="{{request.build_absolute_uri}}" name="url">
+                                {% if request.user.is_authenticated %}
+                                <button style="background: none; border:none; outline:none;font-size: 13px;" type="submit"> <i class="fa fa-thumbs-up text-muted float-right p-1 my-1 mr-3 icon-pack" data-toggle="tooltip" data-placement="top" title="I like it"> {{i.liked.count}} </i></button>
+                                {% else %}
+                                <a href="/login"><i class="fa fa-thumbs-up text-muted float-right p-1 my-1 mr-3 icon-pack" data-toggle="tooltip" data-placement="top" title="I like it" style="font-size: 13px;"> {{i.liked.count}} </i></a>
+                                {% endif %}
+                              </form>
+                            
+                            </div>
+              
+                        </div>
+              
+                      </div>
+                </div>
+                {% endfor%}
+                
+            </div>
+
+
+        </div>
+        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+           
+            <div class="card shadow mb-4">
+                <div class="row">
+                    <div class="col-2 col-sm-3">
+                        <div class="card-header py-3" style="background-color: #fff; display: flex; justify-content: space-between;">
+                        <h6 class="m-0 font-weight-bold text-primary">Stories</h6>
+                        </div>
+                    </div>
+                    <div class="col-8 col-sm-6 d-flex justify-content-center">
+                        <form class="d-none d-sm-inline-block form-inline navbar-search mt-2" style="width:100%;">
+                            <div class="input-group">
+                              <input type="text" class="form-control bg-light border-0 small" style="width:100%;" onkeyup="myFunction()" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" id="myinput">
+                              
+                            </div>
+                          </form>
+                    </div>
+                    <div class="col-2 col-sm-3" style="display: flex; justify-content: flex-end;">
+                   
+                        <div>
+                            <button type="button" class="btn btn-primary mt-2 mr-2" data-toggle="modal" data-target="#exampleModalCenter" style="font-size: 15px;"><i class="fa fa-th" aria-hidden="true"></i></button>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" >
+                        <div class="modal-dialog modal-dialog-centered" role="document" >
+                          <div class="modal-content">
+                            <div class="modal-header">
+                            <center> <h5 class="modal-title" id="exampleModalLongTitle"><strong>Writers</strong></h5></center> 
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                                    <div class="container">
+                                        <div class="row">
+                                            {% for i in users %}
+                                                <div class="col-12 col-sm-4 align-self-center" style="margin-bottom: 20px;padding:10px;">
+                                                    <a href="/read/author/{{i.username}}"><img src="/media/{{i.profile.avatar}}" style="width:100%;height:150px;border-radius:5px;"></a>
+                                                    <div style="display: flex; justify-content: center;font-weight: 600;"><a href="/profile/{{i.username}}">{{i.profile.first_name|capfirst}} {{i.profile.last_name|capfirst}}</a></div>
+                                                    <div style="display: flex; justify-content: center;">{{i.profile.following.all.count}} Follower</div>
+                                                    <div style="justify-content: center;display: flex;">
+                                                        {% if request.user == i.profile.user %}
+                                                    {%else%}
+                                                   
+                                                    <form action="/author/follow/" method="POST">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" value="{{request.build_absolute_uri}}"  name="title">
+                                                        <input type="hidden" value="{{i.username}}" name="user_name">
+                                                        {% if request.user in i.profile.following.all %}
+                                                        <button class="btn btn-outline-info"style=" font-size: 12px;padding:2px;" title="Unollow" type="submit">Unfollow</button>
+                               
+                                                        {% else %}
+                                                        <button class="btn btn-outline-info" style="font-size: 12px;padding:2px;" title="Follow" type="submit">Follow</button>
+                                                    
+                                                        {% endif %}
+            
+                                                </form>
+                                           
+                                                {%endif%}
+                                            </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                            </div>
+                            
+                          </div>
+                        </div>
+                      </div>
+                </div>
+               
+            </div>
+            <div class="row" id="myTable">
+                {% if stories.count == 0 %}
+                <div class="col-12 col-sm-12 d-flex justify-content-center">
+                    <h3>Nothing to show!!</h3>
+                </div>
+                {% endif %}
+                {% for i in stories %}
+                <div class="col-12 col-sm-6 col-md-6 col-lg-4 mytag">
+                
+                    <div class="card promoting-card shadow card_data" style="">
+            
+                        <!-- Card content -->
+                        <div class="card-body d-flex flex-row">
+              
+                          <!-- Avatar -->
+                          <div style="width:100px;">
+                          <a href="/profile/{{i.user_name2}}"> <img src="/media/{{i.user_name2.profile.avatar}}"  style="height:50px;width:50px;border-radius: 100%;border: 2px solid #4474E0;"></a>
+                        </div>    
+              
+                          <!-- Content -->
+                          <div>
+              
+                            <!-- Title -->
+                            <h6 class="card-title font-weight-bold mb-2 ml-2 myclass"><a href="{{i.link}}" style="color:black;text-decoration: none;">{{i.title}}</a></h6>
+                            <!-- Subtitle -->
+                            <p class="card-text" style="font-size: 13px;"><i class="fa fa-clock-o pr-2" ></i>{{i.time}} {{i.date_Publish}},<a href="/profile/{{i.user_name2}}"  data-toggle="tooltip" data-placement="top" title="See Profile"> {{i.user_name2.profile.first_name|capfirst}} {{i.user_name2.profile.last_name|capfirst}}</a></p>
+              
+                          </div>
+              
+                        </div>
+              
+                        <!-- Card image -->
+                        <div class="view overlay">
+                          {% if i.video %}
+                          <video autoplay muted loop width="100%" height="150px">
+                            <source src="/media/{{i.video}}" type="video/mp4">
+                          
+                            Your browser does not support the video tag.
+                          </video>
+            
+                          {%else%}
+                            {% if i.image2 %}
+                            <img class="card-img-top rounded-0" src="{{i.image2}}" alt="Card image cap" style="height: 150px;">
+                            {% else %}
+                          <img class="card-img-top rounded-0" src="/media/{{i.image}}" alt="Card image cap" style="height: 150px;">
+                          {% endif %}
+                          {%endif%}
+                          <a href="#!">
+                            <div class="mask rgba-white-slight"></div>
+                          </a>
+                        </div>
+              
+                        <!-- Card content -->
+                        <div class="card-body" style="font-size: 13px;">
+              
+                        
+              
+                            <p style="font-size: 10px;" class="myclass">{{i.description|safe}} <a href="{{i.link}}" style="text-decoration: none;"><strong>Read More ...</strong></a></p>
+                            
+                         
+                          <div style="display:flex; justify-content:space-between; flex-direction: row-reverse;">
+                            <button style="border: none; background: none;padding:0px;font-size: 13px;" class="btn"  data-toggle="modal" data-target="#exampleModalLong{{forloop.counter}}"><i class="fa fa-share-alt text-muted float-right p-1 my-1 myhover" data-toggle="tooltip" title="Share"></i></button>
+                            <div class="modal fade" id="exampleModalLong{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                              <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                          
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  </div>
+                                  <div class="modal-title"><input id="myinput" value="{{request.get_host}}{{i.link}}" type="text" style="width:100%; border: none;outline:none; " disabled></div>
+                                  <div class="alert alert-info" id="alertvalue" style="display: none;"></div>
+                                  <div class=" display:flex; justify-content:center; padding-top:30px;">
+                                   <center> <button class="btn btn-outline-secondary" onclick="copy();" style="margin-top:10px;" data-toggle="tooltip"> Copy Link</button></center>
+                                  </div>
+                                  <div class="modal-body" style="display: flex; justify-content: center; flex-direction: row; align-items: center;">
+                                    
+                                    <div id="share{{forloop.counter}}" style="display: flex; justify-content: center; flex-direction: row; align-items: center;">
+                                   
+                                    </div>
+                                    
+                                  </div>
+                               
+                                </div>
+                              </div>
+                            </div>
+                            <form action="/my_article/save/" method="POST" >
+                              {% csrf_token %}
+                              <input type="hidden" value="{{request.build_absolute_uri}}"  name="title">
+                              <input type="hidden" value="{{i.title}}" name="user_name">
+                              {% if i in request.user.profile.favourities.all %}
+                              <button data-toggle="tooltip" data-placement="top" title="Unsave it!" class="btn"style="padding:0px"  type="submit">
+                                <i class="fa fa-bookmark float-right p-1 my-1 mr-3  myhover" style="color:red; padding:0px; font-size: 13px;"></i></button>
+                             
+                              {% else %}
+                              <button class="btn " data-toggle="tooltip" data-placement="top" title="Save it!" style="padding:0px;" title="Follow" type="submit">
+                                <i class="fa fa-bookmark text-muted  float-right p-1 my-1 mr-3  myhover" style="font-size: 13px;"></i></button>
+                             
+                              {% endif %}
+                  
+                        </form>
+                        <i class="fa fa-eye text-muted float-right p-1 my-1 mr-3  myhover" style="font-size: 13px;" data-toggle="tooltip" data-placement="top" title="{{i.titleview.all.count}} {% if i.titleview.all.count <= 1 %}View{%else%}Views{%endif%}"> {{i.titleview.all.count}}</i>
+                          <a href="{{i.link}}#comment">  <i class="fa fa-comment text-muted float-right p-1 my-1 mr-3  myhover" style="font-size: 12px;" data-toggle="tooltip" data-placement="top" title="{{i.my_comments.count}} {% if i.my_comments.count <= 1 %}Comment{%else%}Comments{%endif%}"> {{i.my_comments.count}}</i></a>
+                            <form action="/article/dislike/" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{i.title}}" name="like">
+                                <input type="hidden" value="{{request.build_absolute_uri}}" name="url">
+                                {% if request.user.is_authenticated %}
+                                <button  style="background: none; border:none; outline:none;font-size:13px;" type="submit"> <i class="fa fa-thumbs-down myhover text-muted float-right p-1 my-1 mr-3 icon-pack" data-toggle="tooltip" data-placement="top" title="I dislike it"> {{i.disliked.count}} </i></button>
+                                {% else %}
+                                <a href="/login" ><i class="fa fa-thumbs-down text-muted float-right p-1 my-1 mr-3 icon-pack  myhover " style="font-size: 13px;"data-toggle="tooltip" data-placement="top" title="I dislike it"> {{i.disliked.count}} </i></a>
+                                {% endif %}
+                              
+            
+                              </form>
+                              <form action="/article/like/" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{i.title}}" name="like">
+                                <input type="hidden" value="{{request.build_absolute_uri}}" name="url">
+                                {% if request.user.is_authenticated %}
+                                <button style="background: none; border:none; outline:none;font-size: 13px;" type="submit"> <i class="fa fa-thumbs-up text-muted float-right p-1 my-1 mr-3 icon-pack" data-toggle="tooltip" data-placement="top" title="I like it"> {{i.liked.count}} </i></button>
+                                {% else %}
+                                <a href="/login"><i class="fa fa-thumbs-up text-muted float-right p-1 my-1 mr-3 icon-pack" data-toggle="tooltip" data-placement="top" title="I like it" style="font-size: 13px;"> {{i.liked.count}} </i></a>
+                                {% endif %}
+                              </form>
+                            
+                            </div>
+              
+                        </div>
+              
+                      </div>
+                </div>
+                {% endfor%}
+                
+            </div>
+
+     
+        </div>
+        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+            <div class="card shadow mb-4">
+                <div class="row">
+                    <div class="col-2 col-sm-3">
+                        <div class="card-header py-3" style="background-color: #fff; display: flex; justify-content: space-between;">
+                        <h6 class="m-0 font-weight-bold text-primary">Poetries</h6>
+                        </div>
+                    </div>
+                    <div class="col-8 col-sm-6 d-flex justify-content-center">
+                        <form class="d-none d-sm-inline-block form-inline navbar-search mt-2" style="width:100%;">
+                            <div class="input-group">
+                              <input type="text" class="form-control bg-light border-0 small" style="width:100%;" onkeyup="myFunction()" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" id="myinput">
+                              
+                            </div>
+                          </form>
+                    </div>
+                    <div class="col-2 col-sm-3" style="display: flex; justify-content: flex-end;">
+                   
+                        <div>
+                            <button type="button" class="btn btn-primary mt-2 mr-2" data-toggle="modal" data-target="#exampleModalCenter" style="font-size: 15px;"><i class="fa fa-th" aria-hidden="true"></i></button>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" >
+                        <div class="modal-dialog modal-dialog-centered" role="document" >
+                          <div class="modal-content">
+                            <div class="modal-header">
+                            <center> <h5 class="modal-title" id="exampleModalLongTitle"><strong>Writers</strong></h5></center> 
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                                    <div class="container">
+                                        <div class="row">
+                                            {% for i in users %}
+                                                <div class="col-12 col-sm-4 align-self-center" style="margin-bottom: 20px;padding:10px;">
+                                                    <a href="/read/author/{{i.username}}"><img src="/media/{{i.profile.avatar}}" style="width:100%;height:150px;border-radius:5px;"></a>
+                                                    <div style="display: flex; justify-content: center;font-weight: 600;"><a href="/profile/{{i.username}}">{{i.profile.first_name|capfirst}} {{i.profile.last_name|capfirst}}</a></div>
+                                                    <div style="display: flex; justify-content: center;">{{i.profile.following.all.count}} Follower</div>
+                                                    <div style="justify-content: center;display: flex;">
+                                                        {% if request.user == i.profile.user %}
+                                                    {%else%}
+                                                   
+                                                    <form action="/author/follow/" method="POST">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" value="{{request.build_absolute_uri}}"  name="title">
+                                                        <input type="hidden" value="{{i.username}}" name="user_name">
+                                                        {% if request.user in i.profile.following.all %}
+                                                        <button class="btn btn-outline-info"style=" font-size: 12px;padding:2px;" title="Unollow" type="submit">Unfollow</button>
+                               
+                                                        {% else %}
+                                                        <button class="btn btn-outline-info" style="font-size: 12px;padding:2px;" title="Follow" type="submit">Follow</button>
+                                                    
+                                                        {% endif %}
+            
+                                                </form>
+                                           
+                                                {%endif%}
+                                            </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                            </div>
+                            
+                          </div>
+                        </div>
+                      </div>
+                </div>
+               
+            </div>
+            <div class="row" id="myTable">
+                {% if poetries.count == 0 %}
+                <div class="col-12 col-sm-12 d-flex justify-content-center">
+                    <h3>Comming Soon!!</h3>
+                </div>
+                {% endif %}
+                {% for i in poetries %}
+                <div class="col-12 col-sm-6 col-md-6 col-lg-4 mytag">
+                
+                    <div class="card promoting-card shadow card_data" style="">
+            
+                        <!-- Card content -->
+                        <div class="card-body d-flex flex-row">
+              
+                          <!-- Avatar -->
+                          <div style="width:100px;">
+                          <a href="/profile/{{i.user_name2}}"> <img src="/media/{{i.user_name2.profile.avatar}}"  style="height:50px;width:50px;border-radius: 100%;border: 2px solid #4474E0;"></a>
+                        </div>    
+              
+                          <!-- Content -->
+                          <div>
+              
+                            <!-- Title -->
+                            <h6 class="card-title font-weight-bold mb-2 ml-2 myclass"><a href="{{i.link}}" style="color:black;text-decoration: none;">{{i.title}}</a></h6>
+                            <!-- Subtitle -->
+                            <p class="card-text" style="font-size: 13px;"><i class="fa fa-clock-o pr-2" ></i>{{i.time}} {{i.date_Publish}},<a href="/profile/{{i.user_name2}}"  data-toggle="tooltip" data-placement="top" title="See Profile"> {{i.user_name2.profile.first_name|capfirst}} {{i.user_name2.profile.last_name|capfirst}}</a></p>
+              
+                          </div>
+              
+                        </div>
+              
+                        <!-- Card image -->
+                        <div class="view overlay">
+                          {% if i.video %}
+                          <video autoplay muted loop width="100%" height="150px">
+                            <source src="/media/{{i.video}}" type="video/mp4">
+                          
+                            Your browser does not support the video tag.
+                          </video>
+            
+                          {%else%}
+                            {% if i.image2 %}
+                            <img class="card-img-top rounded-0" src="{{i.image2}}" alt="Card image cap" style="height: 150px;">
+                            {% else %}
+                          <img class="card-img-top rounded-0" src="/media/{{i.image}}" alt="Card image cap" style="height: 150px;">
+                          {% endif %}
+                          {%endif%}
+                          <a href="#!">
+                            <div class="mask rgba-white-slight"></div>
+                          </a>
+                        </div>
+              
+                        <!-- Card content -->
+                        <div class="card-body" style="font-size: 13px;">
+              
+                        
+              
+                            <p style="font-size: 10px;" class="myclass">{{i.description|safe}} <a href="{{i.link}}" style="text-decoration: none;"><strong>Read More ...</strong></a></p>
+                            
+                         
+                          <div style="display:flex; justify-content:space-between; flex-direction: row-reverse;">
+                            <button style="border: none; background: none;padding:0px;font-size: 13px;" class="btn"  data-toggle="modal" data-target="#exampleModalLong{{forloop.counter}}"><i class="fa fa-share-alt text-muted float-right p-1 my-1 myhover" data-toggle="tooltip" title="Share"></i></button>
+                            <div class="modal fade" id="exampleModalLong{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                              <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                          
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  </div>
+                                  <div class="modal-title"><input id="myinput" value="{{request.get_host}}{{i.link}}" type="text" style="width:100%; border: none;outline:none; " disabled></div>
+                                  <div class="alert alert-info" id="alertvalue" style="display: none;"></div>
+                                  <div class=" display:flex; justify-content:center; padding-top:30px;">
+                                   <center> <button class="btn btn-outline-secondary" onclick="copy();" style="margin-top:10px;" data-toggle="tooltip"> Copy Link</button></center>
+                                  </div>
+                                  <div class="modal-body" style="display: flex; justify-content: center; flex-direction: row; align-items: center;">
+                                    
+                                    <div id="share{{forloop.counter}}" style="display: flex; justify-content: center; flex-direction: row; align-items: center;">
+                                   
+                                    </div>
+                                    
+                                  </div>
+                               
+                                </div>
+                              </div>
+                            </div>
+                            <form action="/my_article/save/" method="POST" >
+                              {% csrf_token %}
+                              <input type="hidden" value="{{request.build_absolute_uri}}"  name="title">
+                              <input type="hidden" value="{{i.title}}" name="user_name">
+                              {% if i in request.user.profile.favourities.all %}
+                              <button data-toggle="tooltip" data-placement="top" title="Unsave it!" class="btn"style="padding:0px"  type="submit">
+                                <i class="fa fa-bookmark float-right p-1 my-1 mr-3  myhover" style="color:red; padding:0px; font-size: 13px;"></i></button>
+                             
+                              {% else %}
+                              <button class="btn " data-toggle="tooltip" data-placement="top" title="Save it!" style="padding:0px;" title="Follow" type="submit">
+                                <i class="fa fa-bookmark text-muted  float-right p-1 my-1 mr-3  myhover" style="font-size: 13px;"></i></button>
+                             
+                              {% endif %}
+                  
+                        </form>
+                        <i class="fa fa-eye text-muted float-right p-1 my-1 mr-3  myhover" style="font-size: 13px;" data-toggle="tooltip" data-placement="top" title="{{i.titleview.all.count}} {% if i.titleview.all.count <= 1 %}View{%else%}Views{%endif%}"> {{i.titleview.all.count}}</i>
+                          <a href="{{i.link}}#comment">  <i class="fa fa-comment text-muted float-right p-1 my-1 mr-3  myhover" style="font-size: 12px;" data-toggle="tooltip" data-placement="top" title="{{i.my_comments.count}} {% if i.my_comments.count <= 1 %}Comment{%else%}Comments{%endif%}"> {{i.my_comments.count}}</i></a>
+                            <form action="/article/dislike/" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{i.title}}" name="like">
+                                <input type="hidden" value="{{request.build_absolute_uri}}" name="url">
+                                {% if request.user.is_authenticated %}
+                                <button  style="background: none; border:none; outline:none;font-size:13px;" type="submit"> <i class="fa fa-thumbs-down myhover text-muted float-right p-1 my-1 mr-3 icon-pack" data-toggle="tooltip" data-placement="top" title="I dislike it"> {{i.disliked.count}} </i></button>
+                                {% else %}
+                                <a href="/login" ><i class="fa fa-thumbs-down text-muted float-right p-1 my-1 mr-3 icon-pack  myhover " style="font-size: 13px;"data-toggle="tooltip" data-placement="top" title="I dislike it"> {{i.disliked.count}} </i></a>
+                                {% endif %}
+                              
+            
+                              </form>
+                              <form action="/article/like/" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{i.title}}" name="like">
+                                <input type="hidden" value="{{request.build_absolute_uri}}" name="url">
+                                {% if request.user.is_authenticated %}
+                                <button style="background: none; border:none; outline:none;font-size: 13px;" type="submit"> <i class="fa fa-thumbs-up text-muted float-right p-1 my-1 mr-3 icon-pack" data-toggle="tooltip" data-placement="top" title="I like it"> {{i.liked.count}} </i></button>
+                                {% else %}
+                                <a href="/login"><i class="fa fa-thumbs-up text-muted float-right p-1 my-1 mr-3 icon-pack" data-toggle="tooltip" data-placement="top" title="I like it" style="font-size: 13px;"> {{i.liked.count}} </i></a>
+                                {% endif %}
+                              </form>
+                            
+                            </div>
+              
+                        </div>
+              
+                      </div>
+                </div>
+                {% endfor%}
+                
+            </div>
+
+        </div>
+        <div class="tab-pane fade" id="quotes" role="tabpanel" aria-labelledby="my-tab">
+            <div class="card shadow mb-4">
+                <div class="row">
+                    <div class="col-2 col-sm-3">
+                        <div class="card-header py-3" style="background-color: #fff; display: flex; justify-content: space-between;">
+                        <h6 class="m-0 font-weight-bold text-primary">Quotes</h6>
+                        </div>
+                    </div>
+                    <div class="col-8 col-sm-6 d-flex justify-content-center">
+                        <form class="d-none d-sm-inline-block form-inline navbar-search mt-2" style="width:100%;">
+                            <div class="input-group">
+                              <input type="text" class="form-control bg-light border-0 small" style="width:100%;" onkeyup="myFunction()" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" id="myinput">
+                              
+                            </div>
+                          </form>
+                    </div>
+                    <div class="col-2 col-sm-3" style="display: flex; justify-content: flex-end;">
+                   
+                        <div>
+                            <button type="button" class="btn btn-primary mt-2 mr-2" data-toggle="modal" data-target="#exampleModalCenter" style="font-size: 15px;"><i class="fa fa-th" aria-hidden="true"></i></button>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" >
+                        <div class="modal-dialog modal-dialog-centered" role="document" >
+                          <div class="modal-content">
+                            <div class="modal-header">
+                            <center> <h5 class="modal-title" id="exampleModalLongTitle"><strong>Writers</strong></h5></center> 
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                                    <div class="container">
+                                        <div class="row">
+                                            {% for i in users %}
+                                                <div class="col-12 col-sm-4 align-self-center" style="margin-bottom: 20px;padding:10px;">
+                                                    <a href="/read/author/{{i.username}}"><img src="/media/{{i.profile.avatar}}" style="width:100%;height:150px;border-radius:5px;"></a>
+                                                    <div style="display: flex; justify-content: center;font-weight: 600;"><a href="/profile/{{i.username}}">{{i.profile.first_name|capfirst}} {{i.profile.last_name|capfirst}}</a></div>
+                                                    <div style="display: flex; justify-content: center;">{{i.profile.following.all.count}} Follower</div>
+                                                    <div style="justify-content: center;display: flex;">
+                                                        {% if request.user == i.profile.user %}
+                                                    {%else%}
+                                                   
+                                                    <form action="/author/follow/" method="POST">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" value="{{request.build_absolute_uri}}"  name="title">
+                                                        <input type="hidden" value="{{i.username}}" name="user_name">
+                                                        {% if request.user in i.profile.following.all %}
+                                                        <button class="btn btn-outline-info"style=" font-size: 12px;padding:2px;" title="Unollow" type="submit">Unfollow</button>
+                               
+                                                        {% else %}
+                                                        <button class="btn btn-outline-info" style="font-size: 12px;padding:2px;" title="Follow" type="submit">Follow</button>
+                                                    
+                                                        {% endif %}
+            
+                                                </form>
+                                           
+                                                {%endif%}
+                                            </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                            </div>
+                            
+                          </div>
+                        </div>
+                      </div>
+                </div>
+               
+            </div>
+            <div class="row" id="myTable">
+                {% if quotes.count == 0 %}
+                <div class="col-12 col-sm-12 d-flex justify-content-center">
+                    <h3>Comming Soon!!</h3>
+                </div>
+                {% endif %}
+                {% for i in quotes %}
+                <div class="col-12 col-sm-6 col-md-6 col-lg-4 mytag">
+                
+                    <div class="card promoting-card shadow card_data" style="">
+            
+                        <!-- Card content -->
+                        <div class="card-body d-flex flex-row">
+              
+                          <!-- Avatar -->
+                          <div style="width:100px;">
+                          <a href="/profile/{{i.user_name2}}"> <img src="/media/{{i.user_name2.profile.avatar}}"  style="height:50px;width:50px;border-radius: 100%;border: 2px solid #4474E0;"></a>
+                        </div>    
+              
+                          <!-- Content -->
+                          <div>
+              
+                            <!-- Title -->
+                            <h6 class="card-title font-weight-bold mb-2 ml-2 myclass"><a href="{{i.link}}" style="color:black;text-decoration: none;">{{i.title}}</a></h6>
+                            <!-- Subtitle -->
+                            <p class="card-text" style="font-size: 13px;"><i class="fa fa-clock-o pr-2" ></i>{{i.time}} {{i.date_Publish}},<a href="/profile/{{i.user_name2}}"  data-toggle="tooltip" data-placement="top" title="See Profile"> {{i.user_name2.profile.first_name|capfirst}} {{i.user_name2.profile.last_name|capfirst}}</a></p>
+              
+                          </div>
+              
+                        </div>
+              
+                        <!-- Card image -->
+                        <div class="view overlay">
+                          {% if i.video %}
+                          <video autoplay muted loop width="100%" height="150px">
+                            <source src="/media/{{i.video}}" type="video/mp4">
+                          
+                            Your browser does not support the video tag.
+                          </video>
+            
+                          {%else%}
+                            {% if i.image2 %}
+                            <img class="card-img-top rounded-0" src="{{i.image2}}" alt="Card image cap" style="height: 150px;">
+                            {% else %}
+                          <img class="card-img-top rounded-0" src="/media/{{i.image}}" alt="Card image cap" style="height: 150px;">
+                          {% endif %}
+                          {%endif%}
+                          <a href="#!">
+                            <div class="mask rgba-white-slight"></div>
+                          </a>
+                        </div>
+              
+                        <!-- Card content -->
+                        <div class="card-body" style="font-size: 13px;">
+              
+                        
+              
+                            <p style="font-size: 10px;" class="myclass">{{i.description|safe}} <a href="{{i.link}}" style="text-decoration: none;"><strong>Read More ...</strong></a></p>
+                            
+                         
+                          <div style="display:flex; justify-content:space-between; flex-direction: row-reverse;">
+                            <button style="border: none; background: none;padding:0px;font-size: 13px;" class="btn"  data-toggle="modal" data-target="#exampleModalLong{{forloop.counter}}"><i class="fa fa-share-alt text-muted float-right p-1 my-1 myhover" data-toggle="tooltip" title="Share"></i></button>
+                            <div class="modal fade" id="exampleModalLong{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                              <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                          
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  </div>
+                                  <div class="modal-title"><input id="myinput" value="{{request.get_host}}{{i.link}}" type="text" style="width:100%; border: none;outline:none; " disabled></div>
+                                  <div class="alert alert-info" id="alertvalue" style="display: none;"></div>
+                                  <div class=" display:flex; justify-content:center; padding-top:30px;">
+                                   <center> <button class="btn btn-outline-secondary" onclick="copy();" style="margin-top:10px;" data-toggle="tooltip"> Copy Link</button></center>
+                                  </div>
+                                  <div class="modal-body" style="display: flex; justify-content: center; flex-direction: row; align-items: center;">
+                                    
+                                    <div id="share{{forloop.counter}}" style="display: flex; justify-content: center; flex-direction: row; align-items: center;">
+                                   
+                                    </div>
+                                    
+                                  </div>
+                               
+                                </div>
+                              </div>
+                            </div>
+                            <form action="/my_article/save/" method="POST" >
+                              {% csrf_token %}
+                              <input type="hidden" value="{{request.build_absolute_uri}}"  name="title">
+                              <input type="hidden" value="{{i.title}}" name="user_name">
+                              {% if i in request.user.profile.favourities.all %}
+                              <button data-toggle="tooltip" data-placement="top" title="Unsave it!" class="btn"style="padding:0px"  type="submit">
+                                <i class="fa fa-bookmark float-right p-1 my-1 mr-3  myhover" style="color:red; padding:0px; font-size: 13px;"></i></button>
+                             
+                              {% else %}
+                              <button class="btn " data-toggle="tooltip" data-placement="top" title="Save it!" style="padding:0px;" title="Follow" type="submit">
+                                <i class="fa fa-bookmark text-muted  float-right p-1 my-1 mr-3  myhover" style="font-size: 13px;"></i></button>
+                             
+                              {% endif %}
+                  
+                        </form>
+                        <i class="fa fa-eye text-muted float-right p-1 my-1 mr-3  myhover" style="font-size: 13px;" data-toggle="tooltip" data-placement="top" title="{{i.titleview.all.count}} {% if i.titleview.all.count <= 1 %}View{%else%}Views{%endif%}"> {{i.titleview.all.count}}</i>
+                          <a href="{{i.link}}#comment">  <i class="fa fa-comment text-muted float-right p-1 my-1 mr-3  myhover" style="font-size: 12px;" data-toggle="tooltip" data-placement="top" title="{{i.my_comments.count}} {% if i.my_comments.count <= 1 %}Comment{%else%}Comments{%endif%}"> {{i.my_comments.count}}</i></a>
+                            <form action="/article/dislike/" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{i.title}}" name="like">
+                                <input type="hidden" value="{{request.build_absolute_uri}}" name="url">
+                                {% if request.user.is_authenticated %}
+                                <button  style="background: none; border:none; outline:none;font-size:13px;" type="submit"> <i class="fa fa-thumbs-down myhover text-muted float-right p-1 my-1 mr-3 icon-pack" data-toggle="tooltip" data-placement="top" title="I dislike it"> {{i.disliked.count}} </i></button>
+                                {% else %}
+                                <a href="/login" ><i class="fa fa-thumbs-down text-muted float-right p-1 my-1 mr-3 icon-pack  myhover " style="font-size: 13px;"data-toggle="tooltip" data-placement="top" title="I dislike it"> {{i.disliked.count}} </i></a>
+                                {% endif %}
+                              
+            
+                              </form>
+                              <form action="/article/like/" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{i.title}}" name="like">
+                                <input type="hidden" value="{{request.build_absolute_uri}}" name="url">
+                                {% if request.user.is_authenticated %}
+                                <button style="background: none; border:none; outline:none;font-size: 13px;" type="submit"> <i class="fa fa-thumbs-up text-muted float-right p-1 my-1 mr-3 icon-pack" data-toggle="tooltip" data-placement="top" title="I like it"> {{i.liked.count}} </i></button>
+                                {% else %}
+                                <a href="/login"><i class="fa fa-thumbs-up text-muted float-right p-1 my-1 mr-3 icon-pack" data-toggle="tooltip" data-placement="top" title="I like it" style="font-size: 13px;"> {{i.liked.count}} </i></a>
+                                {% endif %}
+                              </form>
+                            
+                            </div>
+              
+                        </div>
+              
+                      </div>
+                </div>
+                {% endfor%}
+                
+            </div>
+
+        </div>
+      </div>
+  
+
+     
+
+      <!-- Basic Card Example -->
+     
+
+    </div>
+
+ 
+
+    </div>
+
+  </div>
+{% endblock %}

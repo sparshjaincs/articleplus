@@ -1,0 +1,83 @@
+{% extends 'article/base1.html' %}
+{% block navbar %}
+{% include 'article/navbar1.html' %}
+{% endblock %}
+{% block title %}
+{{keyword.0}} | Article+
+{% endblock %}
+{% block style %}
+
+.card:hover{
+    background-color:floralwhite;
+}
+{% endblock %}
+{% block js %}
+<script>
+    document.body.style.backgroundColor = "#fff";
+</script>
+<script>
+    var df1 = []
+    var df2 = []
+    {% for i in keyword.1 %}
+        df1.push('{{i.0}}');
+        df2.push({{i.1}});
+    {% endfor %}
+    var ctx = document.getElementById('mycanvas').getContext('2d');
+var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'line',
+    // The data for our dataset
+    data: {
+
+        labels: df1,
+        datasets: [{
+            label: '{{keyword.0}}',
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(0,0,0,0.1)',
+            data: df2
+        }]
+
+    },
+    
+
+    // Configuration options go here
+    options: {
+        legend: {
+            display: true,
+            labels: {
+                fontColor: 'rgb(0,0,0)',
+                
+            }
+        
+            
+        },
+        
+      
+    }
+});
+</script>
+
+{% endblock %}
+{% block content %}
+
+    <div class="row pt-3" style="margin-top: 87.5px;">
+        <div class="col-12 col-sm-12">
+                <div>
+                    <h3>
+                        {{keyword.0}}
+                    </h3>
+                    <p style="color:rgb(0,0,0,0.5); margin-top:-15px;">{{keyword.2}}K+ Searches</p>
+                </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="card shadow">
+                <div class="card-body">
+                    <canvas id="mycanvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

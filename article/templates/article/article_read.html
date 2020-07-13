@@ -1,0 +1,475 @@
+{% extends 'article/base1.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load to_and %}
+{% block navbar %}
+{% include 'article/navbar1.html' %}
+{% endblock %}
+{% block title %}
+Read | Article+
+{% endblock %}
+{% block style %}
+
+.jssocials-shares{
+    display:flex;
+    justify-content:center;
+    flex-direction:row;
+    align-items:center;
+  }
+  .jssocials-share-link {display:flex; 
+    justify-content:center; 
+    flex-direction:row; 
+    align-items:center;
+    margin:10px;
+    border-radius:50%;
+}
+{% endblock %}
+{% block js %}
+<script>
+    $("#share").jsSocials({
+      showLabel:false,
+      showCount:false,
+      url:"{{request.get_host}}{{read.0.link}}",
+      text:"{{read.0.title}}",
+      shares: ["twitter", "facebook", "linkedin", "pinterest","whatsapp","email"]
+  });
+  </script>
+{% endblock %}
+{% block content %}
+<div class="row">
+
+    
+
+    <div class="col-lg-9">
+
+      <!-- Dropdown Card Example -->
+      <div class="card shadow mb-4">
+        <!-- Card Header - Dropdown -->
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" style="background-color: #fff; border-bottom:none;">
+            <div style="display: flex; justify-content:flex-start;">
+                <div style="" class="pr-3">
+                    <a href="/profile/{{read.0.user_name2}}"> <img src="/media/{{read.0.user_name2.profile.avatar}}"  style="height:50px;width:50px;border-radius: 100%;border: 2px solid #4474E0;"></a>
+                </div>
+                <div>
+                   {% if request.user == read.0.user_name2 %}
+                   {% else %}
+                        <form action="/author/follow/" method="POST" >
+                          {% csrf_token %}
+                          <input type="hidden" value="{{request.build_absolute_uri}}"  name="title">
+                          <input type="hidden" value="{{read.0.user_name2}}" name="user_name">
+                          {% if request.user in read.0.user_name2.profile.following.all %}
+                          <button data-toggle="tooltip" data-placement="top" title="Unfollow" style="color:rgb(0,0,0,0.4); font-size: 15px;padding:2px; margin-left:2px; margin-top:8px; border:1px solid rgb(0,0,0,0.1); border-radius:50%; padding:5px; background:none; " title="Unfollow" type="submit"><i class="fas fa-user-minus"></i></button>
+                         
+                          {% else %}
+                          <button  data-toggle="tooltip" data-placement="top" title="Follow" style="color:rgb(0,0,0,0.4); font-size: 15px;padding:2px; margin-left:2px; margin-top:8px; border:1px solid rgb(0,0,0,0.1); border-radius:50%; padding:5px; background:none;" title="Follow" type="submit"><i class="fa fa-user-plus"></i></button>
+                         
+                          {% endif %}
+              
+                    </form>
+                    {% endif %}
+             
+                </div>
+                <div id="share" style="display: flex; justify-content: center; flex-direction: row;">
+
+                </div>
+            </div>
+         
+          <div class="dropdown no-arrow">
+            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+              <div class="dropdown-header"></div>
+              <a class="dropdown-item" href="#">Subscribe</a>
+              <a class="dropdown-item" href="/read/author/{{read.0.user_name2}}">Read More</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#">Mute the author</a>
+            </div>
+          </div>
+        </div>
+        <!-- Card Body -->
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-12">
+                   <center> <h1 style="color:black; font-weight: 700;">{{read.0.title}}</h1></center>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 d-none d-sm-block" style="">
+                    <div style="display: flex; justify-content: space-between;">
+                        
+                        <p style="margin-top: 11px; margin-left:30px ;">  By <a href="/profile/{{read.0.user_name2}}"  data-toggle="tooltip" data-placement="top" title="See Profile">
+                            {{read.0.user_name2.profile.first_name|capfirst}} {{read.0.user_name2.profile.last_name|capfirst}} </a> 
+                            , {{ read.0.date_Publish}} {{read.0.time}}
+                        </p>
+                 
+                   
+                    <div style="display:flex; flex-direction: row-reverse; margin-top: 10px; margin-right: 10px;">
+            
+                        {% if request.user == read.0.user_name2 %}
+                        {%else%}
+                        <form action="/author/follow/" method="POST" >
+                          {% csrf_token %}
+                          <input type="hidden" value="{{request.build_absolute_uri}}"  name="title">
+                          <input type="hidden" value="{{read.0.user_name2}}" name="user_name">
+                          {% if request.user in read.0.user_name2.profile.following.all %}
+                          <button data-toggle="tooltip" data-placement="top" title="UnFollow" class="btn btn-outline-info"style=" font-size: 12px;padding:2px; margin-left:7px; margin-top:2px;" title="Unollow" type="submit">Unfollow</button>
+                         
+                          {% else %}
+                          <button class="btn btn-outline-info" data-toggle="tooltip" data-placement="top" title="Follow" style="font-size: 12px;padding:2px; margin-left:7px; margin-top:2px;" title="Follow" type="submit">Follow</button>
+                         
+                          {% endif %}
+              
+                    </form>
+                    {%endif%}
+            
+                          <form action="/my_article/save/" method="POST" >
+                            {% csrf_token %}
+                            <input type="hidden" value="{{request.build_absolute_uri}}"  name="title">
+                            <input type="hidden" value="{{read.0.title}}" name="user_name">
+                            {% if read.0 in request.user.profile.favourities.all %}
+                            <button data-toggle="tooltip" data-placement="top" title="Unsave it!" class="btn"style=" padding:0px;"  type="submit">
+                              <i class="fa fa-bookmark float-right p-1 my-1 mr-3  myhover" style="color:red;"></i></button>
+                           
+                            {% else %}
+                            <button class="btn " data-toggle="tooltip" data-placement="top" title="Save it!" style="padding:0px;" title="Follow" type="submit">
+                              <i class="fa fa-bookmark text-muted  float-right p-1 my-1 mr-3  myhover" ></i></button>
+                           
+                            {% endif %}
+                
+                      </form>
+                      <i class="fa fa-eye text-muted float-right p-1 my-1 mr-3  myhover" data-toggle="tooltip" data-placement="top" title="{{read.0.titleview.all.count}} {% if read.0.titleview.all.count <= 1 %}View{%else%}Views{%endif%}"> {{read.0.titleview.all.count}}</i>
+                          <a href="#comment"><i class="fa fa-comment text-muted float-right p-1 my-1 mr-3" data-toggle="tooltip" data-placement="top" title="{{read.0.my_comments.count}} {% if read.0.my_comments.count <= 1 %}Comment{%else%}Comments{%endif%}"> {{read.0.my_comments.count}}</i></a>
+                          <form action="/article/dislike/" method="POST">
+                              {% csrf_token %}
+                              <input type="hidden" value="{{read.0.title}}" name="like">
+                              <input type="hidden" value="{{request.build_absolute_uri}}" name="url">
+                              {% if request.user.is_authenticated %}
+                              <button style="background: none; border:none; outline:none;" type="submit"> <i class="fa fa-thumbs-down text-muted float-right p-1 my-1 mr-3 icon-pack" data-toggle="tooltip" data-placement="top" title="I dislike it"> {{read.0.disliked.count}} </i></button>
+                              {% else %}
+                              <a href="/login"><i class="fa fa-thumbs-down text-muted float-right p-1 my-1 mr-3 icon-pack" data-toggle="tooltip" data-placement="top" title="I dislike it"> {{read.0.disliked.count}} </i></a>
+                              {% endif %}
+                            
+              
+                            </form>
+                            <form action="/article/like/" method="POST">
+                              {% csrf_token %}
+                              <input type="hidden" value="{{read.0.title}}" name="like">
+                              <input type="hidden" value="{{request.build_absolute_uri}}" name="url">
+                              {% if request.user.is_authenticated %}
+                              <button style="background: none; border:none; outline:none;" type="submit"> <i class="fa fa-thumbs-up text-muted float-right p-1 my-1 mr-3 icon-pack" data-toggle="tooltip" data-placement="top" title="I like it"> {{read.0.liked.count}} </i></button>
+                              {% else %}
+                              <a href="/login"><i class="fa fa-thumbs-up text-muted float-right p-1 my-1 mr-3 icon-pack" data-toggle="tooltip" data-placement="top" title="I like it"> {{read.0.liked.count}} </i></a>
+                              {% endif %}
+                            </form>
+                          
+                          </div>
+                        </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 d-block d-sm-none" style="display: flex; justify-content: center;">
+                    <p style="margin-top: 11px; margin-left:30px ;">  By <a href="/profile/{{read.0.user_name2}}"  data-toggle="tooltip" data-placement="top" title="See Profile">
+                        {{read.0.user_name2.profile.first_name|capfirst}} {{read.0.user_name2.profile.last_name|capfirst}} </a> 
+                        , {{ read.0.date_Publish}} {{read.0.time}}
+                    </p>
+             
+                </div>
+           
+                
+            </div>
+            <div class="row" style="padding:0px; margin-top:-20px;">
+                {% if read.0.video %}
+                    <center>
+                        <video width="70%" height="400px;" autoplay muted loop>
+                        <source src="/media/{{read.0.video}}" type="video/mp4">
+                        <source src="movie.ogg" type="video/ogg">
+                        Your browser does not support the video tag.
+                        </video>
+                    </center>
+                    {% else %}
+                    {% if read.0.image %}
+                    <img src="/media/{{read.0.image}}" style="width:100%;padding:40px;">
+                    {% endif %}
+               
+ 
+                {% endif %}
+                
+            </div>
+            <div class="row">
+                <div class="col-12 d-block d-sm-none" style="">
+                   
+                    <div style="display:flex; justify-content:center; flex-direction: row-reverse; margin-top: 10px; margin-right: 10px;">
+            
+                        
+            
+                          <form action="/my_article/save/" method="POST" >
+                            {% csrf_token %}
+                            <input type="hidden" value="{{request.build_absolute_uri}}"  name="title">
+                            <input type="hidden" value="{{read.0.title}}" name="user_name">
+                            {% if read.0 in request.user.profile.favourities.all %}
+                            <button data-toggle="tooltip" data-placement="top" title="Unsave it!" class="btn"style=" padding:0px;"  type="submit">
+                              <i class="fa fa-bookmark float-right p-1 my-1 mr-3  myhover" style="color:red;"></i></button>
+                           
+                            {% else %}
+                            <button class="btn " data-toggle="tooltip" data-placement="top" title="Save it!" style="padding:0px;" title="Follow" type="submit">
+                              <i class="fa fa-bookmark text-muted  float-right p-1 my-1 mr-3  myhover" ></i></button>
+                           
+                            {% endif %}
+                
+                      </form>
+                      <i class="fa fa-eye text-muted float-right p-1 my-1 mr-3  myhover" data-toggle="tooltip" data-placement="top" title="{{read.0.titleview.all.count}} {% if read.0.titleview.all.count <= 1 %}View{%else%}Views{%endif%}"> {{read.0.titleview.all.count}}</i>
+                          <a href="#comment"><i class="fa fa-comment text-muted float-right p-1 my-1 mr-3" data-toggle="tooltip" data-placement="top" title="{{read.0.my_comments.count}} {% if read.0.my_comments.count <= 1 %}Comment{%else%}Comments{%endif%}"> {{read.0.my_comments.count}}</i></a>
+                          <form action="/article/dislike/" method="POST">
+                              {% csrf_token %}
+                              <input type="hidden" value="{{read.0.title}}" name="like">
+                              <input type="hidden" value="{{request.build_absolute_uri}}" name="url">
+                              {% if request.user.is_authenticated %}
+                              <button style="background: none; border:none; outline:none;" type="submit"> <i class="fa fa-thumbs-down text-muted float-right p-1 my-1 mr-3 icon-pack" data-toggle="tooltip" data-placement="top" title="I dislike it"> {{read.0.disliked.count}} </i></button>
+                              {% else %}
+                              <a href="/login"><i class="fa fa-thumbs-down text-muted float-right p-1 my-1 mr-3 icon-pack" data-toggle="tooltip" data-placement="top" title="I dislike it"> {{read.0.disliked.count}} </i></a>
+                              {% endif %}
+                            
+              
+                            </form>
+                            <form action="/article/like/" method="POST">
+                              {% csrf_token %}
+                              <input type="hidden" value="{{read.0.title}}" name="like">
+                              <input type="hidden" value="{{request.build_absolute_uri}}" name="url">
+                              {% if request.user.is_authenticated %}
+                              <button style="background: none; border:none; outline:none;" type="submit"> <i class="fa fa-thumbs-up text-muted float-right p-1 my-1 mr-3 icon-pack" data-toggle="tooltip" data-placement="top" title="I like it"> {{read.0.liked.count}} </i></button>
+                              {% else %}
+                              <a href="/login"><i class="fa fa-thumbs-up text-muted float-right p-1 my-1 mr-3 icon-pack" data-toggle="tooltip" data-placement="top" title="I like it"> {{read.0.liked.count}} </i></a>
+                              {% endif %}
+                            </form>
+                          
+                          </div>
+                      
+             
+                </div>
+                <div class="row">
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 pl-5 pr-5">
+                        <p>
+                            {{read.0.content|safe}}
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+            
+            
+           
+
+
+
+        </div>
+      </div>
+
+
+    </div>
+  
+
+        <div class="col-lg-3">
+            <div class="row">
+                <div class="col-12 col-sm-6 col-md-6 col-lg-12">
+                   
+                    <div class="card shadow mb-4">
+                        <div class="card-header" style="background-color: white;">
+                            <h4>Top Categories</h4>
+                        </div>
+                        <div class="card-body">
+                           
+                            <div style="display: flex; justify-content: space-between;">
+                            
+                                <h6><a href="/article/Books">Books</a></h6>
+                                <h6><a href="/article/Books"><i class="fa fa-angle-right"></i></a></h6>
+                         
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                            
+                                <h6><a href="/article/Food">Food</a></h6>
+                                <h6><a href="/article/Food"><i class="fa fa-angle-right"></i></a></h6>
+                         
+                            </div> <div style="display: flex; justify-content: space-between;">
+                            
+                                <h6><a href="/article/Music">Music</a></h6>
+                                <h6><a href="/article/Music"><i class="fa fa-angle-right"></i></a></h6>
+                         
+                            </div> 
+                            <div style="display: flex; justify-content: space-between;">
+                            
+                                <h6><a href="/article/Fashion">Fashion</a></h6>
+                                <h6><a href="/article/Fashion"><i class="fa fa-angle-right"></i></a></h6>
+                         
+                            </div> 
+                            <div style="display: flex; justify-content: space-between;">
+                            
+                                <h6><a href="/article/News">News</a></h6>
+                                <h6><a href="/article/News"><i class="fa fa-angle-right"></i></a></h6>
+                         
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                            
+                                <h6><a href="/article/Diy">Diy</a></h6>
+                                <h6><a href="/article/Diy"><i class="fa fa-angle-right"></i></a></h6>
+                         
+                            </div>
+                           
+                        </div>
+                      </div>
+                </div>
+                <div class="col-lg-12 order-md-first order-sm-first ">
+                    <div class="card shadow mb-4">
+                        <div class="card-header" style="background-color: white;">
+                            <h4>Related Stories</h4>
+                        </div>
+                        <div class="card-body">
+                          The styling for this basic card example is created by using default Bootstrap utility classes. By using utility classes, the style of the card component can be easily modified with no need for any custom CSS!
+                        </div>
+                      </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-6 col-lg-12">
+                    <div class="card shadow mb-4">
+                        <div class="card-header" style="background-color: white;">
+                            <h4>Tags</h4>
+                        </div>
+                        <div class="card-body">
+                          The styling for this basic card example is created by using default Bootstrap utility classes. By using utility classes, the style of the card component can be easily modified with no need for any custom CSS!
+                        </div>
+                      </div>
+                </div>
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                    <div class="card shadow mb-4">
+                        <div class="card-header" style="background-color: white;">
+                            <h6>Link to other sites</h6>
+                        </div>
+                        <div class="card-body d-flex justify-content-center" >
+                            {% if read.0.instagram %}
+                            <a href="{{read.0.instagram}}" class="mr-2"><i class="fa fa-instagram" style="font-size: 20px;"></i></a>
+                            {% endif %}
+                            {% if read.0.facebook %}
+                            <a href="{{read.0.facebook}}" class="mr-2"><i class="fa fa-facebook" style="font-size: 20px;"></i></a>
+                            {% endif %}
+                            {% if read.0.quora %}
+                            <a href="{{read.0.quora}}" class="mr-2"><i class="fa fa-quora" style="font-size: 20px;"></i></a>
+                            {% endif %}
+                            {% if read.0.medium %}
+                            <a href="{{read.0.medium}}" class="mr-2"><i class="fa fa-medium" style="font-size: 20px;"></i></a>
+                            {% endif %}
+                            {% if read.0.twitter %}
+                            <a href="{{read.0.twitter}}" class="mr-2"><i class="fa fa-twitter" style="font-size: 20px;"></i></a>
+                            {% endif %}
+                            {% if read.0.other %}
+                            <a href="{{read.0.other}}" class="mr-2"><i class="fa fa-globe" style="font-size: 20px;"></i></a>
+                            {% endif %}
+                      </div>
+                </div>
+                
+               
+                
+                
+            </div>
+            
+
+          <!-- Basic Card Example -->
+         
+
+        </div>
+
+
+
+        </div>
+
+</div>
+
+  <div class="row">
+    <div class="col-md-12 col-lg-9">
+
+        <!-- Dropdown Card Example -->
+        <div class="card shadow mb-4">
+            <div class="pt-5 mt-5" id="comment">
+                <h1 class="ml-5">Comments</h1>
+                <p class="ml-5">{{comments.count}} Comment{% if comments.count >= 2 %}s{% endif %}</p>
+                <br>
+                 <ul class="comment-list ml-5">
+                 
+                   {% for comment in comments %}
+                   
+                   <li class="comment">
+                     
+                     <div class="comment-body">
+                       
+                       <h3>{{comment.name}}</h3>
+                       <div class="meta mb-3">{{comment.created}}</div>
+                       <p>{{comment.body|linebreaks}}</p>
+                     
+                       <p><a onclick="document.getElementById('reply_content{{forloop.counter}}').style.display='block';  " class="reply btn btn-primary" style="color:rgb(0,0,0)">Reply</a></p>
+                       <div id="reply_content{{forloop.counter}}" style="padding:40px; background-color: #F8F9FA; display: none;">
+                         <div style="display: flex; justify-content: flex-end;">
+                           <a onclick="document.getElementById('reply_content{{forloop.counter}}').style.display='none'; "><span class="fa fa-close"></span></a>
+                         </div>
+                         <form action="" class="p-5 bg-light form_class" method = 'POST'>
+                           {% csrf_token %}
+                           <input type="hidden" name="parent_id" value='{{comment.id}}'>
+                          {{form|crispy}}
+                         <div class="form-group">
+                           <input type="submit" style="font-size: 20px; color:black;" value="Reply" class="btn py-3 px-4 btn-primary">
+                         </div>
+         
+                       </form>
+                       </div>
+                    
+                     </div>
+                     
+                     <ul class="children">
+                     
+                       {% for reply in comment.children.all %}
+                       <li class="comment">
+                         
+                         <div class="comment-body">
+                           <h3>{{reply.name}}</h3>
+                           <div class="meta mb-3">{{reply.created}}</div>
+                           <p>{{reply.body}}</p>
+                           
+                         </div>
+     
+     
+     
+                         {% endfor%}
+                       </li>
+                    
+                     </ul>
+                   </li>
+                   {% endfor %}
+     
+     
+                  
+     
+              
+                   
+                   
+                 </ul>
+                 
+     
+                 <!-- END comment-list -->
+              
+                 <div class="comment-form-wrap pt-5">
+                  
+                   <form action="" class="p-5 bg-light form_class" method = 'POST'>
+                       {% csrf_token %}
+                      {{form|crispy}}
+                     <div class="form-group">
+                       <input type="submit" style="font-size: 20px; color:black;" value="Post Comment" class="btn py-3 px-4 btn-primary">
+                     </div>
+     
+                   </form>
+                 </div>
+              
+            
+               </div>
+        </div>
+    </div>
+
+  </div>
+{% endblock %}
