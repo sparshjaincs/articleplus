@@ -1,0 +1,333 @@
+{% extends 'article/base1.html' %}
+{% load static %}
+{% block title %}
+Article | Article+
+{% endblock %}
+{% block navbar %}
+{% include 'article/navbar1.html' %}
+{% endblock %}
+{% block style %}
+::-webkit-scrollbar {
+    width: 0px;  /* Remove scrollbar space */
+    background: transparent;  /* Optional: just make scrollbar invisible */
+}
+
+div.scrollmenu {
+   
+    overflow: auto;
+    white-space: nowrap;
+  }
+  
+  div.scrollmenu a {
+    display: inline-block;
+    color:black;
+    
+    text-align: center;
+    padding: 2px;
+    text-decoration: none;
+  }
+  .led{
+    padding: 10px;
+    font-size:13px;
+    opacity:0.7;
+    
+  }
+  .jssocials-share-link {display:flex; justify-content:center; flex-direction:row; align-items:center;margin:10px;}
+  div.scrollmenu .led:hover {
+   
+    font-weight:600;
+ 
+  }
+ 
+  .jssocials-shares{
+    display:flex;
+    justify-content:center;
+    flex-direction:row;
+    align-items:center;
+  }
+  .myput(
+    width:100%;
+    border:none;
+  )
+{% endblock %}
+{% block js %}
+<script>
+    document.body.style.backgroundColor = "#fff";
+</script>
+<script>
+  function copy(){
+    var copyText = document.getElementById("myInput1");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999)
+    document.execCommand("copy");
+    document.getElementById('alertvalue').style.display="block";
+    document.getElementById('alertvalue').innerHTML = "Copied";
+
+  }
+</script>
+
+<script>
+  
+    function myFunction(){
+      var search_val = document.getElementById('myinput').value.toLowerCase();
+      var data = document.getElementById('myTable');
+      var data_part = data.getElementsByClassName('myclass');
+      var tag_part = data.getElementsByClassName('mytag');
+      
+      for(i=0;i<tag_part.length;i++){
+        txtvalue = data_part[i].textContent || data_part[i].innerText;
+        
+        if(txtvalue.toLowerCase().indexOf(search_val) > -1){
+          tag_part[i].style.display="inline";
+          tag_part[i].style.justify="left";
+          
+        }
+        else{
+          tag_part[i].style.display="none";
+        }
+      }
+      
+    }
+  
+  fun2("all")
+  function fun2(c) {
+   console.log(document.getElementsByClassName(c));
+  }
+  
+    </script>
+{% for i in stories%}
+<script>
+  function copy(){
+    var copyText = document.getElementById("MyInput{{forloop.counter}}");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999)
+    document.execCommand("copy");
+    document.getElementById('alertvalue').style.display="block";
+    document.getElementById('alertvalue').innerHTML = "Copied";
+
+  }
+</script>
+<script>
+  $("#share{{forloop.counter}}").jsSocials({
+    showLabel: false,
+    showCount: "inside",
+    url:"{{request.get_host}}{{i.link}}",
+    text:"{{i.title}}",
+    shares: ["email", "twitter", "facebook", "linkedin", "pinterest", "whatsapp"]
+  });
+</script>
+{% endfor %}
+{% endblock %}
+{% block content %}
+<div class="row">
+
+    <div class="col-lg-12">
+
+      <!-- Default Card Example -->
+      <div class="card shadow mb-4">
+        
+        <div class="card-body">
+            <div class="row">
+                <div class="col-10 col-sm-11">
+                    <div class="scrollmenu">
+                            {% for i in category %}
+                   
+                            
+                       
+                                <a href="/stories/category/{{i.category_name}}" style="text-decoration: none; color: black;"><p><span class="led">{{i.category_name}}</span><span style="opacity:.4;"> |</span></p></a>
+               
+                           {%endfor%}
+                    </div>
+                        
+                </div>
+                <div class="col-2 col-sm-1" style="display: flex; justify-content: space-evenly;">
+                   
+                    <div >
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" style="font-size: 15px;"><i class="fa fa-th" aria-hidden="true"></i></button>
+                    </div>
+                </div>
+                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" >
+                    <div class="modal-dialog modal-dialog-centered" role="document" >
+                      <div class="modal-content">
+                        <div class="modal-header">
+                        <center> <h5 class="modal-title" id="exampleModalLongTitle"><strong>Writers</strong></h5></center> 
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                                <div class="container">
+                                    <div class="row">
+                                        {% for i in users %}
+                                            <div class="col-6 col-sm-4 align-self-center" style="margin-bottom: 20px;padding:10px;">
+                                                <a href="/read/author/{{i.username}}"><img src="/media/{{i.profile.avatar}}" style="width:100%;height:150px;border-radius:5px;"></a>
+                                                <div style="display: flex; justify-content: center;font-weight: 600;"><a href="/profile/{{i.username}}">{{i.profile.first_name|capfirst}} {{i.profile.last_name|capfirst}}</a></div>
+                                                <div style="display: flex; justify-content: center;">{{i.profile.following.all.count}} Follower</div>
+                                                <div style="justify-content: center;display: flex;">
+                                                    {% if request.user == i.profile.user %}
+                                                {%else%}
+                                               
+                                                <form action="/author/follow/" method="POST">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" value="{{request.build_absolute_uri}}"  name="title">
+                                                    <input type="hidden" value="{{i.username}}" name="user_name">
+                                                    {% if request.user in i.profile.following.all %}
+                                                    <button class="btn btn-outline-info"style=" font-size: 12px;padding:2px;" title="Unollow" type="submit">Unfollow</button>
+                           
+                                                    {% else %}
+                                                    <button class="btn btn-outline-info" style="font-size: 12px;padding:2px;" title="Follow" type="submit">Follow</button>
+                                                
+                                                    {% endif %}
+        
+                                            </form>
+                                       
+                                            {%endif%}
+                                        </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                        </div>
+                        
+                      </div>
+                    </div>
+                  </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-sm-6 offset-sm-3 d-flex justify-content-center">
+                    <form class="d-none d-sm-inline-block form-inline navbar-search" style="width:100%;">
+                        <div class="input-group">
+                          <input type="text" class="form-control bg-light border-0 small" style="width:100%;" onkeyup="myFunction()" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" id="myinput">
+                          
+                        </div>
+                      </form>
+                </div>
+            </div>
+                  
+        </div>
+      </div>
+
+
+    </div>
+
+  </div>
+
+  <div class="row" style="margin-top:20px; margin-bottom: 50px;" id="myTable">
+    {% if stories.count == 0 %}
+    <div class="col-12 col-sm-12 d-flex justify-content-center">
+        <h3>Comming Soon!!</h3>
+    </div>
+    {% endif %}
+    {% for i in stories %}
+    <div class="col-12 col-sm-6 col-md-6 col-lg-4 mytag">
+    
+        <div class="card promoting-card shadow card_data" style="">
+
+            <!-- Card content -->
+            <div class="card-body d-flex flex-row">
+  
+              <!-- Avatar -->
+              <div style="">
+              <a href="/profile/{{i.user_quotes}}"> <img src="/media/{{i.user_quotes.profile.avatar}}"  style="height:50px;width:50px;border-radius: 100%;border: 2px solid #4474E0;"></a>
+            </div>    
+  
+              <!-- Content -->
+              <div>
+  
+                <!-- Title -->
+                <h6 class="card-title font-weight-bold mb-2 ml-3 myclass"><a href="{{i.link}}" style="color:black;text-decoration: none;">{{i.title}}</a></h6>
+                <!-- Subtitle -->
+                <p class="card-text ml-3" style="font-size: 13px;"><i class="fa fa-clock-o pr-2" ></i>{{i.time}} {{i.date_Publish}},<a href="/profile/{{i.user_quotes}}"  data-toggle="tooltip" data-placement="top" title="See Profile"> {{i.user_quotes.profile.first_name|capfirst}} {{i.user_quotes.profile.last_name|capfirst}}</a></p>
+           
+  
+              </div>
+  
+            </div>
+           
+  
+            <div class="card-body" style="font-size: 13px; margin-top:-30px;">
+  
+            
+  
+                <p  class="myclass ml-5">{{i.content|safe}} <a href="/quotes/category/{{i.category}}" style="text-decoration: none;"><strong>Read More like this ...</strong></a></p>
+                
+             
+              <div style="display:flex; justify-content:space-between; flex-direction: row-reverse;">
+                <button style="border: none; background: none;padding:0px;font-size: 13px;" class="btn"  data-toggle="modal" data-target="#exampleModalLong{{forloop.counter}}"><i class="fa fa-share-alt text-muted float-right p-1 my-1 myhover" data-toggle="tooltip" title="Share"></i></button>
+                <div class="modal fade" id="exampleModalLong{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+              
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-title"><input id="MyInput{{forloop.counter}}" value="{{request.get_host}}{{i.link}}" type="text" style="width:100%; border: none;outline:none; " disabled></div>
+                      <div class="alert alert-info" id="alertvalue" style="display: none;"></div>
+                      <div class=" display:flex; justify-content:center; padding-top:30px;">
+                       <center> <button class="btn btn-outline-secondary" onclick="copy{{forloop.counter}}();" style="margin-top:10px;" data-toggle="tooltip"> Copy Link</button></center>
+                      </div>
+                      <div class="modal-body" style="display: flex; justify-content: center; flex-direction: row; align-items: center;">
+                        
+                        <div id="share{{forloop.counter}}" style="display: flex; justify-content: center; flex-direction: row; align-items: center;">
+                       
+                        </div>
+                        
+                      </div>
+                   
+                    </div>
+                  </div>
+                </div>
+                <form action="/quotes/saving/" method="POST" >
+                  {% csrf_token %}
+                  <input type="hidden" value="{{request.build_absolute_uri}}"  name="title">
+                  <input type="hidden" value="{{i.title}}" name="user_name">
+                  {% if i in request.user.profile.fav_quotes.all %}
+                  <button data-toggle="tooltip" data-placement="top" title="Unsave it!" class="btn"style="padding:0px"  type="submit">
+                    <i class="fa fa-bookmark float-right p-1 my-1 mr-3  myhover" style="color:red; padding:0px; font-size: 13px;"></i></button>
+                 
+                  {% else %}
+                  <button class="btn " data-toggle="tooltip" data-placement="top" title="Save it!" style="padding:0px;" title="Follow" type="submit">
+                    <i class="fa fa-bookmark text-muted  float-right p-1 my-1 mr-3  myhover" style="font-size: 13px;"></i></button>
+                 
+                  {% endif %}
+      
+            </form>
+           
+              <a >  <i class="fa fa-comment text-muted float-right p-1 my-1 mr-3  myhover" style="font-size: 12px;" data-toggle="tooltip" data-placement="top" title="{{i.quotes_comments.count}} {% if i.quotes_comments.count <= 1 %}Comment{%else%}Comments{%endif%}"> {{i.quotes_comments.count}}</i></a>
+                <form action="/quotes/dislike/" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{i.title}}" name="like">
+                    <input type="hidden" value="{{request.build_absolute_uri}}" name="url">
+                    {% if request.user.is_authenticated %}
+                    <button  style="background: none; border:none; outline:none;font-size:13px;" type="submit"> <i class="fa fa-thumbs-down myhover text-muted float-right p-1 my-1 mr-3 icon-pack" data-toggle="tooltip" data-placement="top" title="I dislike it"> {{i.disliked.count}} </i></button>
+                    {% else %}
+                    <a href="/login" ><i class="fa fa-thumbs-down text-muted float-right p-1 my-1 mr-3 icon-pack  myhover " style="font-size: 13px;"data-toggle="tooltip" data-placement="top" title="I dislike it"> {{i.disliked.count}} </i></a>
+                    {% endif %}
+                  
+
+                  </form>
+                  <form action="/quotes/like/" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{i.title}}" name="like">
+                    <input type="hidden" value="{{request.build_absolute_uri}}" name="url">
+                    {% if request.user.is_authenticated %}
+                    <button style="background: none; border:none; outline:none;font-size: 13px;" type="submit"> <i class="fa fa-thumbs-up text-muted float-right p-1 my-1 mr-3 icon-pack" data-toggle="tooltip" data-placement="top" title="I like it"> {{i.liked.count}} </i></button>
+                    {% else %}
+                    <a href="/login"><i class="fa fa-thumbs-up text-muted float-right p-1 my-1 mr-3 icon-pack" data-toggle="tooltip" data-placement="top" title="I like it" style="font-size: 13px;"> {{i.liked.count}} </i></a>
+                    {% endif %}
+                  </form>
+                
+                </div>
+  
+            </div>
+  
+          </div>
+    </div>
+    {% endfor%}
+    
+        
+</div>
+
+{% endblock %}
