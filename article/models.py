@@ -6,6 +6,8 @@ from django.dispatch import receiver
 from datetime import datetime
 from ckeditor.fields import RichTextField
 from stories.models import Stories
+from django.contrib.contenttypes.fields import GenericRelation
+from hitcount.models import HitCountMixin, HitCount
 # Create your models here.
 
 class Categories(models.Model):
@@ -45,6 +47,8 @@ class Articles(models.Model):
     instagram = models.CharField(max_length=1000,blank=True,null=True)
     twitter = models.CharField(max_length=1000,blank=True,null=True)
     other= models.CharField(max_length=1000,blank=True,null=True)
+    views = GenericRelation(HitCount, object_id_field='object_pk',
+     related_query_name='hit_count_generic_relation')
     
     
 	
@@ -144,7 +148,7 @@ class Notifications(models.Model):
           return " activity_count "+ str(self.activity_count) + " follow_count " + str(self.follow_count)+ " following_count " + str(self.following_count)
 
 class titleview(models.Model):
-    view = models.ForeignKey(Articles,related_name="titleview",to_field='title',on_delete=models.CASCADE)
+    view = models.ForeignKey(Articles,related_name="titleview",on_delete=models.CASCADE)
     ip_addr = models.CharField(max_length=300,blank=True,null=True)
     def __str__(self):
         return str(self.view)+ " " + str(self.ip_addr)

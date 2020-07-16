@@ -262,10 +262,11 @@
                 {% endif %}
                 
               </tr>
+           
           {% endfor %}
           {% for i in stories %}
             <tr>
-                <td style="cursor:pointer;" >{{forloop.counter}}</td>
+                <td style="cursor:pointer;" >{{forloop.counter|add:article_count.1}}</td>
 
                 <td style="cursor:pointer;" >
                   {% if i.video %}
@@ -301,6 +302,7 @@
                 
               </tr>
           {% endfor %}
+       
         </tbody>
         </table></div></div>
         </div>

@@ -1,4 +1,5 @@
 from django.urls import path
+
 from . import views
 urlpatterns = [
     path("",views.homepage,name="homepage"),
@@ -22,7 +23,7 @@ urlpatterns = [
     path('article/dislike/',views.dislike,name="dislike"),
     path('delete/<title>',views.delete,name="delete"),
     path('read/author/<username>',views.read_author,name="read_author"),
-
+  
     path('article/preview/edit/<title>/',views.editor_preview,name="editor_preview"),
     path('article/draft/title/<title>/',views.draft_version2,name="draft_version2"),
     path('dictionary/<keyword>/',views.dictionary,name="dictionary"),

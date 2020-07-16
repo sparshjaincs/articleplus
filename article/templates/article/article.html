@@ -1,5 +1,6 @@
 {% extends 'article/base1.html' %}
 {% load static %}
+{% load hitcount_tags %}
 {% block title %}
 Article | Article+
 {% endblock %}
@@ -49,6 +50,7 @@ div.scrollmenu {
     width:100%;
     border:none;
   )
+
 {% endblock %}
 {% block js %}
 <script>
@@ -117,21 +119,25 @@ div.scrollmenu {
         
         <div class="card-body">
             <div class="row">
-                <div class="col-10 col-sm-11">
-                    <div class="scrollmenu">
-                            {% for i in category %}
-                   
-                            
-                       
-                                <a href="/article/{{i.category_name}}" style="text-decoration: none; color: black;"><p><span class="led">{{i.category_name}}</span><span style="opacity:.4;"> |</span></p></a>
-               
-                           {%endfor%}
+                <div class="col-10 col-sm-6 offset-sm-3">
+                  <form class="d-none d-sm-block form-inline navbar-search" style="width:100%;">
+                    <div class="input-group">
+                      <input type="text" class="form-control bg-light border-0 small" style="width:100%;" onkeyup="myFunction()" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" id="myinput">
+                      
                     </div>
+                  </form>
+                  <form class="d-block d-sm-none form-inline navbar-search" style="width:100%;">
+                    <div class="input-group">
+                      <input type="text" class="form-control bg-light border-0 small" style="width:100%;" onkeyup="myFunction()" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" id="myinput">
+                      
+                    </div>
+                  </form>
+                    
                         
                 </div>
-                <div class="col-2 col-sm-1" style="display: flex; justify-content: space-evenly;">
+                <div class="col-2 col-sm" style="display: flex; justify-content: flex-end;">
                    
-                    <div >
+                    <div>
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" style="font-size: 15px;"><i class="fa fa-th" aria-hidden="true"></i></button>
                     </div>
                 </div>
@@ -148,7 +154,7 @@ div.scrollmenu {
                                 <div class="container">
                                     <div class="row">
                                         {% for i in users %}
-                                            <div class="col-12 col-sm-4 align-self-center" style="margin-bottom: 20px;padding:10px;">
+                                            <div class="col-6 col-sm-4 align-self-center" style="margin-bottom: 20px;padding:10px;">
                                                 <a href="/read/author/{{i.username}}"><img src="/media/{{i.profile.avatar}}" style="width:100%;height:150px;border-radius:5px;"></a>
                                                 <div style="display: flex; justify-content: center;font-weight: 600;"><a href="/profile/{{i.username}}">{{i.profile.first_name|capfirst}} {{i.profile.last_name|capfirst}}</a></div>
                                                 <div style="display: flex; justify-content: center;">{{i.profile.following.all.count}} Follower</div>
@@ -183,13 +189,17 @@ div.scrollmenu {
                   </div>
             </div>
             <div class="row">
-                <div class="col-12 col-sm-6 offset-sm-3 d-flex justify-content-center">
-                    <form class="d-none d-sm-inline-block form-inline navbar-search" style="width:100%;">
-                        <div class="input-group">
-                          <input type="text" class="form-control bg-light border-0 small" style="width:100%;" onkeyup="myFunction()" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" id="myinput">
-                          
-                        </div>
-                      </form>
+                <div class="col-12 col-sm-12  d-flex justify-content-center mt-4">
+                  <div class="scrollmenu">
+                    <a class="active" style="text-decoration: none; color: black;"><p><span class="led">All</span><span style="opacity:.4;"> </span></p></a>
+                    {% for i in category %}
+           
+                    
+               
+                        <a href="/article/{{i.category_name}}" style="text-decoration: none; color: black;"><p><span class="led">{{i.category_name}}</span><span style="opacity:.4;"> </span></p></a>
+       
+                   {%endfor%}
+            </div>
                 </div>
             </div>
                   
@@ -208,7 +218,7 @@ div.scrollmenu {
     </div>
     {% endif %}
     {% for i in articles %}
-    <div class="col-12 col-sm-6 col-md-6 col-lg-3 mytag">
+    <div class="col-12 col-sm-6 col-md-6 col-lg-3 mytag mb-3">
     
         <div class="card promoting-card shadow card_data" style="">
 
@@ -226,14 +236,48 @@ div.scrollmenu {
                 <!-- Title -->
                 <h6 class="card-title font-weight-bold mb-2 ml-3 myclass"><a href="{{i.link}}" style="color:black;text-decoration: none;">{{i.title}}</a></h6>
                 <!-- Subtitle -->
-                <p class="card-text ml-3" style="font-size: 13px;"><i class="fa fa-clock-o pr-2" ></i>{{i.time}} {{i.date_Publish}},<a href="/profile/{{i.user_name2}}"  data-toggle="tooltip" data-placement="top" title="See Profile"> {{i.user_name2.profile.first_name|capfirst}} {{i.user_name2.profile.last_name|capfirst}}</a></p>
+              
   
+              </div>
+              <div class="ml-1">
+                
+                <a class="" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class="fa fa-ellipsis-v"></i>
+                </a>
+              
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                  <a class="dropdown-item" href="#">
+                    {% if request.user == i.user_name2 %}
+                    {% else %}
+                    <form action="/author/follow/" method="POST" >
+                      {% csrf_token %}
+                      <input type="hidden" value="{{request.build_absolute_uri}}"  name="title">
+                      <input type="hidden" value="{{i.user_name2}}" name="user_name">
+                      {% if request.user in i.user_name2.profile.following.all %}
+                      <button data-toggle="tooltip" data-placement="top" title="Unfollow" style="border:none; background:none; " title="Unfollow" type="submit">
+                        Unfollow</button>
+                     
+                      {% else %}
+                      <button  data-toggle="tooltip" data-placement="top" title="Follow" style=" border:none; background:none;" title="Follow" type="submit">
+                        Follow</button>
+                     
+                      {% endif %}
+                      {% endif %}
+          
+                </form>
+                  </a>
+                  <a class="dropdown-item" href="#">Subscribe</a>
+                  <a class="dropdown-item" href="#">Mute Author</a>
+                  <a class="dropdown-item" href="/read/author/{{i.user_name2}}">Read More Articles</a>
+                  
+                </div>
               </div>
   
             </div>
   
             <!-- Card image -->
             <div class="view overlay">
+             <center> <p class="card-text " style="font-size: 13px;"><i class="fa fa-clock-o pr-2" ></i>{{i.time}} {{i.date_Publish}},<a href="/profile/{{i.user_name2}}"  data-toggle="tooltip" data-placement="top" title="See Profile"> {{i.user_name2.profile.first_name|capfirst}} {{i.user_name2.profile.last_name|capfirst}}</a></p></center>
               {% if i.video %}
               <video autoplay muted loop width="100%" height="150px">
                 <source src="/media/{{i.video}}" type="video/mp4">
@@ -245,7 +289,9 @@ div.scrollmenu {
                 {% if i.image2 %}
                 <img class="card-img-top rounded-0" src="{{i.image2}}" alt="Card image cap" style="height: 150px;">
                 {% else %}
+                {% if i.image %}
               <img class="card-img-top rounded-0" src="/media/{{i.image}}" alt="Card image cap" style="height: 150px;">
+              {% endif %}
               {% endif %}
               {%endif%}
               <a href="#!">
@@ -258,7 +304,7 @@ div.scrollmenu {
   
             
   
-                <p style="font-size: 10px;" class="myclass">{{i.description|safe}} <a href="{{i.link}}" style="text-decoration: none;"><strong>Read More ...</strong></a></p>
+                <p style="" class="myclass">{{i.description|safe}}</p> <a href="{{i.link}}" style="text-decoration: none;"><strong>Read More ...</strong></a>
                 
              
               <div style="display:flex; justify-content:space-between; flex-direction: row-reverse;">
@@ -303,7 +349,7 @@ div.scrollmenu {
                   {% endif %}
       
             </form>
-            <i class="fa fa-eye text-muted float-right p-1 my-1 mr-3  myhover" style="font-size: 13px;" data-toggle="tooltip" data-placement="top" title="{{i.titleview.all.count}} {% if i.titleview.all.count <= 1 %}View{%else%}Views{%endif%}"> {{i.titleview.all.count}}</i>
+            <i class="fa fa-eye text-muted float-right p-1 my-1 mr-3  myhover" style="font-size: 13px;" data-toggle="tooltip" data-placement="top" title="{{i.titleview.all.count}} {% if i.titleview.all.count <= 1 %}View{%else%}Views{%endif%}"> {% get_hit_count for i %}</i>
               <a href="{{i.link}}#comment">  <i class="fa fa-comment text-muted float-right p-1 my-1 mr-3  myhover" style="font-size: 12px;" data-toggle="tooltip" data-placement="top" title="{{i.my_comments.count}} {% if i.my_comments.count <= 1 %}Comment{%else%}Comments{%endif%}"> {{i.my_comments.count}}</i></a>
                 <form action="/article/dislike/" method="POST">
                     {% csrf_token %}

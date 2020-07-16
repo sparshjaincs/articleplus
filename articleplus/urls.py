@@ -29,6 +29,7 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='article/login.html'), name="login"),
     path('logout/', auth_views.LogoutView.as_view(), name="logout"),
     path('social-auth/', include('social_django.urls', namespace="social")),
+      path('hitcount/', include(('hitcount.urls', 'hitcount'), namespace='hitcount')),
   
    
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

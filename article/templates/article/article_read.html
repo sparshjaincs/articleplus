@@ -35,7 +35,7 @@ Read | Article+
     justify-content:center;
     flex-direction:column;
     align-items:center;
-  }
+  } 
 }
 {% endblock %}
 {% block js %}
@@ -361,13 +361,17 @@ Read | Article+
                             <h4>Tags</h4>
                         </div>
                         <div class="card-body">
-                          The styling for this basic card example is created by using default Bootstrap utility classes. By using utility classes, the style of the card component can be easily modified with no need for any custom CSS!
+                          <div style="color:black; display: flex; justify-content: flex-start; flex-wrap: wrap;">
+                            {% for i in tags %}
+                            <a class="btn btn-outline-secondary mb-2 mr-2">{{i}}</a>
+                            {% endfor %}
+                          </div>
                         </div>
                       </div>
                 </div>
                 <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                     <div class="card shadow mb-4">
-                        <div class="card-header" style="background-color: white;">
+                         <div class="card-header" style="background-color: white;">
                             <h6>Link to other sites</h6>
                         </div>
                         <div class="card-body d-flex justify-content-center" >

@@ -16,9 +16,10 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 import os
 import json
+from hitcount.views import HitCountDetailView
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .models import Profile,Articles,my_comment,Categories,Notifications,activity,titleview
+from .models import Profile,Articles,my_comment,Categories,Notifications,activity
 from .forms import ProfileForm,CommentForm
 from django.db.models import Count
 from PyDictionary import PyDictionary
@@ -361,7 +362,7 @@ def draft_version2(request,title):
             ins.other = request.POST.get('other')
             
             ins.save()
-            message.success(request,'Your article is saved as Draft!')
+            messages.success(request,'Your article is saved as Draft!')
            
 
                 
@@ -568,10 +569,10 @@ def article_read(request,username,title):
     context={}
     post = get_object_or_404(Articles, title = title.replace("_"," "))
     comments = post.my_comments.filter(active=True,parent=None)
-    ip_addr = get_client_ip(request)
-    if not titleview.objects.filter(view=post,ip_addr=ip_addr).exists():
-        ins = titleview(view = post,ip_addr = ip_addr)
-        ins.save()
+    #ip_addr = get_client_ip(request)
+    #if not titleview.objects.filter(view=post,ip_addr=ip_addr).exists():
+    #    ins = titleview(view = post,ip_addr = ip_addr)
+    #    ins.save()
     if request.method == 'POST':
        
         comment_form = CommentForm(data=request.POST)

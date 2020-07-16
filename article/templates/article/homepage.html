@@ -6,28 +6,47 @@ Article+
 {% block navbar %}
 {% include 'article/navbar.html' %}
 {% endblock %}
+{% block style %}
+#overlay1{
+  background-color:#000; /* Black background with opacity */
+  z-index: 2; 
+  width: 100%;
+  height:100%;
+
+  opacity:0.8;
+}
+
+{% endblock %}
 {% block parallax %}
-<div class="carousel-default owl-carousel carousel-main carousel-nav-white background-dark text-center">
-    <div class="item">
-      <div class="s-12">
-        <img src="{% static 'article/img/bg3.jpg' %}" alt="" style="height:630px;">
-        <div class="carousel-content">
-          <div class="content-center-vertical line">
-            <div class="margin-top-bottom-80">
-              <!-- Title -->
-              <h1 class="text-white margin-bottom-30 text-size-60 text-m-size-30 text-line-height-1">Article+</h1>
-              <div class="s-12 m-10 l-8 center"><p class="text-white text-size-14 margin-bottom-40">Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis. Iriure dolor in hendrerit duis autem vel eum in vulputate velit esse molestie consequat.</p></div>
-              <div class="line">
-                <div class="s-12 m-12 l-3 center">
-                  <a class="button button-white-stroke s-12" href="/">Get Started Now</a>
-                </div>       
-              </div>  
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>              
-  </div>      
+
 {% endblock %}
 {% block content %}
+
+<div style="background-image: url('{%static 'article/img/bg3.jpg' %}');  
+background-repeat:no-repeat; background-size: cover;">
+    <div id="overlay1">
+        <div class="container" style="height:550px; display: flex;justify-content: center; align-items: center;">
+        
+            <div style="display: flex; justify-content: center; flex-direction: column;">
+            
+            <center><h1 style="color:white; font-size: 90px; font-weight: 700; letter-spacing: 2px;">Article<span style="color:#FFD369;">+</span></h1></center>
+           <center><p style="color:rgb(255,255,255,0.6); margin-top: -10px;">Let your creative thinking and our platform work together to turn your writing into a piece of art.</p></center> 
+            <center>
+              <button class="btn btn-outline-warning" style="font-size: 20px;">Get Started</button>
+            </center>
+            
+          </div>
+          
+        </div>
+        
+
+        <div style="display: flex; justify-content: center; padding-bottom: 50px;">
+       <center> <blackquote style="color:rgb(255,255,255,0.6);"> <i> Start writing, no matter what. The water does not flow until the faucet is turned on.  -- Louis L’Amour </i> </blackquote></center>  
+        </div>
+        </div>
+        
+
+    </div>
+
+
 {% endblock %}

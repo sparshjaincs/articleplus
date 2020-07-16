@@ -1,53 +1,202 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en-US">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>
-        {% block title %}
-        {% endblock %}
-    </title>
-    <link rel="stylesheet" href="{% static 'article/css/components.css' %}">
-    <link rel="stylesheet" href="{% static 'article/css/icons.css' %}">
-    <link rel="stylesheet" href="{% static 'article/css/responsee.css' %}">
-    <link rel="stylesheet" href="{% static 'article/owl-carousel/owl.carousel.css' %}">
-    <link rel="stylesheet" href="{% static 'article/owl-carousel/owl.theme.css' %}">     
-    <link rel="stylesheet" href="{% static 'article/css/template-style.css' %}">
-    
-    <link href='https://fonts.googleapis.com/css?family=Playfair+Display&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,700,800&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-    <script type="text/javascript" src="{% static 'article/js/jquery-1.8.3.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'article/js/jquery-ui.min.js' %}"></script>  
-   
-    {% block jscss %}
-    {% endblock %} 
-    <style>
-        {% block style %}
+<html>
+    <head>
+        <title>
+            {% block title%}
+            Home | Article+
+            {% endblock %}
+        </title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit">
+        <link type="stylesheet" href="{% static 'article/base.css'}">
+        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 
-        {% endblock %}
-    </style>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.2/css/uikit.min.css" rel="stylesheet" type="text/css">
+        <link href="https://cdn.datatables.net/1.10.21/css/dataTables.uikit.min.css" rel="stylesheet" type="text/css">
+        <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/jquery.jssocials/1.4.0/jssocials-theme-flat.css" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery.jssocials/1.4.0/jssocials.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+        <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.10.21/js/dataTables.uikit.min.js"></script>
        
-  </head>
+        <script src="https://cdn.jsdelivr.net/parallax.js/1.4.2/parallax.min.js"></script>
+        
+     
   
-  <body class="size-1140">
-    <header role="banner" class="position-absolute">    
-        {% block navbar %}
-        {% endblock %}
 
-    </header>
-    <main role="main">    
-        <!-- Main Header -->
+        {% block jscss %}
+
+        {% endblock %}
+        <style>
+            .nav-link{
+    color:rgb(255,255,255,0.9);
+    font-weight: 600;
+    font-size:12px;
+    letter-spacing: 1px;
+}
+::-webkit-scrollbar {
+    width: 5px;
+    height:5px;
+  }
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey; 
+   
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #589EBD; 
+    border-radius: 10px;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #b30000; 
+  }
+.nav-item{
+margin-left: 15px;
+}
+.navbar-brand{
+    color:white;
+   font-size:30px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    margin-left: 30px;
+    text-decoration:none;
+    
+}
+.navbar-brand:hover{
+    color:black; 
+}
+.navbar-brand-span{
+    color:#007ACC;
+}
+.nav-link:hover{
+color:rgb(255,255,255,0.9);
+}
+.nav-link:hover .bar{
+    color:#FECE28;
+    
+    
+    opacity:1;
+    }
+.nav-link.active .bar{
+    color:#FECE28;
+    opacity:1;
+}
+.bar{
+    transition: .6s linear;
+    margin-right: 10px;
+    opacity: 0;
+
+
+}
+.breadcrumb{
+    background-color: floralwhite;
+}
+.jumbotron{
+    background-color: floralwhite;
+}
+.card{
+    box-shadow:0px 0px 3px 3px rgb(233,235,235,0.5);
+    padding:5px;
+    
+}
+.card:hover{
+    background-color:floralwhite;
+}
+
+.no-js #loader { display: none;  }
+.js #loader { display: block; position: absolute; left: 100px; top: 0; }
+.se-pre-con {
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+	background: url('{% static "Spinner-1s-200px.gif" %}') center no-repeat #fff;
+}  
+            {% block style %}
+
+            {% endblock %}
+        </style>
+    </head>
+    <body id="body"  >
+        <div class="se-pre-con" id="animating"></div>
         <header>
-          {% block parallax %}
-          {% endblock %}         
-        </header>
-      {% block content %}
-      {% endblock %}
-    <script type="text/javascript" src="{% static 'article/js/responsee.js' %}"></script>
-    <script type="text/javascript" src="{% static 'article/owl-carousel/owl.carousel.js' %}"></script>
-    <script type="text/javascript" src="{% static 'article/js/template-scripts.js' %}"></script>
-    {% block js %}
-    {% endblock %}
-  </body>
+                {% block navbar %}
+                 {% endblock %}
+        </header> 
+        {% block content1%}
+        {% endblock %}
+        <section>
+        {% block content%}
+        {% endblock %}
+        </section>
+        
+
+        <script>
+            window.onload = fade();
+            function fade(){
+        document.getElementById('animating').style.display = 'none';
+      }
+        </script>
+        <script>
+            $(function () {
+  $('[data-toggle="tooltip"]').tooltip({ boundary: 'window' })
+})
+        </script>
+<script>
+  var myNav = document.getElementById('mynav');
+    var nav_link = document.getElementsByClassName('nav-link');
+   
+   
+    window.onscroll = function () { 
+    if (document.body.scrollTop >= 150 || document.documentElement.scrollTop >= 150) {
+        if(document.body.scrollTop >= 200 || document.documentElement.scrollTop >=200){
+        
+           
+        }
+       
+      
+        myNav.style.background="white";
+        myNav.style.boxShadow="0px 0px 3px 3px rgb(0,0,0,0.1)";
+        this.myNav.style.transition = ".5s linear";
+        var nav_brand= document.getElementsByClassName('brand')[0].style.color='#000';
+        for(i=0;i<=this.nav_link.length;i++){
+            this.nav_link[i].style.color='#000';
+
+        }
+
+
+ 
+        
+    } 
+  
+    else {
+        myNav.style.background="none";
+        var nav_brand= document.getElementsByClassName('brand')[0].style.color='white';
+        for(i=0;i<=this.nav_link.length;i++){
+            this.nav_link[i].style.color='white';
+        }
+       
+       
+    }
+    
+      
+};
+
+</script>
+        {% block script %}
+
+        {% endblock %}
+        
+
+            
+        
+    </body>
 </html>

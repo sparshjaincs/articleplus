@@ -1,36 +1,80 @@
-<nav class="background-transparent background-transparent-hightlight full-width sticky">
-    <div class="s-12 l-2">
-      <a href="{% url 'homepage' %}" class="logo">
-       <h1 style="color:white; letter-spacing: 2px; font-weight: 600; margin-top:13px;">Article+</h1>
-        <!-- Logo White Version 
-        <img class="logo-white" src="img/logo.png" alt="">
-       
-        <img class="logo-dark" src="img/logo-dark.png" alt="">
-        -->
-      </a>
-    </div>
-    <div class="top-nav s-12 l-10">
-      
-      <ul class="right chevron">
-        <li><a href="{% url 'homepage' %}">Home</a></li>
-        <li><a href="{% url 'article_section' %}">Articles</a></li>
-        <li><a href="{% url 'stories' %}">Stories</a>
-         
-        </li>
-        <li><a href="about.html">Poetries</a></li>
-        <li><a href="gallery.html">Quotes</a></li>
-        <li><a href="{% url 'trends' %}">Trends</a></li>
-        <li><a href="contact.html">API</a></li>
-        {% if request.user.is_authenticated %}
-        <li><a href="{% url 'login' %}">{{request.user|upper}}</a>
-          <ul>
-            <li><a>Profile</a></li>
-            <li><a>Bookmarks</a></li>
-          </ul>
-        </li>
-        {%else%}
-        <li><a href="{% url 'login' %}">SIGNIN</a></li>
-        {% endif %}
-      </ul>
+
+
+<nav id ="mynav" class="navbar navbar-expand-lg fixed-top" style="font-size: 15px;border-bottom: 1px solid rgb(255,255,255,0.1);">
+  <a class="navbar-brand brand" href="{% url 'homepage'%}"><span style="font-size: 40px;">A</span>rticle<span style="color:#FECE28;">+</span></a>
+  <button class="navbar-toggler btn btn-outline-info" type="button" data-toggle="collapse" data-target="#navbarcontent">
+      <i class="fa fa-bars"></i>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarcontent" > 
+    <ul class="navbar-nav ml-auto">
+    <li class="nav-item ">
+        <a class="nav-link " href="{% url 'homepage'%}"><span class="fa fa-minus bar"></span>HOME<span class="sr-only">(current)</span></a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'article_section' %}"><span class="fa fa-minus bar"></span>ARTILCES</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'stories'%}"><span class="fa fa-minus bar"></span>STORIES</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#experience"><span class="fa fa-minus bar"></span>POETRIES</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'quotes' %}"><span class="fa fa-minus bar"></span>QUOTES</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'trends' %}"><span class="fa fa-minus bar"></span>TRENDS</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/api/"><span class="fa fa-minus bar"></span>API</a>
+  </li>
+  
+    {% if user.is_authenticated %}
+                <li class="nav-item"><div class="dropdown">
+                  <button class="btn btn-default dropdown-toggle d-none d-sm-block" type="button" style="color:#FABD66;background: none;outline:none; font-size: 15px;border-radius: 45px;"id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                   <i class="fa fa-bell"></i> 
+                   {% if a_c.0 %} 
+                   <span class="badge badge-danger" style="position: absolute; margin-top: -10px;background-color: #DC3545;">{{a_c.1}}</span>
+                   {% endif%}
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right table-responsive" aria-labelledby="dropdownMenuButton" style="width:400px;overflow-y: scroll;font-size:10px; height:400px;border-top:4px solid #FABD66">
+                    <center><strong>Notifications</strong></center>
+                    <table class="table table-striped" style="overflow-y: scroll;">
+                      {% for data in activity%}
+                      <tr class="danger">
+                        <td>{{forloop.counter}}</td>
+                        <td>{{data.user_activity}}</td>
+                        <td>{{data.activity_time}}</td>
+                        <td>{{data.date_activity}}</td>
+                      </tr>
+                      {% endfor %}
+                    </table>
+                  </div>
+                </div></li>
+                <li class="nav-item dropdown mr-2" style="padding-right: 20px; letter-spacing: 2px;">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <img style="margin-top:-5px;border-radius: 5px;"src="/media/{{request.user.profile.avatar}}" width="25px" height="25px"></img> <strong>{{request.user|upper }}</strong>
+                    {% if show %}
+                    <span class="badge badge-danger" style="position: absolute; margin-top: -10px;">1</span>
+                    {% endif %}
+                  </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown" style="box-shadow: 3x 3px 5px black; color:white; ">
+            
+                      
+                      <a class="dropdown-item" href="{% url 'profile' %}">Profile</a>
+                      <a class="dropdown-item" href="{% url 'my_bookmarks' %}">Bookmarks</a>
+                      <a class="dropdown-item" href="{% url 'my_bookmarks' %}">Analytics</a>
+                      <a class="dropdown-item" href="{% url 'password_change' %}">Change password</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="{% url 'logout' %}">Log out</a>
+                   
+                    </div>
+                {% else %}
+                <li class="nav-item"><a href="{% url 'login'%}" class="nav-link " style="color:#FECE28" ><span class="fa fa-minus bar"></span>SIGNIN</a></li>
+                {% endif %}
+              </ul>
+
     </div>
   </nav>
+
+          

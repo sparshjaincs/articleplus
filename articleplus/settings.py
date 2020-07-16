@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'trends',
     'quotes',
     'stories',
-    
+    'hitcount',
     'crispy_forms',
     'social_django',
     'ckeditor',
