@@ -21,6 +21,11 @@ Article+
   margin-left:30px;
  
 }
+.my_img:hover{
+  transform: scale(1.1);
+  transition:1s linear;
+ 
+}
 {% endblock %}
 {% block parallax %}
 
@@ -52,11 +57,11 @@ background-repeat:no-repeat; background-size: cover;">
         
 
     </div>
-    <section>
-      <div class="container">
+    <section class="pt-5">
+      <div class="container" >
         <div class="row" style="margin-top:80px;">
           <div class="col-12 col-sm-4">
-            <img src="{% static  'article/img/undraw_content_creator_xeju.svg' %}">
+            <img class="my_img" src="{% static  'article/img/undraw_content_creator_xeju.svg' %}">
           </div>
           <div class="col-12 col-sm  mt-5">
             <div style="display: flex; flex-direction: column;">
@@ -72,11 +77,11 @@ background-repeat:no-repeat; background-size: cover;">
       </div>
     </section>
 
-  <section>
-    <div class="container">
-      <div class="row" style="margin-top:80px;">
+  <section class="pt-5">
+    <div class="container"> 
+      <div class="row" style="margin-top:80px;" >
         <div class="col-12 col-sm-4 order-sm-last">
-            <img src="{% static  'article/img/undraw_reading_0re1.svg' %}">
+            <img class="my_img" src="{% static  'article/img/undraw_reading_0re1.svg' %}">
         </div>
         <div class="col-12 col-sm  mt-5 ">
           <div style="display: flex; flex-direction: column;">
@@ -92,11 +97,11 @@ background-repeat:no-repeat; background-size: cover;">
     </div>
   </section>
 
-  <section>
-    <div class="container">
+  <section class="pt-5">
+    <div class="container" >
       <div class="row" style="margin-top:80px;">
         <div class="col-12 col-sm-4">
-            <img src="{% static  'article/img/undraw_data_trends_b0wg.svg' %}">
+            <img class="my_img" src="{% static  'article/img/undraw_data_trends_b0wg.svg' %}">
         </div>
         <div class="col-12 col-sm  mt-5">
           <div style="display: flex; flex-direction: column;">
@@ -111,24 +116,79 @@ background-repeat:no-repeat; background-size: cover;">
       </div>
     </div>
   </section>
-  <section>
-    <div class="container">
+  <section class="pt-5">
+    <div class="container" >
       <div class="row" style="margin-top:80px;">
-        <div class="col-12 col-sm-3">
-            <img src="{% static  'article/img/undraw_online_articles_79ff.svg' %}">
+        <div class="col-12 col-sm-4 order-sm-last">
+            <img class="my_img" src="{% static  'article/img/undraw_connected_world_wuay.svg' %}">
         </div>
-        <div class="col-12 col-sm-3">
-          <img src="{% static  'article/img/undraw_into_the_night_vumi.svg' %}">
-      </div>
-      <div class="col-12 col-sm-3">
-        
-    </div>
-    <div class="col-12 col-sm-3">
-      <img src="{% static  'article/img/undraw_Posts_rskc.svg' %}">
-  </div>
+        <div class="col-12 col-sm  mt-5">
+          <div style="display: flex; flex-direction: column;">
+          <h1  class="head">Connect with Writers and Your Friends all over the world.</h1>
+ 
+          <p  style=" margin-top: -10px; margin-left:30px;color:rgb(0,0,0,0.5); font-weight: 600;">
+            Work together for crafting your master piece, share it with your friends and start building your following.
+          </p>
+          <div style="display: flex; justify-content:flex-start ; margin-left:30px;">
+           <a href="{% url 'login' %}" class="btn btn-outline-secondary" style="font-weight: 600;">Lets Go <i class="fa fa-arrow-right ml-3" ></i></a>
+          </div>
+        </div> 
+        </div>
       </div>
     </div>
   </section>
+  <section class="pt-3 mt-5" style="background-color: #B0E0E6;">
+    <div class="container" >
+      <div class="row" style="margin-top:80px;">
+        <div class="col-12 col-sm-12">
+        <center>
+          <h1 class="head">Article<span style="color:#FFD369;">+</span> Tools</h1>
+        </center>
+      </div>
+    </div>
+      <div class="row" style="margin-top:30px;">
+        <div class="col-12 col-sm-6 " >
+        <center>
+            <img class="my_img" src="{% static  'article/img/undraw_data_extraction_ih3n.svg' %}" style="height:300px; width:300px;">
+          </center> 
+            <div style="display: flex; flex-direction: column;">
+            <center> 
+              <h1  class="head">API</h1>
+            </center> 
+     <center>
+              <p  style=" margin-top: -10px; margin-left:30px;color:rgb(0,0,0,0.5); font-weight: 600;">
+                Article<span class="plus">+</span> API</span> is a simple and easy-to-use API that return <span class="header2">JSON</span> object for <span class="header2">trending searches</span> all
+                    over the world, <span class="header2">trending articles</span>, and also provides <span class="header2">Content Extraction API</span>. 
+              </p>
+            </center>
+              <div style="display: flex; justify-content:center  ; margin-left:30px;">
+               <a href="{% url 'login' %}" class="btn btn-outline-secondary" style="font-weight: 600;">Get Your Key Now. <i class="fa fa-arrow-right ml-3" ></i></a>
+              </div>
+            </div> 
+        </div>
+        <div class="col-12 col-sm-6 ">
+          <center>
+              <img class="my_img" src="{% static  'article/img/undraw_convert_2gjv.svg' %}" style="height:300px; width:300px;">
+            </center> 
+              <div style="display: flex; flex-direction: column;">
+              <center> 
+                <h1  class="head">Article Rephraser</h1>
+              </center> 
+              <center>
+                <p  style=" margin-top: -10px; margin-left:30px;color:rgb(0,0,0,0.5); font-weight: 600;">
+                  Rephraser Tool helps you to transform your article into fresh one which is free from plgarism.
+                  It helps you to craft your article within a minute.
+                              </p>
+                            </center>
+                <div style="display: flex; justify-content:center ; margin-left:30px;">
+                 <a href="{% url 'login' %}" class="btn btn-outline-secondary" style="font-weight: 600;">Lets make use of it.<i class="fa fa-arrow-right ml-3" ></i></a>
+                </div>
+              </div> 
+          </div>
+      </div>
+    </div>
+  </section>
+
 
 
 {% endblock %}
