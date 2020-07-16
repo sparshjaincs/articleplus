@@ -15,7 +15,12 @@ Article+
 
   opacity:0.8;
 }
-
+.head{
+  font-weight:600;
+  letter-spacing:3px;
+  margin-left:30px;
+ 
+}
 {% endblock %}
 {% block parallax %}
 
@@ -47,6 +52,83 @@ background-repeat:no-repeat; background-size: cover;">
         
 
     </div>
+    <section>
+      <div class="container">
+        <div class="row" style="margin-top:80px;">
+          <div class="col-12 col-sm-4">
+            <img src="{% static  'article/img/undraw_content_creator_xeju.svg' %}">
+          </div>
+          <div class="col-12 col-sm  mt-5">
+            <div style="display: flex; flex-direction: column;">
+            <h1  class="head">Start Writing Your Piece Of Art.</h1>
+            <p  style="margin-top: -20px; margin-left:30px;color:rgb(0,0,0,0.5); font-weight: 600;"></p>
+            <p  style=" margin-top: -10px; margin-left:30px;color:rgb(0,0,0,0.5); font-weight: 600;">Writing is an art everyone should master. Let your creative thinking and our platform work together to turn your writing into a piece of art. </p>
+            <div style="display: flex; justify-content:flex-start ; margin-left:30px;">
+             <a href="{% url 'login' %}" class="btn btn-outline-secondary" style="font-weight: 600;">Start Writing<i class="fa fa-arrow-right ml-3" ></i></a>
+            </div>
+          </div> 
+          </div>
+        </div>
+      </div>
+    </section>
+
+  <section>
+    <div class="container">
+      <div class="row" style="margin-top:80px;">
+        <div class="col-12 col-sm-4 order-sm-last">
+            <img src="{% static  'article/img/undraw_reading_0re1.svg' %}">
+        </div>
+        <div class="col-12 col-sm  mt-5 ">
+          <div style="display: flex; flex-direction: column;">
+          <h1  class="head">Read and Build Your Knowledge</h1>
+
+          <p  style=" margin-top: -10px; margin-left:30px;color:rgb(0,0,0,0.5); font-weight: 600;">Expand your knowledge by reading the topics you love. </p>
+          <div style="display: flex; justify-content:flex-start ; margin-left:30px;">
+           <a href="{% url 'article_section' %}" class="btn btn-outline-secondary" style="font-weight: 600;">Explore Now. <i class="fa fa-arrow-right ml-3" ></i></a>
+          </div>
+        </div> 
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="row" style="margin-top:80px;">
+        <div class="col-12 col-sm-4">
+            <img src="{% static  'article/img/undraw_data_trends_b0wg.svg' %}">
+        </div>
+        <div class="col-12 col-sm  mt-5">
+          <div style="display: flex; flex-direction: column;">
+          <h1  class="head">Trends</h1>
+          <p  style="margin-top: -20px; margin-left:30px;color:rgb(0,0,0,0.5); font-weight: 600;">See what the world is searching for.</p>
+          <p  style=" margin-top: -10px; margin-left:30px;color:rgb(0,0,0,0.5); font-weight: 600;">Watch the latest trends, see what is going on in the world and what the world is searching for and update yourself by reading articles realted to them. </p>
+          <div style="display: flex; justify-content:flex-start ; margin-left:30px;">
+           <a href="{% url 'trends' %}" class="btn btn-outline-secondary" style="font-weight: 600;">Check it out <i class="fa fa-arrow-right ml-3" ></i></a>
+          </div>
+        </div> 
+        </div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <div class="container">
+      <div class="row" style="margin-top:80px;">
+        <div class="col-12 col-sm-3">
+            <img src="{% static  'article/img/undraw_online_articles_79ff.svg' %}">
+        </div>
+        <div class="col-12 col-sm-3">
+          <img src="{% static  'article/img/undraw_into_the_night_vumi.svg' %}">
+      </div>
+      <div class="col-12 col-sm-3">
+        
+    </div>
+    <div class="col-12 col-sm-3">
+      <img src="{% static  'article/img/undraw_Posts_rskc.svg' %}">
+  </div>
+      </div>
+    </div>
+  </section>
 
 
 {% endblock %}
