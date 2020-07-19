@@ -2,7 +2,11 @@
 {% load static%}
 {% load crispy_forms_tags %}
 {% block style%}
-
+.my_img:hover{
+  transform: scale(1.1);
+  transition:1s linear;
+ 
+}
 {% endblock %}
 
 {% block content %}
@@ -75,14 +79,16 @@
 <div class="container" style="margin-top:-60px;">
 <div class="row justify-content-center">
 
-  <div class="col-xl-10 col-lg-12 col-12 col-md-9">
+  <div class="col-xl-12 col-lg-12 col-12 col-md-9">
 
     <div class="card o-hidden border-0 shadow-lg my-5">
       <div class="card-body p-0">
         <!-- Nested Row within Card Body -->
         <div class="row">
-         
-          <div class="col-lg-6 offset-lg-3">
+         <div class="col-lg-6" style="display:flex; justify-content: center; align-items: center;">
+          <img class="my_img" src="{% static 'article/img/undraw_mobile_login_ikmv.svg' %}" style="width:100%;">
+         </div>
+          <div class="col-lg-6 ">
             <div class="p-5">
               <div class="text-center">
                 <a href="{% url 'homepage' %}" style="text-decoration: none;">
@@ -114,7 +120,7 @@
                 <a class="small" href="forgot-password.html">Forgot Password?</a>
               </div>
               <div class="text-center">
-                <a class="small" href="register.html">Create an Account!</a>
+                <a class="small" href="{% url 'signup' %}">Create an Account!</a>
               </div>
             </div>
           </div>

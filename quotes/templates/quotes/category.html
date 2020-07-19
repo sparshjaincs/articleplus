@@ -1,0 +1,236 @@
+{% extends 'article/base1.html' %}
+{% load static %}
+{% load to_and %}
+{% block title %}
+Article | Article+
+{% endblock %}
+{% block navbar %}
+{% include 'article/navbar1.html' %}
+{% endblock %}
+{% block style %}
+::-webkit-scrollbar{
+  transparent:none;
+}
+div.scrollmenu {
+   
+    overflow: auto;
+    white-space: nowrap;
+  }
+  
+  div.scrollmenu a {
+    display: inline-block;
+   
+    
+    text-align: center;
+    padding: 2px;
+    text-decoration: none;
+  }
+  .led{
+   
+    
+  }
+  .jssocials-share-link {display:flex; justify-content:center; flex-direction:row; align-items:center;margin:10px;}
+  div.scrollmenu .led:hover {
+   
+    font-weight:600;
+ 
+  }
+ 
+  .jssocials-shares{
+    display:flex;
+    justify-content:center;
+    flex-direction:row;
+    align-items:center;
+  }
+  .myput(
+    width:100%;
+    border:none;
+  )
+{% endblock %}
+{% block js %}
+<script>
+    document.body.style.backgroundColor = "#fff";
+</script>
+<script>
+  function copy(){
+    var copyText = document.getElementById("myInput1");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999)
+    document.execCommand("copy");
+    document.getElementById('alertvalue').style.display="block";
+    document.getElementById('alertvalue').innerHTML = "Copied";
+
+  }
+</script>
+
+<script>
+  
+    function myFunction(){
+      var search_val = document.getElementById('myinput').value.toLowerCase();
+      var data = document.getElementById('myTable');
+      var data_part = data.getElementsByClassName('myclass');
+     
+      var tag_part = data.getElementsByClassName('mytag');
+      console.log(tag_part);
+      for(i=0;i<tag_part.length;i++){
+        txtvalue = data_part[i].textContent || data_part[i].innerText;
+        
+        if(txtvalue.toLowerCase().indexOf(search_val) > -1){
+          tag_part[i].style.display="inline";
+          tag_part[i].style.justify="left";
+          
+        }
+        else{
+          tag_part[i].style.display="none";
+        }
+      }
+      
+    }
+  
+  fun2("all")
+  function fun2(c) {
+   console.log(document.getElementsByClassName(c));
+  }
+  
+    </script>
+{% for i in stories%}
+<script>
+  function copy(){
+    var copyText = document.getElementById("MyInput{{forloop.counter}}");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999)
+    document.execCommand("copy");
+    document.getElementById('alertvalue').style.display="block";
+    document.getElementById('alertvalue').innerHTML = "Copied";
+
+  }
+</script>
+<script>
+  $("#share{{forloop.counter}}").jsSocials({
+    showLabel: false,
+    showCount: "inside",
+    url:"{{request.get_host}}{{i.link}}",
+    text:"{{i.title}}",
+    shares: ["email", "twitter", "facebook", "linkedin", "pinterest", "whatsapp"]
+  });
+</script>
+{% endfor %}
+{% endblock %}
+{% block content %}
+<div class="row">
+
+    <div class="col-lg-12">
+
+      <!-- Default Card Example -->
+      <div class="card shadow mb-4">
+        
+        <div class="card-body">
+            <div class="row">
+              <div class="col-10 col-sm-11 mt-2">
+                <div class="scrollmenu">
+                  <a href="/quotes/" style="text-decoration: none;" class="mr-3"><p>All</p></a>
+                        {% for i in category %}
+                            {% if i.category_name == name %}
+                            <a href="/quotes/category/{{i.category_name}}" class="mr-3" style="text-decoration: none;"><p><button class="btn btn-primary">{{i.category_name}}</button></p></a>
+                            {% else %}
+                        
+                   
+                            <a href="/quotes/category/{{i.category_name}}" class="mr-3" style="text-decoration: none;"><p>{{i.category_name}}</p></a>
+                            {% endif %}
+                       {%endfor%}
+                </div>
+                    
+            </div>
+               
+                <div class="col-2 col-sm-1" style="display: flex; justify-content: flex-end;">
+                   
+                    <div class="mt-3">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter" style="font-size: 15px;"><i class="fa fa-th" aria-hidden="true"></i></button>
+                    </div>
+                </div>
+                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" >
+                    <div class="modal-dialog modal-dialog-centered" role="document" >
+                      <div class="modal-content">
+                        <div class="modal-header">
+                        <center> <h5 class="modal-title" id="exampleModalLongTitle"><strong>Writers</strong></h5></center> 
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                                <div class="container">
+                                    <div class="row">
+                                        {% for i in users %}
+                                        {% if request.user == i.profile.user %}
+                                        {%else%}
+                                       
+                                            <div class="col-6 col-sm-4 align-self-center" style="margin-bottom: 20px;padding:10px;">
+                                                <a href="/read/author/{{i.username}}" title="Read Author Writing" data-toggle="tooltip"><img src="/media/{{i.profile.avatar}}" style="width:100%;height:130px;border-radius:50%;"></a>
+                                                <div style="display: flex; justify-content: center;font-weight: 600;"><a href="/profile/{{i.username}}" title="See Profile" data-toggle="tooltip">{{i.profile.first_name|capfirst}} {{i.profile.last_name|capfirst}}</a></div>
+                                                <div style="display: flex; justify-content: center;">{{i.profile.following.all.count}} Follower</div>
+                                                <div style="justify-content: center;display: flex;">
+                                                   
+                                                <form action="/author/follow/" method="POST">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" value="{{request.build_absolute_uri}}"  name="title">
+                                                    <input type="hidden" value="{{i.username}}" name="user_name">
+                                                    {% if request.user in i.profile.following.all %}
+                                                    <button class="btn btn-outline-primary"style=" font-size: 12px;padding:2px;" title="Unollow" type="submit">Unfollow</button>
+                           
+                                                    {% else %}
+                                                    <button class="btn btn-outline-primary" style="font-size: 12px;padding:2px;" title="Follow" type="submit">Follow</button>
+                                                
+                                                    {% endif %}
+        
+                                               </form>
+
+                                       
+                                          
+                                        </div>
+                                            </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                        </div>
+                        
+                      </div>
+                    </div>
+                  </div>
+            </div>
+            <div class="row">
+              
+                
+            </div>
+                  
+        </div>
+      </div>
+
+
+    </div>
+
+  </div>
+  <div class="row">
+    {% if quotes.count == 0 %}
+    <div class="col-12">
+    <center><h2>Nothing to show!</h2></center>
+    </div>
+    {% endif %}
+    <div class="col-12 col-sm-12 col-md-9">
+    <div class="row">
+    {% for i in quotes %}
+    
+        <div class="col-12 col-sm-6 col-md-6 col-lg-4 ">
+            <div class="card shadow">
+                <div class="card-body">
+
+                </div>
+            </div>
+
+        </div>
+    {% endfor %}
+  </div>
+</div>
+</div>
+
+{% endblock %}

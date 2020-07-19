@@ -4,4 +4,4 @@ from .models import *
 admin.site.register(Quotes)
 admin.site.register(Categories)
 admin.site.register(Quotes_comment)
-admin.site.register(titleview)
+#admin.site.register(titleview)

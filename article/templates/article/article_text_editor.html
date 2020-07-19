@@ -9,6 +9,13 @@
 {% block title %}
 Text Editor | Article+
 {% endblock %}
+{% block style%}
+.my_img:hover{
+  transform: scale(1.1);
+  transition:1s linear;
+ 
+}
+{% endblock %}
 {% block js %}
 <script>
     document.body.style.backgroundColor = "#fff";
@@ -49,6 +56,7 @@ Text Editor | Article+
               if(this.readyState == 4 && this.status == 200){
                 var details = JSON.parse(req.responseText);
                 console.log(details);
+                document.getElementById('defi').innerHTML = details[1];
                 try{
                     document.getElementById('meaning').innerHTML = details[0].Verb;
                 }
@@ -61,8 +69,12 @@ Text Editor | Article+
                 catch(err){
                     document.getElementById('noun').innerHTML = "No Verb Found!!";
                 }
-                
+                document.getElementById('example').innerHTML = details[2];
+                document.getElementById('syn').innerHTML = details[3];
+                document.getElementById('ant').innerHTML = details[4];
+
                 document.getElementById('wait').innerHTML = "";
+                
                
               }
             };
@@ -74,17 +86,13 @@ Text Editor | Article+
 {% endblock %}
 {% block content %}
 <div class="row">
-
-    <div class="col-lg-12">
-
-      <!-- Default Card Example -->
-      <div class="card mb-4 shadow">
-        
+    <div class="col-lg-8 mb-3">
+        <div class="card shadow">
         <div class="card-body">
             <form action="" method="POST" enctype="multipart/form-data">
                 <div class="row">
                     
-                    <div class="col-sm-12 col-12 " style="display: flex; justify-content: center;">
+                    <div class="col-12 " style="display: flex; justify-content: center;">
                         
                         <div class="form-row pt-2">
                             <div class="form-group mr-2">
@@ -110,7 +118,7 @@ Text Editor | Article+
                
                 <div class="row" style="">
                     
-                    <div class="col-12 col-sm-12  align-self-center " style="">
+                    <div class="col-12   align-self-center " style="">
                        
                        
                             {% csrf_token%}
@@ -133,7 +141,116 @@ Text Editor | Article+
                             
               
                 </div>
-                <div class="col-12 col-sm-12 col-md-12">
+               
+        
+            </div>
+        </form>
+        </div>
+    </div>
+    </div>
+    <div class="col-lg-4 ">
+        <div class="card shadow">
+            <div class="card-body">
+            
+            <div>
+                <img class="my_img" src="{% static 'article/img/undraw_searching_p5ux.svg' %}" style="width: 100%;">
+            </div>
+            <center><h3 class="mt-5"style="">Dictionary</h3></center>
+            <hr>
+            <div style=" display: flex; justify-content: center;"> 
+                <input type="text" placeholder="Search Keywords..." id="myInput" class="form-control" style="font-size: 13px;padding: 5px;">
+                <button type="button" onclick="getInputValue();" class="btn btn-outline-info"><i class="fa fa-search"></i></button>
+                
+            </div>
+            <div >
+                <p id="wait"></p>
+                <br>
+                <p id="defi"></p>
+                <br>
+                <p id="meaning"></p>
+                <br>
+                <p id="noun"></p>
+                <br>
+               
+                <p id="example"></p>
+                <br>
+                <p id="syn"></p>
+                <br>
+                <p id="ant"></p>
+                <br>
+                <p id="ant"></p>
+                <br>
+                <p id="error"></p>
+                <br>
+
+            </div>
+          
+        </div>
+    </div>
+    </div>
+</div>
+<!--
+<div class="row">
+
+    <div class="col-lg-12">
+
+     
+      <div class="card mb-4 shadow">
+        
+        <div class="card-body">
+            <form action="" method="POST" enctype="multipart/form-data">
+                <div class="row">
+                    
+                    <div class="col-sm-6 col-12 " style="display: flex; justify-content: center;">
+                        
+                        <div class="form-row pt-2">
+                            <div class="form-group mr-2">
+                                <button class="btn btn-outline-primary" onclick="myFunction()" type="submit" style="font-size:20px;" id="uploadButton">Preview</button>
+                            </div>
+                            {% if not edit %}
+                              <div class="form-group  mr-2">
+                                <button class="btn btn-outline-secondary" onclick="myFunc()" style="font-size:20px; width:200px;" id="draftButton">Save as Draft</button>
+                              </div>
+                            {% else %}
+                            <div class="form-group  mr-2">
+                                <button class="btn btn-outline-secondary" onclick="myFunc1()" style="font-size:20px; width:200px;" id="draftButton">Save as Draft</button>
+                              </div>
+                            {%endif%}
+                              <div class="form-group mr-2">
+                                <button class="btn btn-outline-primary" onclick="myFunctionPreview()" style="font-size:20px;" id="button" type="submit">Publish</button>
+                              </div>
+                            
+                        </div>
+                    </div>
+                </div>
+        
+               
+                <div class="row" style="">
+                    
+                    <div class="col-12 col-sm-6  align-self-center " style="">
+                       
+                       
+                            {% csrf_token%}
+                         
+                            <div class="form-vertical">
+                                <div class="form-row text-center text-secondary py-1">
+                                    <div class="form-group col-12" style="font-size: 20px; letter-spacing: 2px; padding-bottom: 20px;">
+                                    -----WRITE CONTENT-----
+                                    </div>
+                                </div>
+                                
+                                
+                           
+                            {{article_form|crispy}}
+                        
+                             {{article_form.media}}
+                        
+                           
+                            </div>
+                            
+              
+                </div>
+                <div class="col-12 col-sm-6">
                     <div class="card">
                         <div class="card-body">
                             <center><p style="color:rgb(0,0,0,0.5);font-size: 20px;">Dictionary</p></center>
@@ -168,4 +285,5 @@ Text Editor | Article+
     </div>
 
   </div>
+-->
 {% endblock %}

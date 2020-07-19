@@ -28,4 +28,18 @@ urlpatterns = [
     path('article/draft/title/<title>/',views.draft_version2,name="draft_version2"),
     path('dictionary/<keyword>/',views.dictionary,name="dictionary"),
     path('bookmarks/',views.my_bookmarks,name="bookmarks"),
+
+
+
+
+
+
+
+
+
+
+
+    #----------------------AJAX----------------------
+    path('subscribe/',views.subscribe,name="subscribe"),
+    path('mute/',views.mute,name="mute")
 ]

@@ -76,7 +76,7 @@ Read | Article+
                 <div style="" class="pr-3">
                     <a href="/profile/{{read.0.user_name2}}"> <img src="/media/{{read.0.user_name2.profile.avatar}}"  style="height:50px;width:50px;border-radius: 100%;border: 2px solid #4474E0;"></a>
                 </div>
-                <div>
+                <div class="d-none-block d-sm-none">
                    {% if request.user == read.0.user_name2 %}
                    {% else %}
                         <form action="/author/follow/" method="POST" >

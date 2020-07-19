@@ -5,7 +5,152 @@ from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRe
 from .models import * 
 from article.models import Profile,activity
 from django.contrib import messages
+def quotes_page(request):
+    context = {}
+    context['quotes'] = Quotes.objects.filter(status='published').order_by('date_Publish','-time')
+    context['category'] = Categories.objects.all()
+    context['users'] = User.objects.all().order_by('first_name')
+    return render(request,'quotes/quotes.html',context)
 
+def editor(request):
+    context = {}
+    if request.method == 'POST':
+        form = Quotes_form(request.POST,request.FILES)
+        if form.is_valid():
+            form_ins = form.save(commit = False)
+            form_ins.user_quotes = request.user
+            form_ins.author = request.user
+           
+            form_ins.save()
+            messages.success(request,'Your Quote is Published !')
+            return HttpResponseRedirect('/')
+        else:
+            context['errors'] = str(form.errors)
+    else:
+        form = Quotes_form()
+    context['quotes_form'] = form
+    return render(request,'quotes/quotes_editor.html',context)
+
+def draft(request):
+    context={}
+    if request.method == 'POST':
+            
+            form = Quotes_form(request.POST,request.FILES)
+            if form.is_valid():
+                ins = form.save(commit = False)
+                ins.user_quotes = request.user
+                ins.author = request.user
+            
+                ins.status = 'Draft'
+                ins.save()
+                messages.success(request,'Your Quote is saved as draft !')
+            else:
+                context['errors'] = str(form.errors)
+    else:
+            form = Quotes_form()
+    return HttpResponseRedirect('/')
+
+def edit(request,title):
+    context = {}
+    if request.method == 'POST':
+            
+            form = Quotes_form(request.POST,request.FILES)
+            ins = Quotes.objects.get(id = int(title))
+            ins.status = 'published'
+            if request.FILES.get('image') is not None:
+                ins.image = request.FILES.get('image')
+            
+            ins.category = Categories.objects.get(category_name = request.POST.get('category'))
+            ins.content = request.POST.get('content')
+      
+            ins.tags = request.POST.get('tags')
+            ins.facebook = request.POST.get('facebook')
+            ins.twitter = request.POST.get('twitter')
+            ins.quora = request.POST.get('quora')
+            ins.instagram = request.POST.get('instagram')
+            ins.medium = request.POST.get('medium')
+            ins.other = request.POST.get('other')
+            
+            ins.save()
+            messages.success(request,'Your Quote is published!')
+            return HttpResponseRedirect('/')
+           
+    else:   
+           
+            ins = Quotes.objects.filter(id = int(title)).first()
+            initial = {
+                
+                "image":ins.image,
+                "category":ins.category,
+                "tags":ins.tags,
+                "content":ins.content,
+               
+                "facebook":ins.facebook,
+                "twitter":ins.twitter,
+                "quora":ins.quora,
+                "instagram":ins.instagram,
+                "medium":ins.medium,
+                "other":ins.other
+            }
+
+            form = Quotes_form(initial=initial)
+
+    context['title'] = title
+    context['edit'] = True
+    context['quotes_form'] = form
+    
+    return render(request,'quotes/quotes_editor.html',context)
+
+def edit_title(request,title):
+    context = {}
+    
+    if request.method == 'POST':
+            
+            form = Quotes_form(request.POST,request.FILES)
+           
+            ins = Quotes.objects.get(id=int(title))
+            ins.status = 'Draft'
+           
+            if request.FILES.get('image') is not None:
+                ins.image = request.FILES.get('image')
+         
+            ins.category = Categories.objects.get(category_name = request.POST.get('category'))
+            ins.content = request.POST.get('content')
+           
+      
+            ins.tags = request.POST.get('tags')
+            ins.facebook = request.POST.get('facebook')
+            ins.twitter = request.POST.get('twitter')
+            ins.quora = request.POST.get('quora')
+            ins.instagram = request.POST.get('instagram')
+            ins.medium = request.POST.get('medium')
+            ins.other = request.POST.get('other')
+            
+            ins.save()
+            messages.success(request,'Your Quote is saved as draft!')
+           
+
+                
+
+
+    else:
+            form = Quotes_form()
+    return HttpResponseRedirect('/')
+
+def delete(request,id):
+    ins = Quotes.objects.get(id = id)
+    ins.delete()
+    messages.success(request,f'You Successfully deleted Quote ')
+    return HttpResponseRedirect('/')
+
+def category(request,category):
+    context = {}
+    context['name'] = category
+    context['category'] = Categories.objects.all()
+    context['quotes'] = Quotes.objects.filter(status = 'published',category = Categories.objects.get(category_name = category)).order_by('-date_Publish','-time')
+    context['users'] = User.objects.all()
+    return render(request,'quotes/category.html',context)
+'''
 def quotes_page(request):
     context={}
     context['stories'] = Quotes.objects.filter(status = 'published').order_by('-date_Publish','-time')
@@ -344,3 +489,5 @@ def delete(request,title):
         Stories.objects.filter(title = title.replace("_"," ")).delete()
     messages.success(request,f'You Successfully deleted Story with title {title.replace("_"," ")}')
     return HttpResponseRedirect('/')    
+
+'''

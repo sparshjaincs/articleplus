@@ -11,9 +11,43 @@
 {% block sidebar %}
 {% include 'article/sidebar.html' %}
 {% endblock %}
+{% block style %}
+.jssocials-shares{
+  display:flex;
+  justify-content:center;
+  flex-direction:row;
+  align-items:center;
+}
+.jssocials-share-link {display:flex; justify-content:center; flex-direction:row; align-items:center;margin:10px;}
+{% endblock %}
 {% block js %}
 <script>
-  
+     function subscribe(title,id){
+      var url = '/subscribe/?title='+title+'&id='+id;
+
+      var req = new XMLHttpRequest(); 
+      req.onreadystatechange = function(){
+          if(this.readyState == 4 && this.status == 200){
+            var details = JSON.parse(req.responseText);
+            console.log(details);
+            if( details[0] == true){
+              document.getElementById('subs'+details[1]).innerHTML = 'Subscribe';
+              window.location.reload();
+            }
+            else{
+              document.getElementById('subs'+details[1]).innerHTML = 'Unsubscribe';
+              window.location.reload();
+            }
+
+          }
+        };
+        req.open("GET",url,true);
+        req.send();
+    }
+
+
+
+
     function myFunction(){
       var search_val = document.getElementById('myinput').value.toLowerCase();
       var data = document.getElementById('myTable');
@@ -39,8 +73,22 @@
   function fun2(c) {
    console.log(document.getElementsByClassName(c));
   }
-  
+
     </script>
+   
+   {% for i in request.user.profile.favourities.all %}
+<script>
+
+   $("#share{{forloop.counter}}").jsSocials({
+     showLabel: false,
+     showCount: "inside",
+     url:"{{request.get_host}}{{i.link}}",
+     text:"{{i.title}}",
+     shares: ["email", "twitter", "facebook", "linkedin", "pinterest", "whatsapp"]
+   });
+ 
+  </script>
+ {% endfor %}
 {% endblock %}
 {% block content %}
 <div class="row">
@@ -101,6 +149,40 @@
                             <p class="card-text" style="font-size: 13px;"><i class="fa fa-clock-o pr-2" ></i>{{i.time}} {{i.date_Publish}},<a href="/profile/{{i.user_name2}}"  data-toggle="tooltip" data-placement="top" title="See Profile"> {{i.user_name2.profile.first_name|capfirst}} {{i.user_name2.profile.last_name|capfirst}}</a></p>
               
                           </div>
+                          <div class="ml-1">
+                            {% if request.user != i.user_name2 %}
+                            <a class="" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              <i class="fa fa-ellipsis-v"></i>
+                            </a>
+                          
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                              <a class="dropdown-item" href="#">
+                                
+                               
+                                <form action="/author/follow/" method="POST" >
+                                  {% csrf_token %}
+                                  <input type="hidden" value="{{request.build_absolute_uri}}"  name="title">
+                                  <input type="hidden" value="{{i.user_name2}}" name="user_name">
+                                  {% if request.user in i.user_name2.profile.following.all %}
+                                  <button data-toggle="tooltip" data-placement="top" title="Unfollow" style="border:none; background:none; padding:0px; " title="Unfollow" type="submit">
+                                    Unfollow</button>
+                                 
+                                  {% else %}
+                                  <button  data-toggle="tooltip" data-placement="top" title="Follow" style=" border:none; background:none;padding:0px;" title="Follow" type="submit">
+                                    Follow</button>
+                                 
+                                  {% endif %}
+                             
+                      
+                            </form>
+                              </a>
+                            <a class="dropdown-item" href="#" onclick="subscribe('{{i.user_name2}}','{{forloop.counter}}');" id="subs{{forloop.counter}}">{% if request.user in i.user_name2.profile.subscribe.all %}Unsubscribe{% else %}Subscribe{% endif %}</a>
+                             <!-- <a class="dropdown-item" href="#" onclick="mute('{{i.user_name2}}','{{forloop.counter}}');" id="mute{{forloop.counter}}">{% if i.user_name2 in request.user.profile.mute.all %}Unmute{% else %}Mute{% endif %}</a>-->
+                              <a class="dropdown-item" href="/read/author/{{i.user_name2}}">Read More About Author</a>
+                              
+                            </div>
+                            {% endif %}
+                          </div>
               
                         </div>
               
@@ -117,9 +199,11 @@
                             {% if i.image2 %}
                             <img class="card-img-top rounded-0" src="{{i.image2}}" alt="Card image cap" style="height: 150px;">
                             {% else %}
+                            {% if i.image %}
                           <img class="card-img-top rounded-0" src="/media/{{i.image}}" alt="Card image cap" style="height: 150px;">
                           {% endif %}
                           {%endif%}
+                          {% endif %}
                           <a href="#!">
                             <div class="mask rgba-white-slight"></div>
                           </a>
@@ -130,7 +214,7 @@
               
                         
               
-                            <p style="font-size: 10px;" class="myclass">{{i.description|safe}} <a href="{{i.link}}" style="text-decoration: none;"><strong>Read More ...</strong></a></p>
+                            <p style="font-size: 13px;" >{{i.description|safe}}</p> <a href="{{i.link}}" style="text-decoration: none;"><strong>Read More ...</strong></a>
                             
                          
                           <div style="display:flex; justify-content:space-between; flex-direction: row-reverse;">
@@ -139,16 +223,16 @@
                               <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                   <div class="modal-header">
-                          
+                                    <h3>
+                                      <center>{{i.title}}</center>
+                                    </h3>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                       <span aria-hidden="true">&times;</span>
                                     </button>
                                   </div>
-                                  <div class="modal-title"><input id="myinput" value="{{request.get_host}}{{i.link}}" type="text" style="width:100%; border: none;outline:none; " disabled></div>
+                                  <div class="modal-title"><input id="myinput" value="{{request.get_host}}{{i.link}}" type="text" style="width:100%; border: none;outline:none;display: none; " disabled></div>
                                   <div class="alert alert-info" id="alertvalue" style="display: none;"></div>
-                                  <div class=" display:flex; justify-content:center; padding-top:30px;">
-                                   <center> <button class="btn btn-outline-secondary" onclick="copy();" style="margin-top:10px;" data-toggle="tooltip"> Copy Link</button></center>
-                                  </div>
+                                  
                                   <div class="modal-body" style="display: flex; justify-content: center; flex-direction: row; align-items: center;">
                                     
                                     <div id="share{{forloop.counter}}" style="display: flex; justify-content: center; flex-direction: row; align-items: center;">
@@ -328,7 +412,9 @@
                             {% if i.image2 %}
                             <img class="card-img-top rounded-0" src="{{i.image2}}" alt="Card image cap" style="height: 150px;">
                             {% else %}
+                            {% if i.image %}
                           <img class="card-img-top rounded-0" src="/media/{{i.image}}" alt="Card image cap" style="height: 150px;">
+                          {% endif %}
                           {% endif %}
                           {%endif%}
                           <a href="#!">
@@ -337,11 +423,11 @@
                         </div>
               
                         <!-- Card content -->
-                        <div class="card-body" style="font-size: 13px;">
+                        <div class="card-body" style="">
               
                         
               
-                            <p style="font-size: 10px;" class="myclass">{{i.description|safe}} <a href="{{i.link}}" style="text-decoration: none;"><strong>Read More ...</strong></a></p>
+                            <p style="" class="myclass">{{i.description|safe}}</p> <a href="{{i.link}}" style="text-decoration: none;"><strong>Read More ...</strong></a>
                             
                          
                           <div style="display:flex; justify-content:space-between; flex-direction: row-reverse;">

@@ -16,6 +16,7 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 import os
 import json
+from nltk.corpus import wordnet
 from hitcount.views import HitCountDetailView
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -25,6 +26,7 @@ from django.db.models import Count
 from PyDictionary import PyDictionary
 from py_thesaurus import Thesaurus
 from stories.models import Stories
+from quotes.models import Quotes
 
 # Create your views here.
 def homepage(request):
@@ -37,8 +39,9 @@ def homepage(request):
         context['article'] = Articles.objects.filter(user_name2 = request.user).order_by('-date_Publish',"-time")
         context['article_count'] = [Articles.objects.filter(user_name2 = request.user,status="Draft").all().count(),Articles.objects.filter(user_name2 = request.user,status="published").count()]
         context['story_count'] = [Stories.objects.filter(user_stories = request.user,status="Draft").count(),Stories.objects.filter(user_stories = request.user,status="published").count()]
-
+        context['quotes_count'] = [Quotes.objects.filter(user_quotes = request.user,status="Draft").count(),Quotes.objects.filter(user_quotes = request.user,status="published").count()]
         context['stories'] = Stories.objects.filter(user_stories = request.user).order_by('-date_Publish',"-time")
+        context['quotes'] = Quotes.objects.filter(user_quotes = request.user).order_by('-date_Publish',"-time")
         if activity.objects.filter(user_name3 = request.user,user_activity = f'User successfully logged-in !!',activity_icon='fas fa-door-open').exists():
             pass
         else:
@@ -684,12 +687,28 @@ def delete(request,title):
 
 def read_author(request,username):
     context=dict()
-    context['stories'] = Stories.objects.filter(user_stories = User.objects.get(username = username),status = "published").order_by('-date_Publish','-time')
-    context['title']  = Articles.objects.filter(user_name2 = User.objects.get(username = username),status="published").order_by('-date_Publish','-time')
-    context['profile'] = Profile.objects.filter(user = User.objects.get(username = username)).first()
+    user_ins =  User.objects.get(username = username)
+    context['profile'] = Profile.objects.get(user= user_ins)
+    context['stories'] = Stories.objects.filter(user_stories = user_ins,status = "published").order_by('-date_Publish','-time')
+    context['title']  = Articles.objects.filter(user_name2 = user_ins,status="published").order_by('-date_Publish','-time')
+    #context['profile'] = Profile.objects.filter(user = user_ins).first()
     return render(request,'article/read_author.html',context)
 
 def dictionary(request,keyword):
+    le = wordnet.synsets(keyword)
+    synonyms = []
+    antonyms = []
+    defination = examples = ""
+    for syn in le:
+        for l in syn.lemmas(): 
+            synonyms.append(l.name()) 
+            if l.antonyms(): 
+                antonyms.append(l.antonyms()[0].name()) 
+    try:
+        defination =le[0].definition()
+        examples = le[0].examples()
+    except:
+        meaning = "No Meaning Found"
     dictionary=PyDictionary()
     l=[]
     new_instance = Thesaurus(keyword)
@@ -699,7 +718,42 @@ def dictionary(request,keyword):
         meaning = "No Meaning Found"
   
 
-    return HttpResponse(json.dumps([meaning]))
+    return HttpResponse(json.dumps([meaning,defination,examples,list(set(synonyms)),list(set(antonyms))]))
 
 def my_bookmarks(request):
     return render(request,'article/bookmarks.html')
+
+
+#------------------------------ AJAX------------------------------
+def subscribe(request):
+    user_name = request.user
+    user_title = request.GET.get('title').replace("_"," ")
+    ids = str(request.GET.get('id'))
+    post_obj = Profile.objects.get(user = User.objects.get(username = user_title))
+    if user_name in post_obj.subscribe.all():
+        post_obj.subscribe.remove(user_name)
+        key = True
+        
+
+    else:
+        post_obj.subscribe.add(user_name)
+        key = False
+
+    return HttpResponse(json.dumps([key,ids]))
+
+def mute(request):
+    user_name = request.user
+    user_title = request.GET.get('title').replace("_"," ")
+    user_ins = User.objects.get(username = user_title)
+    ids = str(request.GET.get('id'))
+    post_obj = Profile.objects.get(user = user_name)
+    if user_ins in post_obj.mute.all():
+        post_obj.mute.remove(user_ins)
+        key = True
+        
+
+    else:
+        post_obj.mute.add(user_ins)
+        key = False
+
+    return HttpResponse(json.dumps([key,ids]))

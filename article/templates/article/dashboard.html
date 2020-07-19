@@ -67,7 +67,7 @@
         <div class="row no-gutters align-items-center">
           <div class="col mr-2">
             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Quotes</div>
-            <div class="h6 mb-0 font-weight-bold text-gray-800">0 Published | 0 Draft</div>
+            <div class="h6 mb-0 font-weight-bold text-gray-800">{{quotes_count.1}} Published | {{quotes_count.0}} Draft</div>
           </div>
           <div class="col-auto">
             <i class="fas fa-quote-right fa-2x text-gray-300"></i>
@@ -175,7 +175,7 @@
               <div class="card-body">
                 <h5 class="card-title">Card title</h5>
                 <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <a href="{% url 'editor'%}" class="btn btn-primary">Go somewhere</a>
+                <a href="" class="btn btn-primary">Go somewhere</a>
               </div>
             </div>
 
@@ -191,7 +191,7 @@
               <div class="card-body">
                 <h5 class="card-title">Card title</h5>
                 <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
+                <a href="{% url 'editor'%}" class="btn btn-primary">Go somewhere</a>
               </div>
             </div>
 
@@ -302,9 +302,41 @@
                 
               </tr>
           {% endfor %}
+          {% for i in quotes %}
+          <tr>
+            <td style="cursor:pointer;" >{{forloop.counter|add:story_count.1}}</td>
+            <td>
+            {% if i.image %}
+            <img src="/media/{{i.image}}" alt="sorry" style="width:60px;height:40px;">
+            {% endif %}
+            </td>
+            <td>
+            {{i.content|safe}}
+            </td>
+            <td>
+            {{i.date_Publish}}
+            </td>
+            <td>
+            {{i.time}}
+            </td>
+            <td>
+            Quotes
+            </td>
+            <td>
+            {{i.status|capfirst}}
+            </td>
+            <td>
+             
+              <a title="Edit" href='/quotes/edit/{{i.id}}' style="margin-right: 5px;" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-edit"></i></a>
+              <a title="Delete" href='/quotes/delete_quote/{{i.id}}' style="margin-right: 5px;" data-toggle="tooltip" data-placement="top" title="Delete" onclick="return confirm('Are you sure you want to delete this item?');"> <i class="fa fa-trash"></i></a>
+            </td>
+          </tr>
+            {% endfor %}
        
+          
         </tbody>
         </table></div></div>
+        
         </div>
       </div>
     </div>

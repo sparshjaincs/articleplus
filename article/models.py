@@ -40,6 +40,8 @@ class Articles(models.Model):
     method=models.CharField(max_length=10,choices=METHOD_CHOICES,default='content')
     liked = models.ManyToManyField(User,default=None,blank=True,related_name="likes_title")
     disliked = models.ManyToManyField(User,default=None,blank=True,related_name="dislikes_title")
+    
+   
     template = models.CharField(max_length=1000,blank=True,null=True)
     quora = models.CharField(max_length=1000,blank=True,null=True)
     medium= models.CharField(max_length=1000,blank=True,null=True)
@@ -90,6 +92,8 @@ class Profile(models.Model):
     other = models.CharField(max_length=1000,blank=True,null=True)
     favourities = models.ManyToManyField(Articles,blank=True,related_name="articles_titles")
     fav_stories = models.ManyToManyField(Stories,blank=True,related_name="stories_titles")
+    subscribe = models.ManyToManyField(User,default=None,blank=True,related_name="subscribe_title")
+    mute = models.ManyToManyField(User,default=None,blank=True,related_name="mute_title")
     
   
     
@@ -146,9 +150,10 @@ class Notifications(models.Model):
       following_count = models.IntegerField(default =0)
       def __str__(self):
           return " activity_count "+ str(self.activity_count) + " follow_count " + str(self.follow_count)+ " following_count " + str(self.following_count)
-
+'''
 class titleview(models.Model):
-    view = models.ForeignKey(Articles,related_name="titleview",on_delete=models.CASCADE)
+    view = models.ForeignKey(Articles,related_name="titleview",to_field='id',on_delete=models.CASCADE)
     ip_addr = models.CharField(max_length=300,blank=True,null=True)
     def __str__(self):
         return str(self.view)+ " " + str(self.ip_addr)
+'''

@@ -1,5 +1,6 @@
 {% extends 'article/base1.html' %}
 {% load static %}
+{% load to_and %}
 {% load hitcount_tags %}
 {% block title %}
 Article | Article+
@@ -21,16 +22,16 @@ div.scrollmenu {
   
   div.scrollmenu a {
     display: inline-block;
-    color:black;
+  
     
     text-align: center;
     padding: 2px;
     text-decoration: none;
   }
   .led{
-    padding: 10px;
-    font-size:13px;
-    opacity:0.7;
+    
+    font-size:15px;
+    
     
   }
   .jssocials-share-link {display:flex; justify-content:center; flex-direction:row; align-items:center;margin:10px;}
@@ -56,9 +57,12 @@ div.scrollmenu {
 <script>
     document.body.style.backgroundColor = "#fff";
 </script>
+<!--
+    how to copy link
 <script>
-  function copy(){
-    var copyText = document.getElementById("myinput");
+  {% for i in articles %}
+  function copy{{forloop.counter}}(){
+    var copyText = document.getElementById("myinput{{forloop.counter}}");
     copyText.select();
     copyText.setSelectionRange(0, 99999)
     document.execCommand("copy");
@@ -66,7 +70,9 @@ div.scrollmenu {
     document.getElementById('alertvalue').innerHTML = "Copied";
 
   }
+  {% endfor %}
 </script>
+-->
 
 <script>
   
@@ -90,13 +96,96 @@ div.scrollmenu {
       }
       
     }
+    function myFunction1(){
+      var search_val = document.getElementById('myinput1').value.toLowerCase();
+      var data = document.getElementById('myTable');
+      var data_part = data.getElementsByClassName('myclass');
+      var tag_part = data.getElementsByClassName('mytag');
+      
+      for(i=0;i<tag_part.length;i++){
+        txtvalue = data_part[i].textContent || data_part[i].innerText;
+        
+        if(txtvalue.toLowerCase().indexOf(search_val) > -1){
+          tag_part[i].style.display="inline";
+          tag_part[i].style.justify="left";
+          
+        }
+        else{
+          tag_part[i].style.display="none";
+        }
+      }
+      
+    }
   
   fun2("all")
   function fun2(c) {
    console.log(document.getElementsByClassName(c));
   }
+
   
     </script>
+
+  <script>
+    function subscribe(title,id){
+      var url = '/subscribe/?title='+title+'&id='+id;
+
+      var req = new XMLHttpRequest(); 
+      req.onreadystatechange = function(){
+          if(this.readyState == 4 && this.status == 200){
+            var details = JSON.parse(req.responseText);
+            table = document.getElementById('myTable');
+            var s = 'subs'+title;
+            classes = document.getElementsByClassName(s);
+            
+            console.log(classes);
+            if( details[0] == true){
+              for(i=0;i<classes.length;i++){
+              classes[i].innerHTML = 'Subscribe';
+              }
+             
+            }
+            else{
+              for(i=0;i<classes.length;i++){
+              classes[i].innerHTML = 'Unsubscribe';
+              }
+            
+           
+            }
+
+          }
+        };
+        req.open("GET",url,true);
+        req.send();
+    }
+
+
+
+    function mute(title,id){
+      var url = '/mute/?title='+title+'&id='+id;
+
+      var req = new XMLHttpRequest(); 
+      req.onreadystatechange = function(){
+          if(this.readyState == 4 && this.status == 200){
+            var details = JSON.parse(req.responseText);
+            
+            console.log(details);
+            if( details[0] == true){
+              document.getElementById('mute'+details[1]).innerHTML = 'Mute';
+              window.location.reload();
+            }
+            else{
+              document.getElementById('mute'+details[1]).innerHTML = 'Unmute';
+              window.location.reload();
+            }
+
+          }
+        };
+        req.open("GET",url,true);
+        req.send();
+    }
+  </script>
+  </script>
+  
 {% for i in articles%}
 <script>
   $("#share{{forloop.counter}}").jsSocials({
@@ -128,7 +217,7 @@ div.scrollmenu {
                   </form>
                   <form class="d-block d-sm-none form-inline navbar-search" style="width:100%;">
                     <div class="input-group">
-                      <input type="text" class="form-control bg-light border-0 small" style="width:100%;" onkeyup="myFunction()" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" id="myinput">
+                      <input type="text" class="form-control bg-light border-0 small" style="width:100%;" onkeyup="myFunction1()" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" id="myinput1">
                       
                     </div>
                   </form>
@@ -189,14 +278,14 @@ div.scrollmenu {
                   </div>
             </div>
             <div class="row">
-                <div class="col-12 col-sm-12  d-flex justify-content-center mt-4">
+                <div class="col-12 col-sm-12  d-flex justify-content-center mt-2">
                   <div class="scrollmenu">
-                    <a class="active" style="text-decoration: none; color: black;"><p><span class="led">All</span><span style="opacity:.4;"> </span></p></a>
+                    <a class="led" style="text-decoration: none;"><p><span>All</span></p></a>
                     {% for i in category %}
            
                     
                
-                        <a href="/article/{{i.category_name}}" style="text-decoration: none; color: black;"><p><span class="led">{{i.category_name}}</span><span style="opacity:.4;"> </span></p></a>
+                        <a href="/article/{{i.category_name}}" style="text-decoration: none; " class="led ml-3"><p><span>{{i.category_name}}</span><span style="opacity:.4;"> </span></p></a>
        
                    {%endfor%}
             </div>
@@ -240,15 +329,15 @@ div.scrollmenu {
   
               </div>
               <div class="ml-1">
-                
+                {% if request.user != i.user_name2 %}
                 <a class="" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <i class="fa fa-ellipsis-v"></i>
                 </a>
               
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                   <a class="dropdown-item" href="#">
-                    {% if request.user == i.user_name2 %}
-                    {% else %}
+                    
+                   
                     <form action="/author/follow/" method="POST" >
                       {% csrf_token %}
                       <input type="hidden" value="{{request.build_absolute_uri}}"  name="title">
@@ -262,15 +351,16 @@ div.scrollmenu {
                         Follow</button>
                      
                       {% endif %}
-                      {% endif %}
+                 
           
                 </form>
                   </a>
-                  <a class="dropdown-item" href="#">Subscribe</a>
-                  <a class="dropdown-item" href="#">Mute Author</a>
+                <a class="dropdown-item subs{{i.user_name2}}" href="#" onclick="subscribe('{{i.user_name2}}','{{forloop.counter}}');" >{% if request.user in i.user_name2.profile.subscribe.all %}Unsubscribe{% else %}Subscribe{% endif %}</a>
+                 <!-- <a class="dropdown-item" href="#" onclick="mute('{{i.user_name2}}','{{forloop.counter}}');" id="mute{{forloop.counter}}">{% if i.user_name2 in request.user.profile.mute.all %}Unmute{% else %}Mute{% endif %}</a>-->
                   <a class="dropdown-item" href="/read/author/{{i.user_name2}}">Read More Articles</a>
                   
                 </div>
+                {% endif %}
               </div>
   
             </div>
@@ -304,7 +394,7 @@ div.scrollmenu {
   
             
   
-                <p style="" class="myclass">{{i.description|safe}}</p> <a href="{{i.link}}" style="text-decoration: none;"><strong>Read More ...</strong></a>
+                <p style="" >{{i.description|safe}}</p> <a href="{{i.link}}" style="text-decoration: none;"><strong>Read More ...</strong></a>
                 
              
               <div style="display:flex; justify-content:space-between; flex-direction: row-reverse;">
@@ -313,16 +403,16 @@ div.scrollmenu {
                   <div class="modal-dialog" role="document">
                     <div class="modal-content">
                       <div class="modal-header">
-              
+                        <h4>
+                         <center>{{i.title}}</center> 
+                        </h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                           <span aria-hidden="true">&times;</span>
                         </button>
                       </div>
-                      <div class="modal-title"><input id="myinput" value="{{request.get_host}}{{i.link}}" type="text" style="width:100%; border: none;outline:none; " disabled></div>
+                      <div class="modal-title"><input id="myinput{{forloop.counter}}" value="{{request.get_host}}{{i.link}}" type="text" style="width:100%; border: none;outline:none; display: none;" disabled></div>
                       <div class="alert alert-info" id="alertvalue" style="display: none;"></div>
-                      <div class=" display:flex; justify-content:center; padding-top:30px;">
-                       <center> <button class="btn btn-outline-secondary" onclick="copy();" style="margin-top:10px;" data-toggle="tooltip"> Copy Link</button></center>
-                      </div>
+                     
                       <div class="modal-body" style="display: flex; justify-content: center; flex-direction: row; align-items: center;">
                         
                         <div id="share{{forloop.counter}}" style="display: flex; justify-content: center; flex-direction: row; align-items: center;">

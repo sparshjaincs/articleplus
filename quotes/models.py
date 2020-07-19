@@ -11,6 +11,64 @@ class Categories(models.Model):
 class Quotes(models.Model):
     STATUS_CHOICES = (
 		('draft', 'Draft'),('published', 'Published'),)
+    
+    user_quotes = models.ForeignKey(User, related_name='user2', to_field='username', on_delete=models.CASCADE)
+    author = models.CharField(max_length=50,blank=True)
+    date_Publish = models.DateField(default=datetime.now)
+    date_updated = models.DateField(default=datetime.now)
+    category = models.ForeignKey(Categories,related_name = 'category2', to_field='category_name',on_delete=models.CASCADE,default=" ")
+    image = models.ImageField(upload_to='users/images',blank=True,default='',null=True)
+    content = RichTextField(blank=False,null=True,unique=True)
+    link = models.TextField(blank=True,default="")
+    time= models.TimeField(blank=False,default=datetime.now())
+    tags = models.CharField(max_length=300,blank=False,default="",null=True,help_text='Add comma( ,) seperated tags!!')
+    status = models.CharField(max_length=10,choices=STATUS_CHOICES,default='published')
+    liked = models.ManyToManyField(User,default=None,blank=True,related_name="likes_quotes")
+    disliked = models.ManyToManyField(User,default=None,blank=True,related_name="dislikes_quotes")
+    quora = models.CharField(max_length=1000,blank=True,null=True)
+    medium= models.CharField(max_length=1000,blank=True,null=True)
+    facebook = models.CharField(max_length=1000,blank=True,null=True)
+    instagram = models.CharField(max_length=1000,blank=True,null=True)
+    twitter = models.CharField(max_length=1000,blank=True,null=True)
+    other= models.CharField(max_length=1000,blank=True,null=True)
+    class Meta:
+        ordering = ('id',)
+    def __str__(self):
+        return str(self.id)
+    @property
+    def num_likes(self):
+        return self.liked.all().count()
+
+    @property
+    def num_dislikes(self):
+        return self.disliked.all().count()
+
+
+
+class Quotes_comment(models.Model):
+    post = models.ForeignKey(Quotes,related_name='quotes_comments',on_delete=models.CASCADE)
+    parent = models.ForeignKey('self',null=True,blank=True,on_delete=models.CASCADE)
+    name = models.CharField(max_length=80)
+    email = models.EmailField()
+    body = models.TextField()
+    created = models.DateTimeField(auto_now_add=True,null=True)
+    active = models.BooleanField(default=True)
+    class Meta:
+        ordering = ('-created',)
+    def children(self):
+        return Quotes_comment.objects.filter(parent=self)
+
+    @property
+    def is_parent(self):
+        if self.parent is not None:
+            return False
+        return True
+    def __str__(self):
+        return 'Comment by {} on {}'.format(self.name, self.post)
+'''
+class Quotes(models.Model):
+    STATUS_CHOICES = (
+		('draft', 'Draft'),('published', 'Published'),)
     METHOD_CHOICES = (
 		('content', 'content'),('design', 'design'),('editor','editor'))
     user_quotes = models.ForeignKey(User, related_name='user2', to_field='username', on_delete=models.CASCADE)
@@ -81,3 +139,5 @@ class titleview(models.Model):
     ip_addr = models.CharField(max_length=300,blank=True,null=True)
     def __str__(self):
         return str(self.view)+ " " + str(self.ip_addr)
+
+'''
