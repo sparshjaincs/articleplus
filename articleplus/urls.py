@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from django.contrib.auth import views as auth_views
-from article import views as user_views
+from article import views as user_views 
 from django.conf import settings
 from django.conf.urls.static import static
 urlpatterns = [
@@ -26,6 +26,7 @@ urlpatterns = [
     path("trending/",include('trends.urls')),
     path("quotes/",include('quotes.urls')),
     path("poetries/",include('poetries.urls')),
+    path("api/",include("api.urls")),
     path('login/', auth_views.LoginView.as_view(template_name='article/login.html'), name="login"),
     path('logout/', auth_views.LogoutView.as_view(), name="logout"),
     path('password_reset/', user_views.MyPasswordResetView.as_view(template_name='article/password_reset.html'), name="password_reset"),
@@ -39,3 +40,4 @@ urlpatterns = [
   
    
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+ 

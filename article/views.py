@@ -16,11 +16,18 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 import os
 import json
+import threading
+from bs4 import BeautifulSoup
+import html5lib
+import urllib.request
+import requests
+from django.core.files import File
+from django.core.files.temp import NamedTemporaryFile
 from nltk.corpus import wordnet
 from hitcount.views import HitCountDetailView
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .models import Profile,Articles,my_comment,Categories,Notifications,activity
+from .models import Profile,Articles,my_comment,Categories,Notifications,activity,titleview
 from .forms import ProfileForm,CommentForm
 from django.db.models import Count
 from PyDictionary import PyDictionary
@@ -77,14 +84,14 @@ def signup_view(request):
                 'token': account_activation_token.make_token(user),
             })
             send_mail(subject,message,'articleplusceo@gmail.com',[f'{email}'])
-            return redirect('activation_sent')
+            return redirect('activation_sent') 
     else:
         form = SignUpForm()
     return render(request, 'article/signup.html', {'sform': form})
 
 
 class MyPasswordResetView(UserPassesTestMixin, PasswordResetView):
-    template_name = 'users/password_reset.html'
+    template_name = 'users/password_reset.html' 
 
     # https://docs.djangoproject.com/en/2.2/ref/contrib/auth/#django.contrib.auth.models.User.is_anonymous
     def test_func(self):
@@ -485,46 +492,60 @@ def profile_save(request):
     return HttpResponseRedirect('/profile')
 def like(request):
     user = request.user
-    if request.method == 'POST':
-        title = request.POST.get('like')
-        url = request.POST.get('url')
-        post_obj = Articles.objects.get(title = title)
-        if user in post_obj.liked.all():
-            post_obj.liked.remove(user)
-            
+    
+    title = request.GET.get('title').replace("_"," ")
+   
+    post_obj = Articles.objects.get(title = title)
+    dislikes_count = post_obj.disliked.count()
+  
+    if user in post_obj.liked.all():
+        post_obj.liked.remove(user)
+        likes = True
+        count = post_obj.liked.count()
+        
 
-        else:
-            post_obj.liked.add(user)
-            activity_title=f"You liked Article with title {title} !!"
-            activity_icon = 'fa fa-thumbs-up'
-            
+    else:
+        post_obj.liked.add(user)
+        activity_title=f"You liked Article with title {title} !!"
+        activity_icon = 'fa fa-thumbs-up'
+        likes = False
+        count = post_obj.liked.count()
+        
 
+        
+        if user in post_obj.disliked.all():
+            post_obj.disliked.remove(user)
+            dislikes_count = post_obj.disliked.count()
             
-            if user in post_obj.disliked.all():
-                post_obj.disliked.remove(user)
       
 
     
-    return HttpResponseRedirect(url)
+    return HttpResponse(json.dumps([likes,count,dislikes_count]))
 
 def dislike(request):
     user = request.user
-    if request.method == 'POST':
-        title = request.POST.get('like')
-        url = request.POST.get('url')
-        post_obj = Articles.objects.get(title = title)
-        if user in post_obj.disliked.all():
-            post_obj.disliked.remove(user)
-        else:
-            post_obj.disliked.add(user)
-            activity_title=f"You disliked Article with title {title} !!"
-            activity_icon = 'fa fa-thumbs-down'
-            act = activity(user_name3 = request.user,user_activity = activity_title,activity_icon=activity_icon)
-            act.save()
-            if user in post_obj.liked.all():
-                post_obj.liked.remove(user)
     
-    return HttpResponseRedirect(url)
+    title = request.GET.get('title').replace("_"," ")
+  
+    post_obj = Articles.objects.get(title = title)
+    likes_count = post_obj.liked.count()
+    if user in post_obj.disliked.all():
+        post_obj.disliked.remove(user)
+        dislikes = True
+        count = post_obj.disliked.count()
+    else:
+        post_obj.disliked.add(user)
+        activity_title=f"You disliked Article with title {title} !!"
+        activity_icon = 'fa fa-thumbs-down'
+        act = activity(user_name3 = request.user,user_activity = activity_title,activity_icon=activity_icon)
+        act.save()
+        dislikes = False
+        count = post_obj.disliked.count()
+        if user in post_obj.liked.all():
+            post_obj.liked.remove(user)
+            likes_count = post_obj.liked.count()
+    
+    return HttpResponse(json.dumps([dislikes,count,likes_count]))
 def follow(request):
     user = request.user
     if request.method == 'POST':
@@ -555,7 +576,7 @@ def article_section(request):
  
     context['articles'] =art
    
-    context['category'] = Categories.objects.all()
+    context['category'] = Categories.objects.all().order_by('category_name')
     context['users'] = User.objects.all().order_by('first_name')
     return render(request,'article/article.html',context)
 
@@ -572,10 +593,12 @@ def article_read(request,username,title):
     context={}
     post = get_object_or_404(Articles, title = title.replace("_"," "))
     comments = post.my_comments.filter(active=True,parent=None)
-    #ip_addr = get_client_ip(request)
-    #if not titleview.objects.filter(view=post,ip_addr=ip_addr).exists():
-    #    ins = titleview(view = post,ip_addr = ip_addr)
-    #    ins.save()
+    ip_addr = get_client_ip(request)
+   
+    if not post.titleview.filter(ip_addr=ip_addr).exists():
+        print(ip_addr)
+        ins = titleview(view=post,ip_addr = ip_addr)
+        ins.save()
     if request.method == 'POST':
        
         comment_form = CommentForm(data=request.POST)
@@ -600,32 +623,54 @@ def article_read(request,username,title):
     else:
         comment_form = CommentForm()
     context['form'] = comment_form
+    tag = post.tags.split(",")
+    related_stories = []
+    data = Articles.objects.filter(status='published').order_by('-date_Publish','-time')
+    for i in data:
+        if i.title != post.title: 
+            if len(related_stories) <=5:
+                df = i.tags.split(",")
+                for j in tag:
+                    if j in df:
+                        
+                        related_stories.append(i)
+                        break
+                        
+            else:
+                break
+    trending = []
+    for i in data:
+        if i not in related_stories and len(trending) <=5:
+            trending.append(i)
 
+
+    context['related_stories'] = related_stories
     context['comments'] = comments
-    context['read']=Articles.objects.filter(user_name2 = username,title = title.replace("_"," "))
-    context['article_trend'] = Articles.objects.filter(status="published").order_by('-date_Publish','-time')[:5]
-    context['tags'] = post.tags.split(",")
+    context['read']=[post]
+    context['article_trend'] = trending
+    context['tags'] = tag
     context['template'] = post.template
     return render(request,'article/article_read.html',context)
 
 
 def save_fav(request):
     user = request.user
-    if request.method == 'POST':
-        title = request.POST.get('title')
-        tit = request.POST.get('user_name')
-        tit_ins = Articles.objects.get(title = tit)
-        prof_ins = Profile.objects.get(user = user)
+    title = request.GET.get('title').replace("_"," ")
+    ids = request.GET.get('id')
+    tit_ins = Articles.objects.get(title = title)
+    prof_ins = Profile.objects.get(user = user)
       
-        if tit_ins in prof_ins.favourities.all():
+    if tit_ins in prof_ins.favourities.all():
             prof_ins.favourities.remove(tit_ins)
-        else:
+            key = True
+    else:
             prof_ins.favourities.add(tit_ins)
+            key = False
         
 
         
         
-    return HttpResponseRedirect(title)
+    return HttpResponse(json.dumps([key,ids]))
 
 def profile_watch(request,username):
     context={}
@@ -688,10 +733,11 @@ def delete(request,title):
 def read_author(request,username):
     context=dict()
     user_ins =  User.objects.get(username = username)
+    context['users'] = User.objects.all()
     context['profile'] = Profile.objects.get(user= user_ins)
     context['stories'] = Stories.objects.filter(user_stories = user_ins,status = "published").order_by('-date_Publish','-time')
     context['title']  = Articles.objects.filter(user_name2 = user_ins,status="published").order_by('-date_Publish','-time')
-    #context['profile'] = Profile.objects.filter(user = user_ins).first()
+    
     return render(request,'article/read_author.html',context)
 
 def dictionary(request,keyword):
@@ -727,8 +773,9 @@ def my_bookmarks(request):
 #------------------------------ AJAX------------------------------
 def subscribe(request):
     user_name = request.user
-    user_title = request.GET.get('title').replace("_"," ")
-    ids = str(request.GET.get('id'))
+    print(user_name)
+    user_title = request.GET.get('title')
+    print(user_title)
     post_obj = Profile.objects.get(user = User.objects.get(username = user_title))
     if user_name in post_obj.subscribe.all():
         post_obj.subscribe.remove(user_name)
@@ -739,7 +786,7 @@ def subscribe(request):
         post_obj.subscribe.add(user_name)
         key = False
 
-    return HttpResponse(json.dumps([key,ids]))
+    return HttpResponse(json.dumps([key]))
 
 def mute(request):
     user_name = request.user
@@ -757,3 +804,55 @@ def mute(request):
         key = False
 
     return HttpResponse(json.dumps([key,ids]))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def web_scraping(request):
+        
+        url="https://www.instyle.com/fashion"
+        html_doc=requests.get(url).content
+        soup = BeautifulSoup(html_doc,'html5lib')
+        for i in soup.find_all('article')[:2]:
+            
+            title = i.find('div',['class','media-body']).find('h3').text.strip()
+            if Articles.objects.filter(title = title).exists():
+                pass
+            else:
+                dd = i.find('a')
+                image_link = dd.find('img')['src']
+                url_child = 'https://instyle.com'+i.find('a')['href']
+                so = BeautifulSoup(requests.get(url_child).content,'html5lib')
+                content=[]
+                for i in so.find_all('div',['class','paragraph']):
+                    
+                    content.append(i.text.strip())
+                desc=content[0]
+                ref_ti = Articles(user_name2 = User.objects.get(username = 'sparsh'),title=title,content=content,\
+                    category = Categories.objects.get(category_name = 'Fashion'),author='admin',link=url_child,\
+                        description =desc,tags='Fashion,News,Culture,Fashion Tips,Outfits,Culture',image2=image_link)
+                
+                
+                ref_ti.save()
+                try:
+                    act = activity(user_name3 = User.objects.get(username = 'sparsh'),user_activity = f'Article named {title} saved from instyle.com !!',activity_icon='fa fa-newspaper')
+                    act.save()
+                except:
+                    pass
+        return HttpResponse(json.dumps(" "))
+      

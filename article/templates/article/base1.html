@@ -25,7 +25,8 @@
   <!-- Custom styles for this template-->
   <link href="{% static 'article/css/sb-admin-2.min.css' %}" rel="stylesheet">
   <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/jquery.jssocials/1.4.0/jssocials-theme-flat.css" />
- 
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.17.1/dist/bootstrap-table.min.css">
   <style>
 
 ::-webkit-scrollbar {
@@ -47,16 +48,16 @@
   }
   
     .nav-link:hover{
-color:#FECE28;
+color:#4E73DF;
 }
 .nav-link:hover .bar{
-    color:#FECE28;
+    color:#4E73DF;
     
     
     opacity:1;
     }
 .nav-link.active .bar{
-    color:#FECE28;
+    color:#4E73DF;
     opacity:1;
 }
 .bar{
@@ -72,9 +73,9 @@ color:#FECE28;
   </style>
 </head>
 
-<body id="page-top"  class="sidebar-toggled">
+<body id="page-top"  class="sidebar-toggled" style="background-color: #F9FAFC;">
      <!-- Page Wrapper -->
-  <div id="wrapper">
+  <div id="wrapper" style="background-color: #F9FAFC;">
 
     <!-- Sidebar -->
     {% block sidebar %}
@@ -85,13 +86,14 @@ color:#FECE28;
     <div id="content-wrapper" class="d-flex flex-column">
 
       <!-- Main Content -->
-      <div id="content">
+      <div id="content" style="background-color: #F9FAFC;">
 
         {% block navbar %}
         {% endblock %}
-       
+        {% block content1 %}
+            {% endblock %}
         <!-- Begin Page Content -->
-        <div class="container-fluid" style="margin-top: 88px;">
+        <div class="container-fluid" style="margin-top: 88px; background-color: #F9FAFC;">
             {% block content %}
             {% endblock %}
           
@@ -105,7 +107,11 @@ color:#FECE28;
 
   </div>
   <!-- End of Page Wrapper -->
+</div>
 
+</div>
+{% block footer %}
+{% endblock %}
   <!-- Scroll to Top Button-->
   <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
@@ -134,7 +140,9 @@ color:#FECE28;
   <!-- Bootstrap core JavaScript-->
   <script src="{% static 'article/vendor/jquery/jquery.min.js' %}"></script>
   <script src="{% static 'article/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-
+  
+<script src="https://unpkg.com/bootstrap-table@1.17.1/dist/bootstrap-table.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <!-- Core plugin JavaScript-->
   <script src="{% static 'article/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
 
@@ -158,6 +166,123 @@ color:#FECE28;
     $(function () {
 $('[data-toggle="tooltip"]').tooltip({ boundary: 'window' })
 })
+</script>
+<script>
+    window.onload = scraping();
+    var myVar4 = setInterval(scraping, 200000);
+    function scraping(){
+          var url = '/scraping';
+
+          var req = new XMLHttpRequest();
+          req.onreadystatechange = function(){
+              if(this.readyState == 4 && this.status == 200){
+                var details = JSON.parse(req.responseText);
+              }
+            };
+            req.open("GET",url,true);
+            req.send();
+      }
+    function bookmarks(title,id){
+      var url = '/my_article/save/?title='+title+'&id='+id;
+
+      var req = new XMLHttpRequest(); 
+      req.onreadystatechange = function(){
+          if(this.readyState == 4 && this.status == 200){
+            var details = JSON.parse(req.responseText);
+            var s = 'book'+details[1];
+            if(details[0] == true){
+              document.getElementById(s).style.color = "";
+             
+              
+            }
+            else{
+              document.getElementById(s).style.color = "red";
+              
+            }
+
+          }
+        };
+        req.open("GET",url,true);
+        req.send();
+    }
+    function subscribe(title,id){
+      var url = '/subscribe/?title='+title;
+
+      var req = new XMLHttpRequest(); 
+      req.onreadystatechange = function(){
+          if(this.readyState == 4 && this.status == 200){
+            var details = JSON.parse(req.responseText);
+            table = document.getElementById('myTable');
+            var s = 'subs'+title;
+            classes = document.getElementsByClassName(s);
+            
+            console.log(classes);
+            if( details[0] == true){
+              for(i=0;i<classes.length;i++){
+              classes[i].innerHTML = 'Subscribe';
+              }
+             
+            }
+            else{
+              for(i=0;i<classes.length;i++){
+              classes[i].innerHTML = 'Unsubscribe';
+              }
+            
+           
+            }
+
+          }
+        };
+        req.open("GET",url,true);
+        req.send();
+    }
+    function like(title,id){
+      var url = '/article/like/?title='+title;
+
+      var req = new XMLHttpRequest(); 
+      req.onreadystatechange = function(){
+          if(this.readyState == 4 && this.status == 200){
+            var details = JSON.parse(req.responseText);
+            if (details[0] == true){
+              document.getElementById('like'+id).innerHTML = "<i class='fa fa-thumbs-up p-1 my-1  icon-pack'></i>"+details[1];
+              document.getElementById('dislike'+id).innerHTML = "<i class='fa fa-thumbs-down p-1 my-1  icon-pack'></i>"+details[2];
+            }
+            else{
+              document.getElementById('like'+id).innerHTML = "<i class='fa fa-thumbs-up p-1 my-1  icon-pack' style='color:red;'></i>"+details[1];
+             
+              document.getElementById('dislike'+id).innerHTML = "<i class='fa fa-thumbs-down p-1 my-1  icon-pack'></i>"+details[2];
+            }
+         
+          }
+        };
+        req.open("GET",url,true);
+        req.send();
+    }
+    function dislike(title,id){
+      var url = '/article/dislike/?title='+title;
+
+      var req = new XMLHttpRequest(); 
+      req.onreadystatechange = function(){
+          if(this.readyState == 4 && this.status == 200){
+            var details = JSON.parse(req.responseText);
+            console.log(details);
+            if (details[0] == true){
+              document.getElementById('dislike'+id).innerHTML = "<i class='fa fa-thumbs-down p-1 my-1  icon-pack'></i> "+details[1];
+              document.getElementById('like'+id).innerHTML = "<i class='fa fa-thumbs-up p-1 my-1  icon-pack'></i> "+details[2];
+            }
+            else{
+              document.getElementById('dislike'+id).innerHTML = "<i class='fa fa-thumbs-down p-1 my-1  icon-pack' style='color:red;'></i> "+details[1];
+             
+              document.getElementById('like'+id).innerHTML = "<i class='fa fa-thumbs-up p-1 my-1  icon-pack'></i> "+details[2];
+            }
+         
+          }
+
+        };
+        req.open("GET",url,true);
+        req.send();
+    }
+
 </script>
 {% block js %}
 {% endblock %}

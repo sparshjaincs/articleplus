@@ -14,28 +14,28 @@ Text Editor | Article+
 {% block content%}
 
 
-    <div class="card shadow" >
+    <div class="card" >
         <div class="card-body">
         <form action="" method="POST" enctype="multipart/form-data">
         <div class="row">
             
-            <div class="col-sm-9 col-12 " style="display: flex; justify-content: center;">
+            <div class="col-sm-8 col-12 " style="display: flex; justify-content: center;">
                 
                 <div class="form-row pt-2">
                     <div class="form-group mr-2">
-                        <button class="btn btn-outline-primary" onclick="myFunction()" type="submit" style="font-size:20px;" id="uploadButton">Preview</button>
+                        <button class="btn btn-outline-primary btn-sm" onclick="myFunction()" type="submit" style="font-size:20px;" id="uploadButton">Preview</button>
                     </div>
                     {% if not edit %}
                       <div class="form-group  mr-2">
-                        <button class="btn btn-outline-secondary" onclick="myFunc()" style="font-size:20px; width:200px;" id="draftButton">Save as Draft</button>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="myFunc()" style="font-size:20px; width:200px;" id="draftButton">Save as Draft</button>
                       </div>
                     {% else %}
                     <div class="form-group  mr-2">
-                        <button class="btn btn-outline-secondary" onclick="myFunc1()" style="font-size:20px; width:200px;" id="draftButton">Save as Draft</button>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="myFunc1()" style="font-size:20px; width:200px;" id="draftButton">Save as Draft</button>
                       </div>
                     {%endif%}
                       <div class="form-group mr-2">
-                        <button class="btn btn-outline-primary" onclick="myFunctionPreview()" style="font-size:20px;" id="button" type="submit">Publish</button>
+                        <button class="btn btn-outline-primary btn-sm" onclick="myFunctionPreview()" style="font-size:20px;" id="button" type="submit">Publish</button>
                       </div>
                     
                 </div>
@@ -45,7 +45,7 @@ Text Editor | Article+
        
         <div class="row" style="">
             
-            <div class="col-12 col-sm-9  align-self-center " style="">
+            <div class="col-12 col-sm-8  align-self-center " style="">
                
                
                     {% csrf_token%}
@@ -68,29 +68,45 @@ Text Editor | Article+
                     
       
         </div>
-        <div class="col-12 col-sm-12 col-md-3">
-            <div class="card">
+        <div class="col-12 col-sm-12 col-md-4">
+            <div class="card ">
                 <div class="card-body">
-                    <center><p style="color:rgb(0,0,0,0.5);font-size: 20px;">Dictionary</p></center>
-                    <hr>
-                    <div style="">
-                        <input type="text" placeholder="Search Keywords..." id="myInput" class="form-group" style="font-size: 13px;padding: 5px;">
-                        <button type="button" onclick="getInputValue();" class="btn btn-outline-info"><i class="fa fa-search"></i></button>
-                        
-                    </div>
-                    <div >
-                        <p id="wait"></p>
-                        <p id="meaning"></p>
-                        <p id="noun"></p>
-                        <p id="syn"></p>
-                        <p id="ant"></p>
-                        <p id="ant"></p>
-                        <p id="error"></p>
-
-                    </div>
-                  
+                
+                <div>
+                    <img class="my_img" src="{% static 'article/img/undraw_searching_p5ux.svg' %}" style="width: 100%;">
                 </div>
+                <center><h3 class="mt-5"style="">Dictionary</h3></center>
+                <hr>
+                <div style=" display: flex; justify-content: center;"> 
+                    <input type="text" placeholder="Search Keywords..." id="myInput" class="form-control" style="font-size: 13px;padding: 5px;">
+                    <button type="button" onclick="getInputValue();" class="btn btn-outline-info"><i class="fa fa-search"></i></button>
+                    
+                </div>
+                <div >
+                    <p id="wait"></p>
+                    <br>
+                    <p id="defi"></p>
+                    <br>
+                    <p id="meaning"></p>
+                    <br>
+                    <p id="noun"></p>
+                    <br>
+                   
+                    <p id="example"></p>
+                    <br>
+                    <p id="syn"></p>
+                    <br>
+                    <p id="ant"></p>
+                    <br>
+                    <p id="ant"></p>
+                    <br>
+                    <p id="error"></p>
+                    <br>
+    
+                </div>
+              
             </div>
+        </div>
         </div>
 
 
@@ -139,6 +155,7 @@ Text Editor | Article+
               if(this.readyState == 4 && this.status == 200){
                 var details = JSON.parse(req.responseText);
                 console.log(details);
+                document.getElementById('defi').innerHTML = details[1];
                 try{
                     document.getElementById('meaning').innerHTML = details[0].Verb;
                 }
@@ -151,8 +168,12 @@ Text Editor | Article+
                 catch(err){
                     document.getElementById('noun').innerHTML = "No Verb Found!!";
                 }
-                
+                document.getElementById('example').innerHTML = details[2];
+                document.getElementById('syn').innerHTML = details[3];
+                document.getElementById('ant').innerHTML = details[4];
+
                 document.getElementById('wait').innerHTML = "";
+                
                
               }
             };

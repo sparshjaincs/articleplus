@@ -7,14 +7,7 @@ Article+
 {% include 'article/navbar.html' %}
 {% endblock %}
 {% block style %}
-#overlay1{
-  background-color:#000; /* Black background with opacity */
-  z-index: 2; 
-  width: 100%;
-  height:100%;
 
-  opacity:0.8;
-}
 .head{
   font-weight:600;
   letter-spacing:3px;
@@ -42,7 +35,7 @@ background-repeat:no-repeat; background-size: cover;">
             <center><h1 style="color:white; font-size: 90px; font-weight: 700; letter-spacing: 2px;">Article<span style="color:#FFD369;">+</span></h1></center>
            <center><p style="color:rgb(255,255,255,0.6); margin-top: -10px;">Let your creative thinking and our platform work together to turn your writing into a piece of art.</p></center> 
             <center>
-              <button class="btn btn-outline-warning" style="font-size: 20px;">Get Started</button>
+              <a href="{% url 'login' %}" class="btn btn-outline-warning" style="font-size: 20px;">Get Started</a>
             </center>
             
           </div>
@@ -60,10 +53,10 @@ background-repeat:no-repeat; background-size: cover;">
     <section class="pt-5">
       <div class="container" >
         <div class="row" style="margin-top:80px;">
-          <div class="col-12 col-sm-4">
+          <div class="col-12 col-sm-4"  >
             <img class="my_img" src="{% static  'article/img/undraw_content_creator_xeju.svg' %}">
           </div>
-          <div class="col-12 col-sm  mt-5">
+          <div class="col-12 col-sm  mt-5" >
             <div style="display: flex; flex-direction: column;">
             <h1  class="head">Start Writing Your Piece Of Art.</h1>
             <p  style="margin-top: -20px; margin-left:30px;color:rgb(0,0,0,0.5); font-weight: 600;"></p>
@@ -137,7 +130,7 @@ background-repeat:no-repeat; background-size: cover;">
       </div>
     </div>
   </section>
-  <section class="pt-3 mt-5" style="background-color: #B0E0E6;">
+  <section class="pt-3 mt-5 pb-5" style="background-color: #B0E0E6;">
     <div class="container" >
       <div class="row" style="margin-top:80px;">
         <div class="col-12 col-sm-12">
@@ -162,7 +155,7 @@ background-repeat:no-repeat; background-size: cover;">
               </p>
             </center>
               <div style="display: flex; justify-content:center  ; ">
-               <a href="{% url 'login' %}" class="btn btn-outline-secondary" style="font-weight: 600;">Get Your Key Now. <i class="fa fa-arrow-right ml-3" ></i></a>
+               <a href="{% url 'api' %}" class="btn btn-outline-secondary" style="font-weight: 600;">Get Your Key Now. <i class="fa fa-arrow-right ml-3" ></i></a>
               </div>
             </div> 
         </div>

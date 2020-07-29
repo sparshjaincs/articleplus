@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'ckeditor',
     'api',
     'rest_framework',
+    'rest_framework.authtoken',
+    
 
 ]
 
@@ -87,7 +89,15 @@ WSGI_APPLICATION = 'articleplus.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated'
+    ]
+}
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',

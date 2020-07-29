@@ -124,7 +124,7 @@ var chart = new Chart(ctx, {
 {% for i in featured %}
 <div class="col-12 col-sm-6 col-md-6 col-lg-6 mb-2">
    
-    <div class="card shadow" style="">
+    <div class="card " style="">
         <div class="card-body" style="margin-top:-15px;">
             <a href="/trending/{{i.0.0|replace}}/">
                 <h5>{{i.0.0}}</h5>
@@ -147,7 +147,7 @@ var chart = new Chart(ctx, {
             <h3>Recently Trending</h3>
             <p style="margin-top:-15px; color:rgb(0,0,0,0.5);" >See latest trends all over the world</p>
         </div>
-        <div class="card pt-3 shadow">
+        <div class="card pt-3 ">
        
         <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
             <ol class="carousel-indicators">
@@ -203,7 +203,7 @@ var chart = new Chart(ctx, {
         </div>
     </div>
         {% for i in rel %}
-        <div class="col-12 col-sm-4 card shadow" >
+        <div class="col-12 col-sm-4 card " >
             <div class="card-body">
            <h5>{{i.0.0}}</h5>
            <div style="display: flex; justify-content: space-between;">

@@ -10,16 +10,17 @@
 
 
 <!-- Content Row -->
-<div class="row">
+<div class="row " style="margin-top: 100px;" >
 
   <!-- Earnings (Monthly) Card Example -->
   <div class="col-xl-3 col-md-6 mb-4">
-    <div class="card border-left-primary shadow h-100 py-2">
+    <div class="card border-left-primary  h-100 py-2">
       <div class="card-body">
         <div class="row no-gutters align-items-center">
           <div class="col mr-2">
             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Articles</div>
             <div class="h6 mb-0 font-weight-bold text-gray-800">{{article_count.1}} Published | {{article_count.0}} Draft</div>
+            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1"><a href="/article/?method=text_editor">Start Writing</a></div>
           </div>
           <div class="col-auto">
             <i class="fas fa-newspaper-o fa-2x text-gray-300"></i>
@@ -28,9 +29,28 @@
       </div>
     </div>
   </div>
+ 
 
+    {% if show %} 
+      <div class="col-12 col-sm-12 col-md-12 col-xl-8">
+          <div class="alert alert-danger">
+            <center>User must need to complete their profile first !!! </center>  
+          </div>
+      </div>
+      <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+        {% if messages %}
+        {% for message in messages %}
+         <center>  <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div></center> 
+        {% endfor %}
+    {% endif %}
+      </div>
+ 
+  {% endif %}
+
+
+<!--
   <div class="col-xl-3 col-md-6 mb-4">
-    <div class="card border-left-primary shadow h-100 py-2">
+    <div class="card border-left-primary  h-100 py-2">
       <div class="card-body">
         <div class="row no-gutters align-items-center">
           <div class="col mr-2">
@@ -46,7 +66,7 @@
   </div>
 
   <div class="col-xl-3 col-md-6 mb-4">
-    <div class="card border-left-primary shadow h-100 py-2">
+    <div class="card border-left-primary  h-100 py-2">
       <div class="card-body">
         <div class="row no-gutters align-items-center">
           <div class="col mr-2">
@@ -62,7 +82,7 @@
   </div>
 
   <div class="col-xl-3 col-md-6 mb-4">
-    <div class="card border-left-primary shadow h-100 py-2">
+    <div class="card border-left-primary  h-100 py-2">
       <div class="card-body">
         <div class="row no-gutters align-items-center">
           <div class="col mr-2">
@@ -76,48 +96,13 @@
       </div>
     </div>
   </div>
+  -->
 
 </div>
 <div class="container mb-5 mt-5">
-  {% if show %}
-    <div class="row mb-5">
 
-        <div class="col-12 col-sm-12 col-md-12">
-            <div class="alert alert-danger">
-              <center>User must need to complete their profile first !!! </center>  
-            </div>
-        </div>
-        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-          {% if messages %}
-          {% for message in messages %}
-           <center>  <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div></center> 
-          {% endfor %}
-      {% endif %}
-        </div>
-    </div>
-    {% endif %}
-  <div class="row ">
-    <div class="col-12 d-flex justify-content-center mb-4">
-      <h2>Select Your Interest</h2>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-6 col-sm-3 col-md-3 col-lg-2 offset-lg-2 d-flex justify-content-center mb-3">
-        <button  class="btn btn-primary btn-icon-split mr-3" id="article_button">
-          <span class="icon text-white-50">
-            <i class="fas fa-newspaper-o"></i>
-          </span>
-          <span class="text">Article</span>
-        </button>
-    </div>
-    <div class="col-6 col-sm-3 col-md-3 col-lg-2 d-flex justify-content-center mb-3">
-    <button href="#" class="btn btn-primary btn-icon-split mr-3" id="stories_button">
-      <span class="icon text-white-50">
-        <i class="fas fa-pencil-square-o"></i>
-      </span>
-      <span class="text">Stories</span>
-    </button>
-    </div>
+
+    <!--x
     <div class="col-6 col-sm-3 col-md-3 col-lg-2 d-flex justify-content-center mb-3">
   <button href="#" class="btn btn-primary btn-icon-split mr-3" id="poetries_button">
     <span class="icon text-white-50">
@@ -134,7 +119,8 @@
     <span class="text">Quotes</span>
   </button>
 </div>
-</div>
+-->
+
 <div class="col-12 col-sm-12 col-md-12" style="margin-top:30px;">
   <div class="row" id="article_" style="display: flex; justify-content: center;">
 
@@ -157,9 +143,9 @@
           <div class="card" style="width: 18rem;">
              
               <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <a href="{% url 'stories_text' %}" class="btn btn-primary">Go somewhere</a>
+                <h5 class="card-title">Text Editor</h5>
+                <p class="card-text">Start Writing with no worries.</p>
+                <a href="{% url 'stories_text' %}" class="btn btn-primary">Get Started</a>
               </div>
             </div>
 
@@ -173,9 +159,9 @@
           <div class="card" style="width: 18rem;">
             
               <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <a href="" class="btn btn-primary">Go somewhere</a>
+                <h5 class="card-title">Text Editor</h5>
+                <p class="card-text">Start Writing with no worries.</p>
+                <a href="" class="btn btn-primary">Get Started</a>
               </div>
             </div>
 
@@ -199,7 +185,7 @@
   </div>
 </div>
 </div>
-<div class="card shadow mb-4">
+<div class="card  mb-4 mt-3">
     <div class="card-header py-3">
       <h6 class="m-0 font-weight-bold text-primary">WORKPLACE</h6>
     </div>
@@ -392,4 +378,8 @@
 
   });
   </script>
+{% endblock %}
+
+{% block footer %}
+{% include 'article/footer.html' %}
 {% endblock %}

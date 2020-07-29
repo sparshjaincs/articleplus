@@ -30,11 +30,13 @@ def text(request):
                 ins.user_stories = request.user
                 ins.author = request.user
                 title = form.cleaned_data['title'].replace(" ","_")
-                content = form.cleaned_data['content'].split(".")[0].strip("<p>")
+                content = form.cleaned_data['content'].split(".")[0].strip("<p>").strip("</p>")
                 ins.link = f'/stories/{request.user}/{title}'
                 ins.description = content
                 
+                
                 ins.save() 
+                messages.success(request,'Your Story is published!')
             else:
                 context['errors'] = str(form.errors)
     else:
@@ -55,6 +57,7 @@ def stories_draft(request):
                 ins.link = f'/stories/{request.user}/{title}'
                 ins.status = 'Draft'
                 ins.save()
+                messages.success(request,'Your Story is saved as draft!')
             else:
                 context['errors'] = str(form.errors)
     else:
@@ -88,6 +91,7 @@ def story_draft(request,title):
             ins.other = request.POST.get('other')
             
             ins.save()
+            messages.success(request,'Your Story is saved as draft!')
            
 
                 
@@ -282,6 +286,7 @@ def preview_publish(request,title):
     ins.status = 'published'
 
     ins.save()
+    messages.success(request,'Your Story is published!')
     return HttpResponseRedirect('/')
     
 def preview_edit(request,title):
@@ -312,6 +317,7 @@ def preview_edit(request,title):
             ins.other = request.POST.get('other')
             
             ins.save()
+            messages.success(request,'Your Story is published!')
             return HttpResponseRedirect('/')
            
     else:   

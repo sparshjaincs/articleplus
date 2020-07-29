@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from pytrends.request import TrendReq
 import datetime
+from GoogleNews import GoogleNews
+
 # Create your views here.
 def trends(request):
     context = dict()
@@ -43,4 +45,42 @@ def trending(request,keyword):
     df1 = pytrend.interest_by_region()
     _sum = df1.sum(axis=0, skipna = True)[keyword]
     context['keyword'] = [keyword,df1.reset_index().values.tolist(),_sum]
+    
+    googlenews = GoogleNews()
+    googlenews.search(keyword)
+    disc = []
+    for i in googlenews.result():
+        if i['title'] != "":
+            if not Articles.objects.filter(title = i['title']).exists():
+                try:
+                    title = i['title']
+                    link = i['link']
+                    summary = i['desc']
+                    image = i['img']
+                    disc1 ={
+                        title1:i['title'],
+                        link1 : i['link'],
+                        summary1 : i['desc'],
+                        image1 : i['img']
+                    }
+                    disc.append(disc1)
+                    
+                    tags = []
+                    token = word_tokenize(i['title'].translate(str.maketrans(" "," ",string.punctuation)))
+                    tok = nltk.pos_tag(token)
+            
+                    for i in tok:
+                        if i[1] in ['NN','NNP','NNS']:
+                            tags.append(i[0])
+                    tags = ",".join(tags)
+                    cate = 'News' 
+                    ins = Articles(user_name2 = User.objects.get(username = 'admin'),title = title,author = 'admin',
+                    category = Categories.objects.get(category_name = cate),image2 = image,link = link, description = summary,
+                    tags = tags)
+                    ins.save()
+                except:
+                    pass
+    context['data'] = disc     
+
+
     return render(request,'trends/trending.html',context)

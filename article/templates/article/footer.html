@@ -1,8 +1,71 @@
-<footer class="sticky-footer bg-white">
+<footer class="sticky-footer" style=" background-color : #1E1E1E ;">
     <div class="container my-auto">
-      <div class="copyright text-center my-auto">
-        <span>Copyright &copy; Your Website 2020</span>
+      <div class="row mt-5">
+        <div class="col-12 col-sm-12 col-md-3 mb-5">
+          <div>
+           <center><h1 style="font-size: 60px; color:white; letter-spacing: 2px;">Article<span style="color:#FFD369;">+</span></h1></center> 
+          </div>
+          <div>
+            <center><p style="color:rgb(255,255,255,0.6);">Let your creative thinking and our platform work together to turn your writing into a piece of art.</p></center>
+          </div>
+          <div style="display: flex; justify-content: space-around;">
+            <a  style="text-decoration: none; outline:none;"><i class="fa fa-facebook" style="font-size: 20px; color:white;"></i></a>
+            <a  style="text-decoration: none; outline:none;"><i class="fa fa-instagram" style="font-size: 20px; color:white;"></i></a>
+            <a  style="text-decoration: none; outline:none;"><i class="fa fa-twitter" style="font-size: 20px; color:white;"></i></a>
+            <a  style="text-decoration: none; outline:none;"><i class="fa fa-linkedin" style="font-size: 20px; color:white;"></i></a>
+          </div>
+        </div>
+        <div class="col-12 col-sm-12 col-md-4 mt-3  mb-5">
+          <div>
+            <center><h5 style="color:#FFD369;" class="mb-2">Latest Articles</h5></center>
+            {% for i in title1 %}
+            <div class="" style="display: flex; flex-direction: row; align-items: center;">
+              <div style="display: flex; justify-content: flex-start;">
+                {% if i.image2 %}
+                <img src="{{i.image2}}" style="width:50px; height:50px;">
+                {% else %}
+
+                <img src="/media/{{i.image}}" style="width:50px; height:50px;">
+                {% endif %}
+                <div class="ml-2">
+                <a href="{{i.link}}" style="text-decoration: none; color:white;">{{i.title|safe}}</a>
+                <div>
+                  <p style="font-size: 12px;">{{i.time}}, {{i.date_Publish}}, {{i.user_name2.profile.first_name}} {{i.user_name2.profile.last_name}}</p>
+                </div>
+              </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="col-3 col-sm-3 col-md-2 mt-3 mb-5">
+          <div>
+            <center><h5 style="color:#FFD369;" class="mb-2">Links</h5></center>
+            <div style="display: flex; flex-direction: column; align-items: center;">
+              <a href="{% url 'homepage' %}" style="text-decoration: none; color: white;" class="mb-2">Home</a>
+              <a href="/article-section" style="text-decoration: none; color: white;" class="mb-2">Articles</a>
+              <a href="{% url 'trends' %}" style="text-decoration: none; color: white;" class="mb-2">Trends</a>
+              <a href="{% url 'homepage' %}" style="text-decoration: none; color: white;" class="mb-2">API</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-9 col-sm-9 col-md-3 mt-3 mb-5">
+          <div>
+            <center><h5 style="color:#FFD369;" class="mb-2">Contact Us</h5></center>
+            <div style="display: flex; flex-direction: column; align-items: center;">
+              <a href="tel:7014556452" style="text-decoration: none; color:rgb(255,255,255,0.7);"><i class="fa fa-phone" ></i> +91 7014556452</a>
+              <a href="mailto:articleplusceo@gmail.com" style="text-decoration: none; color:rgb(255,255,255,0.7);"><i class="fa fa-envelope" ></i> articleplusceo@gmail.com</a>
+              <center><p>B-19, MohanBari, Surajpole Gate, Jaipur, Rajasthan</p></center>
+            </div>
+          </div>
+        </div>
       </div>
+ 
+      <div class="copyright text-center my-auto mt-5">
+        <span>Copyright &copy; Article+ 2020</span>
+     
+      </div>
+    
     </div>
   </footer>
   <!-- End of Footer -->

@@ -4,6 +4,7 @@ from . import views
 urlpatterns = [
     path("",views.homepage,name="homepage"),
      path('signup/', views.signup_view, name="signup"),
+      path('scraping/',views.web_scraping,name="web_scraping"),
     path('sent/', views.activation_sent_view, name="activation_sent"),
     path('activate/<slug:uidb64>/<slug:token>/', views.activate, name='activate'),
     path('article/',views.article,name="article"),

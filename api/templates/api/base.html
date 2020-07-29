@@ -1,0 +1,140 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            {% block title%}
+            Home | Article+
+            {% endblock %}
+        </title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit">
+        <link type="stylesheet" href="{% static 'article/base.css'}">
+        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+        
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+      
+       
+       
+        
+    
+  
+
+        {% block jscss %}
+
+        {% endblock %}
+        <style>
+            .nav-link{
+    color:black;
+    font-weight: 600;
+    font-size:12px;
+    letter-spacing: 1px;
+}
+
+.nav-item{
+margin-left: 15px;
+}
+.navbar-brand{
+    color:black;
+   font-size:30px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    margin-left: 30px;
+    text-decoration:none;
+    
+}
+.navbar-brand:hover{
+    color:black; 
+}
+.navbar-brand-span{
+    color:#007ACC;
+}
+.nav-link:hover{
+color:#FECE28;
+}
+.nav-link:hover .bar{
+    color:#FECE28;
+    
+    
+    opacity:1;
+    }
+.nav-link.active .bar{
+    color:#FECE28;
+    opacity:1;
+}
+.bar{
+    transition: .6s linear;
+    margin-right: 10px;
+    opacity: 0;
+
+
+}
+.breadcrumb{
+    background-color: floralwhite;
+}
+
+.card{
+    box-shadow:0px 0px 3px 3px rgb(233,235,235,0.5);
+    padding:5px;
+    
+}
+.card:hover{
+    background-color:floralwhite;
+}
+
+.no-js #loader { display: none;  }
+.js #loader { display: block; position: absolute; left: 100px; top: 0; }
+.se-pre-con {
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+	background: url('{% static "Spinner-1s-200px.gif" %}') center no-repeat #fff;
+}  
+            {% block style %}
+
+            {% endblock %}
+        </style>
+    </head>
+    <body id="body"  >
+        <div class="se-pre-con" id="animating"></div>
+        <header>
+                {% block navbar %}
+                 {% endblock %}
+        </header> 
+        {% block content1%}
+        {% endblock %}
+        <section>
+        {% block content%}
+        {% endblock %}
+        </section>
+        
+
+        <script>
+            window.onload = fade();
+            function fade(){
+        document.getElementById('animating').style.display = 'none';
+      }
+        </script>
+        <script>
+            $(function () {
+  $('[data-toggle="tooltip"]').tooltip({ boundary: 'window' })
+})
+        </script>
+
+        {% block script %}
+
+        {% endblock %}
+        
+
+            
+        
+    </body>
+</html>

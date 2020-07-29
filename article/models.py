@@ -150,10 +150,9 @@ class Notifications(models.Model):
       following_count = models.IntegerField(default =0)
       def __str__(self):
           return " activity_count "+ str(self.activity_count) + " follow_count " + str(self.follow_count)+ " following_count " + str(self.following_count)
-'''
+
 class titleview(models.Model):
     view = models.ForeignKey(Articles,related_name="titleview",to_field='id',on_delete=models.CASCADE)
     ip_addr = models.CharField(max_length=300,blank=True,null=True)
     def __str__(self):
         return str(self.view)+ " " + str(self.ip_addr)
-'''

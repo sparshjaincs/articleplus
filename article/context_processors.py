@@ -7,6 +7,7 @@ def data(request):
     if request.user.is_authenticated:
         data1 = Profile.objects.filter(user=request.user).values_list('first_name','last_name','email','bio','phone_number','address','city','state','country','date_of_birth')
         profile_ins =  Profile.objects.get(user=request.user)
+        
         count =0
         for value in data1[0]:
         
