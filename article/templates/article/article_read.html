@@ -215,8 +215,12 @@ Read | Article+
                         </video>
                     </center>
                     {% else %}
+                    {% if read.0.image2 %}
+                    <img src="{{read.0.image2}}" style="width:100%;padding:20px;max-height: 500px;">
+                    {% else %}
                     {% if read.0.image %}
                     <img src="/media/{{read.0.image}}" style="width:100%;padding:20px;max-height: 500px;">
+                    {% endif %}
                     {% endif %}
                
  
@@ -246,7 +250,7 @@ Read | Article+
                 <div class="row">
                     <div class="col-12 col-sm-12 col-md-12 col-lg-12 pl-4 pr-4">
                         <p>
-                            {{read.0.content|safe}}
+                            {{read.0.content|safe | linebreaks}}
                         </p>
                     </div>
                 </div>
@@ -323,7 +327,27 @@ Read | Article+
                           {% for i in related_stories %}
                           <div style="display: flex; flex-direction: row;">
                             <div style="display: flex; justify-content: flex-start;">
-                              <img src="/media/{{i.image}}" style="width:50px; height:50px;">
+                              {% if i.video %}
+                              <center>
+                                  <video width="50px" height="50px;" autoplay muted loop>
+                                  <source src="/media/{{i.video}}" type="video/mp4">
+                                  <source src="movie.ogg" type="video/ogg">
+                                  Your browser does not support the video tag.
+                                  </video>
+                              </center>
+                              {% else %}
+                              {% if i.image2 %}
+                              <img src="{{i.image2}}" style="width:50px;height: 50px;">
+                              {% else %}
+                                {% if i.image %}
+                                <img src="/media/{{i.image}}" style="width:50px;height: 50px;">
+                                {% endif %}
+                              {% endif %}
+                         
+           
+                          {% endif %}
+
+                             
                               <div class="ml-2">
                               <a href="{{i.link}}" style="text-decoration: none;">{{i.title}}</a>
                               <div>
@@ -345,7 +369,25 @@ Read | Article+
                         {% for i in article_trend %}
                         <div style="display: flex; flex-direction: row;">
                           <div style="display: flex; justify-content: flex-start;">
-                            <img src="/media/{{i.image}}" style="width:50px; height:50px;">
+                            {% if i.video %}
+                              <center>
+                                  <video width="50px" height="50px;" autoplay muted loop>
+                                  <source src="/media/{{i.video}}" type="video/mp4">
+                                  <source src="movie.ogg" type="video/ogg">
+                                  Your browser does not support the video tag.
+                                  </video>
+                              </center>
+                              {% else %}
+                              {% if i.image2 %}
+                              <img src="{{i.image2}}" style="width:50px;height: 50px;">
+                              {% else %}
+                                {% if i.image %}
+                                <img src="/media/{{i.image}}" style="width:50px;height: 50px;">
+                                {% endif %}
+                              {% endif %}
+                         
+           
+                          {% endif %}
                             <div class="ml-2">
                             <a href="{{i.link}}" style="text-decoration: none;">{{i.title}}</a>
                             <div>

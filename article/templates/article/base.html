@@ -9,7 +9,7 @@
         </title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit">
-        <link type="stylesheet" href="{% static 'article/base.css'}">
+       
         <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 
@@ -36,6 +36,9 @@
 
         {% endblock %}
         <style>
+          .body{
+            font-family: Nunito,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+          }
             .nav-link{
     color:rgb(255,255,255,0.9);
     font-weight: 600;
@@ -156,7 +159,8 @@ color:rgb(255,255,255,0.9);
             {% endblock %}
         </style>
     </head>
-    <body id="body"  >
+    <body id="body" style=' font-family: Nunito,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    ' >
         <div class="se-pre-con" id="animating"></div>
         <header>
                 {% block navbar %}

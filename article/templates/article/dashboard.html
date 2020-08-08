@@ -37,7 +37,7 @@
             <center>User must need to complete their profile first !!! </center>  
           </div>
       </div>
-      <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+      <div class="col-12 col-sm-12 col-md-12 col-lg-8">
         {% if messages %}
         {% for message in messages %}
          <center>  <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div></center> 
@@ -225,7 +225,7 @@
                   </video>
 
                   {%else%}
-                    {% if image2 %}
+                    {% if i.image2 %}
                     <img src="{{i.image2}}" alt="sorry" style="width:60px;height:40px;">
                     {% else %}
                     <img src="/media/{{i.image}}" alt="sorry" style="width:60px;height:40px;">

@@ -37,7 +37,7 @@ from quotes.models import Quotes
 
 # Create your views here.
 def homepage(request):
-    context={}
+    context={} 
     if request.user.is_authenticated:
         if not Notifications.objects.filter(user_name4 = request.user).exists():
             notify = Notifications(user_name4 = request.user)
@@ -56,8 +56,8 @@ def homepage(request):
             act = activity(user_name3 = request.user,user_activity = f'User successfully logged-in !!',activity_icon='fas fa-door-open')
             act.save()
         return render(request,'article/dashboard.html',context)
-    
-    return render(request,'article/homepage.html')
+    context['top'] = Articles.objects.all().order_by('-date_Publish',"-time")[3:9]
+    return render(request,'article/homepage.html',context)
 
 def signup_view(request):
     if request.method  == 'POST':

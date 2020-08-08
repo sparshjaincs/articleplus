@@ -2,7 +2,12 @@ from django.shortcuts import render
 from pytrends.request import TrendReq
 import datetime
 from GoogleNews import GoogleNews
-
+from article.models import Articles, Categories
+from newspaper import Article
+from nltk.tokenize import word_tokenize
+import nltk
+import string
+from django.contrib.auth.models import User
 # Create your views here.
 def trends(request):
     context = dict()
@@ -46,24 +51,19 @@ def trending(request,keyword):
     _sum = df1.sum(axis=0, skipna = True)[keyword]
     context['keyword'] = [keyword,df1.reset_index().values.tolist(),_sum]
     
-    googlenews = GoogleNews()
+    googlenews = GoogleNews(lang='en')
     googlenews.search(keyword)
+    googlenews.getpage(2)
     disc = []
     for i in googlenews.result():
         if i['title'] != "":
             if not Articles.objects.filter(title = i['title']).exists():
-                try:
-                    title = i['title']
+               
+                    title = i['title'].replace("/","")
                     link = i['link']
                     summary = i['desc']
-                    image = i['img']
-                    disc1 ={
-                        title1:i['title'],
-                        link1 : i['link'],
-                        summary1 : i['desc'],
-                        image1 : i['img']
-                    }
-                    disc.append(disc1)
+                   
+                    
                     
                     tags = []
                     token = word_tokenize(i['title'].translate(str.maketrans(" "," ",string.punctuation)))
@@ -72,15 +72,22 @@ def trending(request,keyword):
                     for i in tok:
                         if i[1] in ['NN','NNP','NNS']:
                             tags.append(i[0])
-                    tags = ",".join(tags)
+                    tags = keyword + ",".join(tags)  
                     cate = 'News' 
+                    art = Article(link)
+                    art.download()
+                    art.parse()
+                    text = art.text
+                    image = art.top_image
+                    l = "/article/admin/"+title.replace(" ","_")
                     ins = Articles(user_name2 = User.objects.get(username = 'admin'),title = title,author = 'admin',
-                    category = Categories.objects.get(category_name = cate),image2 = image,link = link, description = summary,
-                    tags = tags)
+                    category = Categories.objects.get(category_name = cate),image2 = image,link = l, description = summary,
+                    tags = tags,other = link,content = text)
                     ins.save()
-                except:
-                    pass
-    context['data'] = disc     
+                    disc.append(ins)
+                    googlenews.clear()
+             
+      
 
-
+    context['data'] = disc
     return render(request,'trends/trending.html',context)

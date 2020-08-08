@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 from nltk.tokenize import word_tokenize
 import nltk
 from newscatcher import Newscatcher
-
+from newspaper import Article
 import string
 
 nc = Newscatcher(website = 'nytimes.com')
@@ -32,9 +32,14 @@ for i in results['articles'][:30]:
                     tags.append(i[0])
             tags = ",".join(tags)
             cate = 'News' 
+            article = Article(link)
+            article.download()
+            article.parse()
+            text = article.text
+            l = "/article/admin/"+title.replace(" ","_")
             ins = Articles(user_name2 = User.objects.get(username = 'admin'),title = title,author = 'admin',
-            category = Categories.objects.get(category_name = cate),image2 = image,link = link, description = summary,
-            tags = tags)
+            category = Categories.objects.get(category_name = cate),image2 = image,link = l, description = summary,
+            content = text,tags = tags,other= link)
             ins.save()
         except:
             pass
@@ -58,10 +63,15 @@ for i in results['articles'][:30]:
                 if i[1] in ['NN','NNP','NNS']:
                     tags.append(i[0])
             tags = ",".join(tags)
-            cate = 'Business' 
+            cate = 'Business'
+            article = Article(link)
+            article.download()
+            article.parse()
+            text = article.text
+            l = "/article/admin/"+title.replace(" ","_") 
             ins = Articles(user_name2 = User.objects.get(username = 'admin'),title = title,author = 'admin',
-            category = Categories.objects.get(category_name = cate),image2 = image,link = link, description = summary,
-            tags = tags)
+            category = Categories.objects.get(category_name = cate),image2 = image,link = l, description = summary,
+            tags = tags,content=text,other = link)
             ins.save()
         except:
             pass

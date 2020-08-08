@@ -156,3 +156,4 @@ class titleview(models.Model):
     ip_addr = models.CharField(max_length=300,blank=True,null=True)
     def __str__(self):
         return str(self.view)+ " " + str(self.ip_addr)
+ 
