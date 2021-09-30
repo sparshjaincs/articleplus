@@ -104,8 +104,8 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-SOCIAL_AUTH_FACEBOOK_KEY = '693679474762375'     # App ID
-SOCIAL_AUTH_FACEBOOK_SECRET = 'c1d98325a24ae2fff0ed1f62573a55b5'
+SOCIAL_AUTH_FACEBOOK_KEY = '****************'     # App ID
+SOCIAL_AUTH_FACEBOOK_SECRET = '***********************'
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email', 'user_link'] # add this
 SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {       # add this
   'fields': 'id, name, email, picture.type(large), link'
@@ -121,7 +121,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'articleplusceo@gmail.com'
-EMAIL_HOST_PASSWORD = 'fvquzadvrihqrvwq'
+EMAIL_HOST_PASSWORD = '***************'
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
